@@ -1,7 +1,9 @@
 #ifndef socket_poll_h
 #define socket_poll_h
 #include <stdbool.h>
+#ifdef _WIN32
 #include <cstdint>
+#endif
 typedef int poll_fd;
 typedef uintptr_t SOCKET;
 
