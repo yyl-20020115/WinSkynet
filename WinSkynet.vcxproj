@@ -197,7 +197,6 @@
     <ClInclude Include="lualib-src\lua-seri.h" />
     <ClInclude Include="lualib-src\sproto\msvcint.h" />
     <ClInclude Include="lualib-src\sproto\sproto.h" />
-    <ClInclude Include="Resource.h" />
     <ClInclude Include="service-src\databuffer.h" />
     <ClInclude Include="service-src\hashid.h" />
     <ClInclude Include="skynet-src\atomic.h" />
@@ -218,6 +217,9 @@
     <ClInclude Include="skynet-src\skynet_socket.h" />
     <ClInclude Include="skynet-src\skynet_timer.h" />
     <ClInclude Include="skynet-src\socket_buffer.h" />
+    <Text Include="config.txt">
+      <FileType>CppCode</FileType>
+    </Text>
     <ClCompile Include="skynet-src\socket_epoll_win32.c">
       <FileType>CppHeader</FileType>
     </ClCompile>
@@ -230,7 +232,6 @@
     <ClInclude Include="skynet-src\spinlock.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="wepoll\wepoll.h" />
-    <ClInclude Include="WinSkynet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3rd\lpeg\lpcap.c" />
@@ -317,13 +318,6 @@
     <ClCompile Include="skynet-src\socket_server.c" />
     <ClCompile Include="wepoll\wepoll.c" />
     <ClCompile Include="win_implementations.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="WinSkynet.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico" />
-    <Image Include="WinSkynet.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="examples\abort.lua" />
