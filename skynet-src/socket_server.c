@@ -539,12 +539,12 @@ socket_server_release(struct socket_server *ss) {
 #ifdef _WIN32
 	CloseHandle((HANDLE)ss->sendctrl_fd);
 	CloseHandle((HANDLE)ss->recvctrl_fd);
-	ss->sendctrl_fd = 0;
-	ss->recvctrl_fd = 0;
 #else
 	close(ss->sendctrl_fd);
 	close(ss->recvctrl_fd);
 #endif
+	ss->sendctrl_fd = 0;
+	ss->recvctrl_fd = 0;
 	sp_release(ss->event_fd);
 	FREE(ss);
 }
