@@ -346,7 +346,7 @@ function rediscluster:call(...)
 			conn = self:get_connection_by_slot(slot)
 		end
 		local result = {pcall(function ()
-			-- TODO: use pipelining to send asking and save a rtt.
+			-- LUA_TODO: use pipelining to send asking and save a rtt.
 			if asking then
 				conn:asking()
 			end

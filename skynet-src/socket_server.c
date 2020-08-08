@@ -4,8 +4,10 @@
 #include <netinet/tcp.h>
 #include <unistd.h>
 #include "socket_poll.h"
+typedef int pipe_fd;
 #else
 #include <WS2tcpip.h>
+typedef HANDLE pipe_fd;
 #endif
 
 #include "socket_server.h"

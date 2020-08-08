@@ -263,11 +263,18 @@ skynet_start(struct skynet_config * config) {
 	sigfillset(&sa.sa_mask);
 	sigaction(SIGHUP, &sa, NULL);
 #endif
+#ifdef _WIN32
 	if (config->daemon) {
+		fprintf(stderr, "Skynet does not run in daemon mode on Windows.\n");
+	}
+#else
+	if (config->daemon) {
+
 		if (daemon_init(config->daemon)) {
 			exit(1);
 		}
 	}
+#endif
 	skynet_harbor_init(config->harbor);
 	skynet_handle_init(config->harbor);
 	skynet_mq_init();

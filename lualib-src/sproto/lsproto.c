@@ -661,7 +661,7 @@ lsaveproto(lua_State *L) {
 	}
 	struct sproto* rp = 0;
 #ifndef _WIN32
-	/* TODO : release old object (memory leak now, but thread safe)*/
+	/* LINUX_TODO : release old object (memory leak now, but thread safe)*/
 	//rp = G_sproto[index];
 	G_sproto[index] = sp;
 #else

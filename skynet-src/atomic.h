@@ -15,8 +15,7 @@
 #define ATOM_CAS(ptr, oval, nval) _InterlockedCompareExchange(ptr, oval, nval)
 #define ATOM_CAS_POINTER(ptr, oval, nval) _InterlockedCompareExchange(ptr, oval, nval)
 #define ATOM_CAS_POINTER64(ptr, oval, nval) _InterlockedCompareExchange64(ptr, oval, nval)
-//NOTICE:TODO: need checks
-
+//NOTICE: need checks
 #define ATOM_INC(ptr) _InterlockedIncrement(ptr)
 #define ATOM_INC16(ptr) _InterlockedIncrement16(ptr)
 #define ATOM_INC64(ptr) _InterlockedIncrement64(ptr)
