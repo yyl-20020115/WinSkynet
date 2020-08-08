@@ -20,9 +20,9 @@
 #include <unistd.h>
 #else
 #include <WinSock2.h>
-int usleep(unsigned int __useconds); 
-#endif
 #include "../3rd/pthreads-w32/pthread.h"
+int usleep(unsigned int __useconds);
+#endif
 
 #define CACHE_SIZE 0x1000	
 
