@@ -82,7 +82,11 @@ databuffer_read(struct databuffer *db, struct messagepool *mp, void * buffer, in
 			memcpy(buffer, current->buffer + db->offset, bsz);
 			_return_message(db, mp);
 			db->offset = 0;
+#ifdef _WIN32
 			((char*)buffer)+=bsz;
+#else
+			buffer += bsz;
+#endif
 			sz-=bsz;
 		}
 	}
