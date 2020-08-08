@@ -669,7 +669,7 @@ lsaveproto(lua_State *L) {
 #ifdef _WIN64
 	rp = (struct sproto*)_InterlockedExchange64((long long*)&G_sproto[index],(long long) sp);
 #else
-	rp = (struct sproto*)_InterlockedExchange(&G_sproto[index], (long) sp);	_
+	rp = (struct sproto*)_InterlockedExchange(&G_sproto[index], (long) sp);
 #endif
 #endif
 	if (rp) {

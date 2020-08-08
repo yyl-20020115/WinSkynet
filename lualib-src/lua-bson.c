@@ -7,8 +7,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
+#include <Winsock2.h>
 int getpid();
-int gethostname(char* name, size_t len);
 #endif
 
 #include <stdint.h>

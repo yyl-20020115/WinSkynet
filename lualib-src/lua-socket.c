@@ -15,8 +15,9 @@
 #include <arpa/inet.h>
 #else
 #include <WinSock2.h>
-const char* inet_ntop(int af, const void* src,
-	char* dst, int size);
+#include <WS2tcpip.h>
+//const char* inet_ntop(int af, const void* src,
+//	char* dst, int size);
 #endif
 #include "skynet_socket.h"
 
