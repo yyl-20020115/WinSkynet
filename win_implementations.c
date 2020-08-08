@@ -159,4 +159,13 @@ int usleep(unsigned int __useconds) {
     } while (dfTim < (0.000001 * __useconds));
     return 0;
 }
+int pipe(SOCKET fd[2])
+{
+    SECURITY_ATTRIBUTES sa = { 0 };
+
+    sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+    sa.lpSecurityDescriptor = NULL; 
+    sa.bInheritHandle = TRUE;
+    return CreatePipe((PHANDLE)&fd[0], (PHANDLE)&fd[1], &sa, 0) ? 0 : -1;
+}
 #endif

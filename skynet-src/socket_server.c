@@ -26,6 +26,7 @@ typedef HANDLE pipe_fd;
 #include "../3rd/jemalloc/include/jemalloc/internal/jemalloc_internal_decls.h"
 #ifdef _WIN32
 #include "socket_poll_win32.h"
+int pipe(SOCKET fd[2]);
 #endif
 
 #define MAX_INFO 128
@@ -120,8 +121,8 @@ struct socket {
 
 struct socket_server {
 	volatile uint64_t time;
-	int recvctrl_fd;
-	int sendctrl_fd;
+	SOCKET recvctrl_fd;
+	SOCKET sendctrl_fd;
 	int checkctrl;
 	poll_fd event_fd;
 	int alloc_id;
@@ -384,26 +385,28 @@ clear_wb_list(struct wb_list *list) {
 struct socket_server * 
 socket_server_create(uint64_t time) {
 	int i;
-	int fd[2] = { 0 };
+	SOCKET fd[2] = { 0 };
 	poll_fd efd = sp_create();
 	if (sp_invalid(efd)) {
 		fprintf(stderr, "socket-server: create event pool failed.\n");
 		return NULL;
 	}
-#ifndef _WIN32
+
 	if (pipe(fd)) {
 		sp_release(efd);
 		fprintf(stderr, "socket-server: create socket pair failed.\n");
 		return NULL;
 	}
-#else
-	//TODO:
-#endif
 	if (sp_add(efd, fd[0], NULL)) {
 		// add recvctrl_fd to event poll
 		fprintf(stderr, "socket-server: can't add server fd to event pool.\n");
+#ifdef _WIN32
+		if (fd[0] != 0) CloseHandle((HANDLE)fd[0]);
+		if (fd[1] != 0) CloseHandle((HANDLE)fd[1]);
+#else
 		close(fd[0]);
 		close(fd[1]);
+#endif
 		sp_release(efd);
 		return NULL;
 	}
@@ -534,7 +537,10 @@ socket_server_release(struct socket_server *ss) {
 		spinlock_destroy(&s->dw_lock);
 	}
 #ifdef _WIN32
-	//TODO:
+	CloseHandle((HANDLE)ss->sendctrl_fd);
+	CloseHandle((HANDLE)ss->recvctrl_fd);
+	ss->sendctrl_fd = 0;
+	ss->recvctrl_fd = 0;
 #else
 	close(ss->sendctrl_fd);
 	close(ss->recvctrl_fd);
@@ -1115,12 +1121,13 @@ setopt_socket(struct socket_server *ss, struct request_setopt *request) {
 	setsockopt(s->fd, IPPROTO_TCP, request->what,(const char*) &v, sizeof(v));
 }
 
-static void
-block_readpipe(int pipefd, void *buffer, int sz) {
+static int block_readpipe(SOCKET pipefd, void *buffer, int sz) {
 	for (;;) {
 #ifdef _WIN32
-		//TODO:
 		int n = 0;
+		if (!ReadFile((HANDLE)pipefd, buffer, sz, (LPDWORD)&n, NULL)) {
+			n = -1;
+		}
 #else
 		int n = read(pipefd, buffer, sz);
 #endif
@@ -1128,22 +1135,29 @@ block_readpipe(int pipefd, void *buffer, int sz) {
 			if (errno == EINTR)
 				continue;
 			fprintf(stderr, "socket-server : read pipe error %s.\n",strerror(errno));
-			return;
+			return n;
 		}
 		// must atomic read from a pipe
-		assert(n == sz);
-		return;
+		//assert(n == sz);
+		return n;
 	}
 }
 
-static int
-has_cmd(struct socket_server *ss) {
+static int has_cmd(struct socket_server *ss) {
 	struct timeval tv = {0,0};
-	int retval;
-
+	int retval = 0;
+#ifdef _WIN32
+	DWORD count = 0;
+	char buffer[256] = { 0 };
+	//TODO: read 0 bytes to see if any ?
+	if (ReadFile((HANDLE)ss->recvctrl_fd, buffer, 0, &count, NULL))
+	{
+		return 1;
+	}
+#else
 	FD_SET(ss->recvctrl_fd, &ss->rfds);
-
 	retval = select(ss->recvctrl_fd+1, &ss->rfds, NULL, NULL, &tv);
+#endif
 	if (retval == 1) {
 		return 1;
 	}
@@ -1230,15 +1244,13 @@ dec_sending_ref(struct socket_server *ss, int id) {
 		ATOM_DEC(&s->sending);
 	}
 }
-
-// return type
-static int
-ctrl_cmd(struct socket_server *ss, struct socket_message *result) {
-	//TODO:
-	int fd = ss->recvctrl_fd;
+static int ctrl_cmd(struct socket_server *ss, struct socket_message *result) 
+{
+	SOCKET fd = ss->recvctrl_fd;
 	// the length of message is one byte, so 256+8 buffer size is enough.
 	uint8_t buffer[256];
 	uint8_t header[2];
+
 	block_readpipe(fd, header, sizeof(header));
 	int type = header[0];
 	int len = header[1];
@@ -1288,6 +1300,7 @@ ctrl_cmd(struct socket_server *ss, struct socket_message *result) {
 
 	return -1;
 }
+
 
 // return -1 (ignore) when error
 static int
@@ -1513,16 +1526,21 @@ int
 socket_server_poll(struct socket_server *ss, struct socket_message * result, int * more) {
 	for (;;) {
 		if (ss->checkctrl) {
-			if (has_cmd(ss)) {
-				int type = ctrl_cmd(ss, result);
+			int type = 0;
+			if (has_cmd(ss))
+			if (type = ctrl_cmd(ss, result))
+			{
 				if (type != -1) {
 					clear_closed_event(ss, result, type);
 					return type;
-				} else
+				}
+				else
 					continue;
-			} else {
+			}
+			else {
 				ss->checkctrl = 0;
 			}
+			
 		}
 		if (ss->event_index == ss->event_n) {
 			ss->event_n = sp_wait(ss->event_fd, ss->ev, MAX_EVENT);
@@ -1622,12 +1640,14 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 	request->header[6] = (uint8_t)type;
 	request->header[7] = (uint8_t)len;
 	for (;;) {
+		int n = 0;
 #ifdef _WIN32
-		//TODO:
-		ssize_t n = 0;// write(ss->sendctrl_fd, &request->header[6], len + 2);
+		if (!WriteFile((HANDLE)ss->sendctrl_fd, &request->header[6], (len + 2), &n, NULL)) {
+			n = -1;
+		}
+		// write(ss->sendctrl_fd, &request->header[6], len + 2);
 #else
-		ssize_t n = write(ss->sendctrl_fd, &request->header[6], len + 2);
-
+		n = write(ss->sendctrl_fd, &request->header[6], len + 2);
 #endif
 		if (n<0) {
 			if (errno != EINTR) {

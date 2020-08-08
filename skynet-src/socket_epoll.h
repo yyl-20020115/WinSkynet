@@ -21,7 +21,7 @@ static void sp_release(poll_fd efd) {
 	close(efd);
 }
 
-static int sp_add(poll_fd efd, int sock, void *ud) {
+static int sp_add(poll_fd efd, SOCKET sock, void *ud) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
 	ev.data.ptr = ud;
@@ -31,11 +31,11 @@ static int sp_add(poll_fd efd, int sock, void *ud) {
 	return 0;
 }
 
-static void sp_del(poll_fd efd, int sock) {
+static void sp_del(poll_fd efd, SOCKET sock) {
 	epoll_ctl(efd, EPOLL_CTL_DEL, sock , NULL);
 }
 
-static void sp_write(poll_fd efd, int sock, void *ud, bool enable) {
+static void sp_write(poll_fd efd, SOCKET sock, void *ud, bool enable) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN | (enable ? EPOLLOUT : 0);
 	ev.data.ptr = ud;
@@ -58,7 +58,7 @@ static int sp_wait(poll_fd efd, struct event *e, int max) {
 	return n;
 }
 
-static void sp_nonblocking(int fd) {
+static void sp_nonblocking(SOCKET fd) {
 	int flag = fcntl(fd, F_GETFL, 0);
 	if ( -1 == flag ) {
 		return;

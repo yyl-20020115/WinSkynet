@@ -15,7 +15,7 @@ poll_fd sp_create() {
 void sp_release(poll_fd efd) {
 	epoll_close(efd);
 }
-int sp_add(poll_fd efd, int sock, void *ud) {
+int sp_add(poll_fd efd, SOCKET sock, void *ud) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
 	ev.data.ptr = ud;
@@ -24,10 +24,10 @@ int sp_add(poll_fd efd, int sock, void *ud) {
 	}
 	return 0;
 }
-void sp_del(poll_fd efd, int sock) {
+void sp_del(poll_fd efd, SOCKET sock) {
 	epoll_ctl(efd, EPOLL_CTL_DEL, sock , NULL);
 }
-void sp_write(poll_fd efd, int sock, void *ud, bool enable) {
+void sp_write(poll_fd efd, SOCKET sock, void *ud, bool enable) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN | (enable ? EPOLLOUT : 0);
 	ev.data.ptr = ud;
@@ -48,7 +48,7 @@ int sp_wait(poll_fd efd, struct event *e, int max) {
 	free(ev);
 	return n;
 }
-int set_blocking_mode_epoll(const int socket, int is_blocking)
+int set_blocking_mode_epoll(const SOCKET socket, int is_blocking)
 {
 	int ret = TRUE;
 
@@ -70,6 +70,6 @@ int set_blocking_mode_epoll(const int socket, int is_blocking)
 
 	return ret;
 }
-void sp_nonblocking(int sock) {
+void sp_nonblocking(SOCKET sock) {
 	set_blocking_mode_epoll(sock, FALSE);
 }
