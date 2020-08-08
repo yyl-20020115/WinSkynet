@@ -1148,11 +1148,13 @@ static int has_cmd(struct socket_server *ss) {
 	int retval = 0;
 #ifdef _WIN32
 	DWORD count = 0;
-	char buffer[256] = { 0 };
-	//TODO: read 0 bytes to see if any ?
-	if (ReadFile((HANDLE)ss->recvctrl_fd, buffer, 0, &count, NULL))
+	DWORD total = 0;
+	DWORD left = 0;
+	char buffer[8] = { 0 };
+	//Use PeekNamedPipe to check if there is anything inside of the pipe
+	if (PeekNamedPipe((HANDLE)ss->recvctrl_fd, buffer, sizeof(buffer), &count, &total,&left))
 	{
-		return 1;
+		if(count>0) return 1;
 	}
 #else
 	FD_SET(ss->recvctrl_fd, &ss->rfds);

@@ -124,8 +124,8 @@ void srandom(unsigned int seed)
     srand(seed);
 }
 int daemon(int nochdir, int noclose) {
-    //NOTICE: put myself into background
-    return 0;   
+    //NOTICE: no such concept on Windows
+    return -1;   
 }
 char* strsep(char** stringp, const char* delim)
 {
