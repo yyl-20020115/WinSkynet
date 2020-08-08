@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/tcp.h>
 #include <unistd.h>
-#include "socket_poll_others.h"
+#include "socket_poll.h"
 #else
 #include <WS2tcpip.h>
 #endif
@@ -350,7 +350,13 @@ reserve_id(struct socket_server *ss) {
 		}
 		struct socket *s = &ss->slot[HASH_ID(id)];
 		if (s->type == SOCKET_TYPE_INVALID) {
-			if (ATOM_CAS(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)) {
+			if (
+#ifdef _WIN32
+				_InterlockedCompareExchange8(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)
+#else
+				ATOM_CAS(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)
+#endif				
+				) {
 				s->id = id;
 				s->protocol = PROTOCOL_UNKNOWN;
 				// socket_server_udp_connect may inc s->udpconncting directly (from other thread, before new_fd), 
@@ -419,8 +425,9 @@ socket_server_create(uint64_t time) {
 	ss->event_index = 0;
 	memset(&ss->soi, 0, sizeof(ss->soi));
 	FD_ZERO(&ss->rfds);
+#ifndef _WIN32
 	assert(ss->recvctrl_fd < FD_SETSIZE);
-
+#endif
 	return ss;
 }
 
@@ -524,8 +531,12 @@ socket_server_release(struct socket_server *ss) {
 		}
 		spinlock_destroy(&s->dw_lock);
 	}
+#ifdef _WIN32
+	//TODO:
+#else
 	close(ss->sendctrl_fd);
 	close(ss->recvctrl_fd);
+#endif
 	sp_release(ss->event_fd);
 	FREE(ss);
 }
@@ -603,13 +614,13 @@ open_socket(struct socket_server *ss, struct request_open * request, struct sock
 	}
 	int sock= -1;
 	for (ai_ptr = ai_list; ai_ptr != NULL; ai_ptr = ai_ptr->ai_next ) {
-		sock = socket( ai_ptr->ai_family, ai_ptr->ai_socktype, ai_ptr->ai_protocol );
+		sock = (int)socket( ai_ptr->ai_family, ai_ptr->ai_socktype, ai_ptr->ai_protocol );
 		if ( sock < 0 ) {
 			continue;
 		}
 		socket_keepalive(sock);
 		sp_nonblocking(sock);
-		status = connect( sock, ai_ptr->ai_addr, ai_ptr->ai_addrlen);
+		status = connect( sock, ai_ptr->ai_addr, (int)ai_ptr->ai_addrlen);
 		if ( status != 0 && errno != EINPROGRESS) {
 			close(sock);
 			sock = -1;
@@ -657,7 +668,7 @@ send_list_tcp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 	while (list->head) {
 		struct write_buffer * tmp = list->head;
 		for (;;) {
-			ssize_t sz = write(s->fd, tmp->ptr, tmp->sz);
+			ssize_t sz = write(s->fd, tmp->ptr, (int)tmp->sz);
 			if (sz < 0) {
 				switch(errno) {
 				case EINTR:
@@ -729,7 +740,7 @@ send_list_udp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 			drop_udp(ss, s, list, tmp);
 			return -1;
 		}
-		int err = sendto(s->fd, tmp->ptr, tmp->sz, 0, &sa.s, sasz);
+		int err = sendto(s->fd, tmp->ptr, (int)tmp->sz, 0, &sa.s, sasz);
 		if (err < 0) {
 			switch(errno) {
 			case EINTR:
@@ -740,7 +751,7 @@ send_list_udp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 			drop_udp(ss, s, list, tmp);
 			return -1;
 		}
-		stat_write(ss,s,tmp->sz);
+		stat_write(ss,s, (int)tmp->sz);
 		s->wb_size -= tmp->sz;
 		list->head = tmp->next;
 		write_buffer_free(ss,tmp);
@@ -898,13 +909,13 @@ append_sendbuffer_udp(struct socket_server *ss, struct socket *s, int priority, 
 
 static inline void
 append_sendbuffer(struct socket_server *ss, struct socket *s, struct request_send * request) {
-	struct write_buffer *buf = append_sendbuffer_(ss, &s->high, request, SIZEOF_TCPBUFFER);
+	struct write_buffer *buf = append_sendbuffer_(ss, &s->high, request, (int)SIZEOF_TCPBUFFER);
 	s->wb_size += buf->sz;
 }
 
 static inline void
 append_sendbuffer_low(struct socket_server *ss,struct socket *s, struct request_send * request) {
-	struct write_buffer *buf = append_sendbuffer_(ss, &s->low, request, SIZEOF_TCPBUFFER);
+	struct write_buffer *buf = append_sendbuffer_(ss, &s->low, request, (int)SIZEOF_TCPBUFFER);
 	s->wb_size += buf->sz;
 }
 
@@ -949,7 +960,7 @@ send_socket(struct socket_server *ss, struct request_send * request, struct sock
 				so.free_func((void *)request->buffer);
 				return -1;
 			}
-			int n = sendto(s->fd, so.buffer, so.sz, 0, &sa.s, sasz);
+			int n = sendto(s->fd, so.buffer, (int)so.sz, 0, &sa.s, sasz);
 			if (n != so.sz) {
 				append_sendbuffer_udp(ss,s,priority,request,udp_address);
 			} else {
@@ -977,7 +988,7 @@ send_socket(struct socket_server *ss, struct request_send * request, struct sock
 		s->warn_size = s->warn_size == 0 ? WARNING_SIZE *2 : s->warn_size*2;
 		result->opaque = s->opaque;
 		result->id = s->id;
-		result->ud = s->wb_size%1024 == 0 ? s->wb_size/1024 : s->wb_size/1024 + 1;
+		result->ud = (int)(s->wb_size%1024 == 0 ? s->wb_size/1024 : s->wb_size/1024 + 1);
 		result->data = NULL;
 		return SOCKET_WARNING;
 	}
@@ -1099,13 +1110,18 @@ setopt_socket(struct socket_server *ss, struct request_setopt *request) {
 		return;
 	}
 	int v = request->value;
-	setsockopt(s->fd, IPPROTO_TCP, request->what, &v, sizeof(v));
+	setsockopt(s->fd, IPPROTO_TCP, request->what,(const char*) &v, sizeof(v));
 }
 
 static void
 block_readpipe(int pipefd, void *buffer, int sz) {
 	for (;;) {
+#ifdef _WIN32
+		//TODO:
+		int n = 0;
+#else
 		int n = read(pipefd, buffer, sz);
+#endif
 		if (n<0) {
 			if (errno == EINTR)
 				continue;
@@ -1173,7 +1189,11 @@ set_udp_address(struct socket_server *ss, struct request_setudp *request, struct
 	} else {
 		memcpy(s->p.udp_address, request->address, 1+2+16);	// 1 type, 2 port, 16 ipv6
 	}
+#ifdef _WIN32
+	ATOM_DEC16(&s->udpconnecting);
+#else
 	ATOM_DEC(&s->udpconnecting);
+#endif
 	return -1;
 }
 
@@ -1212,6 +1232,7 @@ dec_sending_ref(struct socket_server *ss, int id) {
 // return type
 static int
 ctrl_cmd(struct socket_server *ss, struct socket_message *result) {
+	//TODO:
 	int fd = ss->recvctrl_fd;
 	// the length of message is one byte, so 256+8 buffer size is enough.
 	uint8_t buffer[256];
@@ -1379,7 +1400,7 @@ static int
 report_connect(struct socket_server *ss, struct socket *s, struct socket_lock *l, struct socket_message *result) {
 	int error;
 	socklen_t len = sizeof(error);  
-	int code = getsockopt(s->fd, SOL_SOCKET, SO_ERROR, &error, &len);  
+	int code = getsockopt(s->fd, SOL_SOCKET, SO_ERROR, (char*)&error, &len);  
 	if (code < 0 || error) {  
 		force_close(ss,s,l, result);
 		if (code >= 0)
@@ -1427,7 +1448,7 @@ static int
 report_accept(struct socket_server *ss, struct socket *s, struct socket_message *result) {
 	union sockaddr_all u;
 	socklen_t len = sizeof(u);
-	int client_fd = accept(s->fd, &u.s, &len);
+	int client_fd = (int)accept(s->fd, &u.s, &len);
 	if (client_fd < 0) {
 		if (errno == EMFILE || errno == ENFILE) {
 			result->opaque = s->opaque;
@@ -1572,7 +1593,7 @@ socket_server_poll(struct socket_server *ss, struct socket_message * result, int
 				// close when error
 				int error;
 				socklen_t len = sizeof(error);  
-				int code = getsockopt(s->fd, SOL_SOCKET, SO_ERROR, &error, &len);  
+				int code = getsockopt(s->fd, SOL_SOCKET, SO_ERROR, (char*)&error, &len);  
 				const char * err = NULL;
 				if (code < 0) {
 					err = strerror(errno);
@@ -1599,7 +1620,13 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 	request->header[6] = (uint8_t)type;
 	request->header[7] = (uint8_t)len;
 	for (;;) {
-		ssize_t n = write(ss->sendctrl_fd, &request->header[6], len+2);
+#ifdef _WIN32
+		//TODO:
+		ssize_t n = 0;// write(ss->sendctrl_fd, &request->header[6], len + 2);
+#else
+		ssize_t n = write(ss->sendctrl_fd, &request->header[6], len + 2);
+
+#endif
 		if (n<0) {
 			if (errno != EINTR) {
 				fprintf(stderr, "socket-server : send ctrl command error %s.\n", strerror(errno));
@@ -1613,7 +1640,7 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 
 static int
 open_request(struct socket_server *ss, struct request_package *req, uintptr_t opaque, const char *addr, int port) {
-	int len = strlen(addr);
+	int len = (int)strlen(addr);
 	if (len + sizeof(req->u.open) >= 256) {
 		fprintf(stderr, "socket-server : Invalid addr %s.\n",addr);
 		return -1;
@@ -1666,7 +1693,7 @@ socket_server_send(struct socket_server *ss, struct socket_sendbuffer *buf) {
 			send_object_init_from_sendbuffer(ss, &so, buf);
 			ssize_t n;
 			if (s->protocol == PROTOCOL_TCP) {
-				n = write(s->fd, so.buffer, so.sz);
+				n = write(s->fd, so.buffer, (unsigned int)so.sz);
 			} else {
 				union sockaddr_all sa;
 				socklen_t sasz = udp_socket_address(s, s->p.udp_address, &sa);
@@ -1676,13 +1703,13 @@ socket_server_send(struct socket_server *ss, struct socket_sendbuffer *buf) {
 					so.free_func((void *)buf->buffer);
 					return -1;
 				}
-				n = sendto(s->fd, so.buffer, so.sz, 0, &sa.s, sasz);
+				n = sendto(s->fd, so.buffer, (int)so.sz, 0, &sa.s, sasz);
 			}
 			if (n<0) {
 				// ignore error, let socket thread try again
 				n = 0;
 			}
-			stat_write(ss,s,n);
+			stat_write(ss,s, (int)n);
 			if (n == so.sz) {
 				// write done
 				socket_unlock(&l);
@@ -1691,7 +1718,7 @@ socket_server_send(struct socket_server *ss, struct socket_sendbuffer *buf) {
 			}
 			// write failed, put buffer into s->dw_* , and let socket thread send it. see send_buffer()
 			s->dw_buffer = clone_buffer(buf, &s->dw_size);
-			s->dw_offset = n;
+			s->dw_offset = (int)n;
 
 			sp_write(ss->event_fd, s->fd, s, true);
 
@@ -1786,14 +1813,14 @@ do_bind(const char *host, int port, int protocol, int *family) {
 		return -1;
 	}
 	*family = ai_list->ai_family;
-	fd = socket(*family, ai_list->ai_socktype, 0);
+	fd = (int)socket(*family, ai_list->ai_socktype, 0);
 	if (fd < 0) {
 		goto _failed_fd;
 	}
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&reuse, sizeof(int))==-1) {
 		goto _failed;
 	}
-	status = bind(fd, (struct sockaddr *)ai_list->ai_addr, ai_list->ai_addrlen);
+	status = bind(fd, (struct sockaddr *)ai_list->ai_addr, (int)ai_list->ai_addrlen);
 	if (status != 0)
 		goto _failed;
 
@@ -1888,7 +1915,7 @@ socket_server_udp(struct socket_server *ss, uintptr_t opaque, const char * addr,
 		}
 	} else {
 		family = AF_INET;
-		fd = socket(family, SOCK_DGRAM, 0);
+		fd = (int)socket(family, SOCK_DGRAM, 0);
 		if (fd < 0) {
 			return -1;
 		}
@@ -1949,7 +1976,7 @@ socket_server_udp_send(struct socket_server *ss, const struct socket_udp_address
 				so.free_func((void *)buf->buffer);
 				return -1;
 			}
-			int n = sendto(s->fd, so.buffer, so.sz, 0, &sa.s, sasz);
+			int n = sendto(s->fd, so.buffer,(int) so.sz, 0, &sa.s, sasz);
 			if (n >= 0) {
 				// sendto succ
 				stat_write(ss,s,n);
@@ -1985,7 +2012,11 @@ socket_server_udp_connect(struct socket_server *ss, int id, const char * addr, i
 		socket_unlock(&l);
 		return -1;
 	}
+#ifdef _WIN32
+	ATOM_INC16(&s->udpconnecting);
+#else
 	ATOM_INC(&s->udpconnecting);
+#endif
 	socket_unlock(&l);
 
 	int status;

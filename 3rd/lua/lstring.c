@@ -67,7 +67,15 @@ void luaS_share (TString *ts) {
   if (ts == NULL)
     return;
   makeshared(ts);
+#ifdef _WIN32
+#ifdef _WIN64
+  ts->id = ATOM_DEC64(&STRID);
+#else
   ts->id = ATOM_DEC(&STRID);
+#endif
+#else
+  ts->id = ATOM_DEC(&STRID);
+#endif
 }
 
 unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) {
@@ -135,7 +143,7 @@ void luaS_clearcache (global_State *g) {
 
 static unsigned int make_str_seed(lua_State *L) {
 	size_t buff[4];
-	unsigned int h = time(NULL);
+	unsigned int h = (unsigned int)time(NULL);
 	buff[0] = cast(size_t, h);
 	buff[1] = cast(size_t, &STRSEED);
 	buff[2] = cast(size_t, &make_str_seed);

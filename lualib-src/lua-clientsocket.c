@@ -23,8 +23,6 @@
 int usleep(unsigned int __useconds); 
 #endif
 #include "../3rd/pthreads-w32/pthread.h"
-#include <lua_defs.h>
-
 
 #define CACHE_SIZE 0x1000	
 
@@ -54,8 +52,8 @@ int set_blocking_mode(const int socket, int is_blocking)
 static int
 lconnect(lua_State *L) {
 	const char * addr = luaL_checkstring(L, 1);
-	int port = luaL_checkinteger(L, 2);
-	int fd = socket(AF_INET,SOCK_STREAM,0);
+	int port = (int)luaL_checkinteger(L, 2);
+	int fd = (int)socket(AF_INET,SOCK_STREAM,0);
 	struct sockaddr_in my_addr;
 
 	my_addr.sin_addr.s_addr=inet_addr(addr);
@@ -80,9 +78,12 @@ lconnect(lua_State *L) {
 
 static int
 lclose(lua_State *L) {
-	int fd = luaL_checkinteger(L, 1);
+	int fd = (int)luaL_checkinteger(L, 1);
+#ifndef _WIN32
 	close(fd);
-
+#else
+	closesocket(fd);
+#endif
 	return 0;
 }
 
@@ -107,7 +108,7 @@ block_send(lua_State *L, int fd, const char * buffer, int sz) {
 static int
 lsend(lua_State *L) {
 	size_t sz = 0;
-	int fd = luaL_checkinteger(L,1);
+	int fd = (int)luaL_checkinteger(L,1);
 	const char * msg = luaL_checklstring(L, 2, &sz);
 
 	block_send(L, fd, msg, (int)sz);
@@ -132,7 +133,7 @@ struct socket_buffer {
 
 static int
 lrecv(lua_State *L) {
-	int fd = luaL_checkinteger(L,1);
+	int fd = (int)luaL_checkinteger(L,1);
 
 	char buffer[CACHE_SIZE];
 	int r = recv(fd, buffer, CACHE_SIZE, 0);
@@ -153,7 +154,7 @@ lrecv(lua_State *L) {
 
 static int
 lusleep(lua_State *L) {
-	int n = luaL_checknumber(L, 1);
+	int n = (int)luaL_checknumber(L, 1);
 	usleep(n);
 	return 0;
 }
@@ -178,7 +179,7 @@ readline_stdin(void * arg) {
 			// read stdin failed
 			exit(1);
 		}
-		int n = strlen(tmp) -1;
+		int n = (int)strlen(tmp) -1;
 
 		char * str = malloc(n+1);
 		memcpy(str, tmp, n);

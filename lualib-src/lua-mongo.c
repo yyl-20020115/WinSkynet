@@ -115,10 +115,10 @@ write_bytes(struct buffer *b, const void * buf, int sz) {
 
 static void
 write_string(struct buffer *b, const char *key, size_t sz) {
-	buffer_reserve(b,sz+1);
+	buffer_reserve(b, (int)sz+1);
 	memcpy(b->ptr + b->size, key, sz);
 	b->ptr[b->size+sz] = '\0';
-	b->size+=sz+1;
+	b->size+= (int)sz+1;
 }
 
 static inline int
@@ -148,17 +148,17 @@ write_length(struct buffer *b, int32_t v, int off) {
 // return string package
 static int
 op_query(lua_State *L) {
-	int id = luaL_checkinteger(L,1);
+	int id = (int)luaL_checkinteger(L,1);
 	document query = lua_touserdata(L,6);
 	if (query == NULL) {
 		return luaL_error(L, "require query document");
 	}
 	document selector = lua_touserdata(L,7);
-	int flags = luaL_checkinteger(L, 2);
+	int flags = (int)luaL_checkinteger(L, 2);
 	size_t nsz = 0;
-	const char *name = luaL_checklstring(L,3,&nsz);
-	int skip = luaL_checkinteger(L, 4);
-	int number = luaL_checkinteger(L, 5);
+	const char *name =luaL_checklstring(L,3,&nsz);
+	int skip = (int)luaL_checkinteger(L, 4);
+	int number = (int)luaL_checkinteger(L, 5);
 
 	luaL_Buffer b;
 	luaL_buffinit(L,&b);
@@ -260,7 +260,7 @@ op_reply(lua_State *L) {
 			lua_pushinteger(L, id);
 			return 2;
 		}
-		int c = lua_rawlen(L, 2);
+		int c = (int)lua_rawlen(L, 2);
 		for (;i<=c;i++) {
 			lua_pushnil(L);
 			lua_rawseti(L, 2, i);
@@ -349,7 +349,7 @@ op_delete(lua_State *L) {
 		write_int32(&buf, OP_DELETE);
 		write_int32(&buf, 0);
 		write_string(&buf, name, sz);
-		write_int32(&buf, lua_tointeger(L,2));
+		write_int32(&buf, (int)lua_tointeger(L,2));
 
 		int32_t selector_len = get_length(selector);
 		int total = buf.size + selector_len;
@@ -374,10 +374,10 @@ op_delete(lua_State *L) {
  */
 static int
 op_get_more(lua_State *L) {
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	size_t sz = 0;
 	const char * name = luaL_checklstring(L,2,&sz);
-	int number = luaL_checkinteger(L, 3);
+	int number = (int)luaL_checkinteger(L, 3);
 	size_t cursor_len = 0;
 	const char * cursor_id = luaL_tolstring(L, 4, &cursor_len);
 	if (cursor_len != 8) {
@@ -429,7 +429,7 @@ op_update(lua_State *L) {
 		write_int32(&buf, OP_UPDATE);
 		write_int32(&buf, 0);
 		write_string(&buf, name, sz);
-		write_int32(&buf, lua_tointeger(L,2));
+		write_int32(&buf, (int)lua_tointeger(L,2));
 
 		int32_t selector_len = get_length(selector);
 		int32_t update_len = get_length(update);
@@ -456,7 +456,7 @@ document_length(lua_State *L) {
 	}
 	if (lua_istable(L,3)) {
 		int total = 0;
-		int s = lua_rawlen(L,3);
+		int s = (int)lua_rawlen(L,3);
 		int i;
 		for (i=1;i<=s;i++) {
 			lua_rawgeti(L, 3, i);
@@ -494,7 +494,7 @@ op_insert(lua_State *L) {
 		write_int32(&buf, 0);
 		write_int32(&buf, 0);
 		write_int32(&buf, OP_INSERT);
-		write_int32(&buf, lua_tointeger(L,1));
+		write_int32(&buf, (int)lua_tointeger(L,1));
 		write_string(&buf, name, sz);
 
 		int total = buf.size + dsz;
@@ -507,7 +507,7 @@ op_insert(lua_State *L) {
 		document doc = lua_touserdata(L,3);
 		luaL_addlstring(&b, (const char *)doc, get_length(doc));
 	} else {
-		int s = lua_rawlen(L, 3);
+		int s = (int)lua_rawlen(L, 3);
 		int i;
 		for (i=1;i<=s;i++) {
 			lua_rawgeti(L,3,i);

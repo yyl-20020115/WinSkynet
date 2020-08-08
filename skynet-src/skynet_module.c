@@ -30,7 +30,7 @@ _try_open(struct modules *m, const char * name) {
 	size_t path_size = strlen(path);
 	size_t name_size = strlen(name);
 
-	int sz = path_size + name_size;
+	int sz = (int)(path_size + name_size);
 	//search path
 	void * dl = NULL;
 	char* tmp = (char*)skynet_malloc(sz);
@@ -41,7 +41,7 @@ _try_open(struct modules *m, const char * name) {
 		if (*path == '\0') break;
 		l = strchr(path, ';');
 		if (l == NULL) l = path + strlen(path);
-		int len = l - path;
+		int len = (int)(l - path);
 		int i;
 		for (i=0;path[i]!='?' && i < len ;i++) {
 			tmp[i] = path[i];

@@ -4,12 +4,15 @@
 #include <unistd.h>
 #include <sys/file.h>
 #else
+#include <io.h>
 #include <Windows.h>
 #define LOCK_SH 1
 #define LOCK_EX 2
 #define LOCK_UN 8
 #define __LOCK_ATOMIC 16
 #define LOCK_NB 4
+int getpid();
+int daemon(int nochdir, int noclose);
 #endif
 #include <signal.h>
 #include <errno.h>
@@ -51,7 +54,14 @@ static int
 write_pid(const char *pidfile) {
 	FILE *f;
 	int pid = 0;
-	int fd = open(pidfile, O_RDWR|O_CREAT, 0644);
+	int fd =
+#ifdef _WIN32
+	_open(pidfile, O_RDWR | O_CREAT, 0644)
+#else
+	open(pidfile, O_RDWR | O_CREAT, 0644);
+#endif
+	;
+
 	if (fd == -1) {
 		fprintf(stderr, "Can't create pidfile [%s].\n", pidfile);
 		return 0;
@@ -83,7 +93,11 @@ write_pid(const char *pidfile) {
 	pid = getpid();
 	if (!fprintf(f,"%d\n", pid)) {
 		fprintf(stderr, "Can't write pid.\n");
+#ifdef _WIN32
+		_close(fd);
+#else
 		close(fd);
+#endif
 		return 0;
 	}
 	fflush(f);
@@ -93,25 +107,53 @@ write_pid(const char *pidfile) {
 
 static int
 redirect_fds() {
-	int nfd = open("/dev/null", O_RDWR);
+	int nfd =
+#ifdef _WIN32
+		_open("/dev/null", O_RDWR)
+#else
+		open("/dev/null", O_RDWR)
+#endif
+		;
 	if (nfd == -1) {
 		perror("Unable to open /dev/null: ");
 		return -1;
 	}
-	if (dup2(nfd, 0) < 0) {
+	if (
+#ifdef _WIN32
+		_dup2(nfd, 0)
+#else
+		dup2(nfd, 0) 
+#endif
+		< 0) {
 		perror("Unable to dup2 stdin(0): ");
 		return -1;
 	}
-	if (dup2(nfd, 1) < 0) {
+	if (
+#ifdef _WIN32
+		_dup2(nfd, 1)
+#else
+		dup2(nfd, 1)
+#endif
+		< 0) {
 		perror("Unable to dup2 stdout(1): ");
 		return -1;
 	}
-	if (dup2(nfd, 2) < 0) {
+	if (
+#ifdef _WIN32
+		_dup2(nfd, 2)
+#else
+		dup2(nfd, 2)
+#endif
+		< 0) {
 		perror("Unable to dup2 stderr(2): ");
 		return -1;
 	}
 
+#ifdef _WIN32
+	_close(nfd);
+#else
 	close(nfd);
+#endif
 
 	return 0;
 }

@@ -113,7 +113,7 @@ stringindex(struct context *ctx, const char * str, size_t sz) {
 		lua_pushinteger(L, index);
 		lua_rawset(L, 1);
 	} else {
-		index = lua_tointeger(L, -1);
+		index = (int)lua_tointeger(L, -1);
 		lua_pop(L, 2);
 	}
 	return index;
@@ -193,7 +193,7 @@ ishashkey(struct context * ctx, lua_State *L, int index, int *key, uint32_t *key
 	int sizearray = ctx->tbl->sizearray;
 	int kt = lua_type(L, index);
 	if (kt == LUA_TNUMBER) {
-		*key = lua_tointeger(L, index);
+		*key = (int)lua_tointeger(L, index);
 		if (*key > 0 && *key <= sizearray) {
 			return 0;
 		}
@@ -259,7 +259,7 @@ fillcolliding(lua_State *L, struct context *ctx) {
 				}
 				assert(n);
 				n->next = mainpos->next;
-				mainpos->next = n - tbl->hash;
+				mainpos->next = (int)(n - tbl->hash);
 				mainpos->nocolliding = 0;
 				n->key = key;
 				n->keytype = keytype;
@@ -282,7 +282,7 @@ convtable(lua_State *L) {
 
 	tbl->L = ctx->L;
 
-	int sizearray = lua_rawlen(L, 1);
+	int sizearray = (int)lua_rawlen(L, 1);
 	if (sizearray) {
 		tbl->arraytype = (uint8_t *)malloc(sizearray * sizeof(uint8_t));
 		if (tbl->arraytype == NULL) {
@@ -391,7 +391,7 @@ convert_stringmap(struct context *ctx, struct table *tbl) {
 	lua_pushnil(L);
 	// ... stringmap nil
 	while (lua_next(L, -2) != 0) {
-		int idx = lua_tointeger(L, -1);
+		int idx = (int)lua_tointeger(L, -1);
 		lua_pop(L, 1);
 		lua_pushvalue(L, -1);
 		lua_replace(L, idx);
@@ -635,7 +635,7 @@ lnextkey(lua_State *L) {
 	struct node *n = lookup_key(tbl, keyhash, key, keytype, str, sz);
 	if (n) {
 		++n;
-		int index = n-tbl->hash;
+		int index = (int)(n-tbl->hash);
 		if (index == tbl->sizehash) {
 			return 0;
 		}

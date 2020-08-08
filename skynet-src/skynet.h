@@ -5,11 +5,19 @@
 
 #include <stddef.h>
 #include <stdint.h>
+typedef int pid_t;
 
 #ifdef _WIN32
 int usleep(unsigned int __useconds);
 unsigned int sleep(unsigned int seconds);
 int clock_gettime(unsigned int clk_id, struct timespec* tv);
+char* strsep(char** stringp, const char* delim);
+void* dlsym(void* handle, const char* symbol);
+char* dlerror(void);
+int dlclose(void* handle);
+void* dlopen(const char* filename, int flags);
+void srandom(unsigned int seed);
+long int random(void);
 
 #define CLOCK_MONOTONIC 1
 #define CLOCK_REALTIME  0

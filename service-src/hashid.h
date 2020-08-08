@@ -55,7 +55,7 @@ hashid_lookup(struct hashid *hi, int id) {
 	struct hashid_node * c = hi->hash[h];
 	while(c) {
 		if (c->id == id)
-			return c - hi->id;
+			return (int)(c - hi->id);
 		c = c->next;
 	}
 	return -1;
@@ -85,7 +85,7 @@ _clear:
 	c->id = -1;
 	c->next = NULL;
 	--hi->count;
-	return c - hi->id;
+	return (int)(c - hi->id);
 }
 
 static int
@@ -109,7 +109,7 @@ hashid_insert(struct hashid * hi, int id) {
 	}
 	hi->hash[h] = c;
 	
-	return c - hi->id;
+	return (int)(c - hi->id);
 }
 
 static inline int

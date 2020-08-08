@@ -7,7 +7,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
-#include "lua_defs.h"
+extern int gethostname(char* name, size_t len);
+int getpid();
 #endif
 
 #include "skynet.h"
@@ -599,7 +600,6 @@ lisname(lua_State *L) {
 	}
 	return 0;
 }
-extern int gethostname(char* name, size_t len);
 static int
 lnodename(lua_State *L) {
 	pid_t pid = getpid();

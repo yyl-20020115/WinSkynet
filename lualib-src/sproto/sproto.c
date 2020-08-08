@@ -97,7 +97,7 @@ pool_alloc(struct pool *p, size_t sz) {
 	}
 	if (sz + p->current_used <= CHUNK_SIZE) {
 		void * ret = (char *)(p->current+1) + p->current_used;
-		p->current_used += sz;
+		p->current_used +=(int) sz;
 		return ret;
 	}
 
@@ -106,7 +106,7 @@ pool_alloc(struct pool *p, size_t sz) {
 	} else {
 		void * ret = pool_newchunk(p, CHUNK_SIZE);
 		p->current = p->header;
-		p->current_used = sz;
+		p->current_used = (int)sz;
 		return ret;
 	}
 }
@@ -907,7 +907,7 @@ encode_array(sproto_callback cb, struct sproto_arg *args, uint8_t *data, int siz
 		}
 		break;
 	}
-	sz = buffer - (data + SIZEOF_LENGTH);
+	sz = (int)(buffer - (data + SIZEOF_LENGTH));
 	return fill_size(data, sz);
 }
 
@@ -1012,7 +1012,7 @@ sproto_encode(const struct sproto_type *st, void * buffer, int size, sproto_call
 	header[0] = index & 0xff;
 	header[1] = (index >> 8) & 0xff;
 
-	datasz = data - (header + header_sz);
+	datasz = (int)(data - (header + header_sz));
 	data = header + header_sz;
 	if (index != st->maxn) {
 		memmove(header + SIZEOF_HEADER + index * SIZEOF_FIELD, data, datasz);
@@ -1030,7 +1030,7 @@ decode_array_object(sproto_callback cb, struct sproto_arg *args, uint8_t * strea
 		hsz = todword(stream);
 		stream += SIZEOF_LENGTH;
 		sz -= SIZEOF_LENGTH;
-		if (hsz > sz)
+		if ((int)hsz > sz)
 			return -1;
 		args->index = index;
 		args->value = stream;
@@ -1076,7 +1076,7 @@ decode_array(sproto_callback cb, struct sproto_arg *args, uint8_t * stream) {
 		if (len == SIZEOF_INT32) {
 			if (sz % SIZEOF_INT32 != 0)
 				return -1;
-			for (i=0;i<sz/SIZEOF_INT32;i++) {
+			for (i=0;i< (int)sz/SIZEOF_INT32;i++) {
 				uint64_t value = expand64(todword(stream + i*SIZEOF_INT32));
 				args->index = i+1;
 				args->value = &value;
@@ -1086,7 +1086,7 @@ decode_array(sproto_callback cb, struct sproto_arg *args, uint8_t * stream) {
 		} else if (len == SIZEOF_INT64) {
 			if (sz % SIZEOF_INT64 != 0)
 				return -1;
-			for (i=0;i<sz/SIZEOF_INT64;i++) {
+			for (i=0;i< (int)sz/SIZEOF_INT64;i++) {
 				uint64_t low = todword(stream + i*SIZEOF_INT64);
 				uint64_t hi = todword(stream + i*SIZEOF_INT64 + SIZEOF_INT32);
 				uint64_t value = low | hi << 32;
@@ -1101,7 +1101,7 @@ decode_array(sproto_callback cb, struct sproto_arg *args, uint8_t * stream) {
 		break;
 	}
 	case SPROTO_TBOOLEAN:
-		for (i=0;i<sz;i++) {
+		for (i=0;i< (int)sz;i++) {
 			uint64_t value = stream[i];
 			args->index = i+1;
 			args->value = &value;
@@ -1158,7 +1158,7 @@ sproto_decode(const struct sproto_type *st, const void * data, int size, sproto_
 			if (size < SIZEOF_LENGTH)
 				return -1;
 			sz = todword(datastream);
-			if (size < sz + SIZEOF_LENGTH)
+			if (size < (int)sz + SIZEOF_LENGTH)
 				return -1;
 			datastream += sz+SIZEOF_LENGTH;
 			size -= sz+SIZEOF_LENGTH;

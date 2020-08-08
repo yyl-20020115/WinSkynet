@@ -240,12 +240,12 @@ send_message(lua_State *L, int source, int idx_type) {
 		dest_string = get_dest_string(L, 1);
 	}
 
-	int type = luaL_checkinteger(L, idx_type+0);
+	int type = (int)luaL_checkinteger(L, idx_type+0);
 	int session = 0;
 	if (lua_isnil(L,idx_type+1)) {
 		type |= PTYPE_TAG_ALLOCSESSION;
 	} else {
-		session = luaL_checkinteger(L,idx_type+1);
+		session = (int)luaL_checkinteger(L,idx_type+1);
 	}
 
 	int mtype = lua_type(L,idx_type+2);
@@ -265,7 +265,7 @@ send_message(lua_State *L, int source, int idx_type) {
 	}
 	case LUA_TLIGHTUSERDATA: {
 		void * msg = lua_touserdata(L,idx_type+2);
-		int size = luaL_checkinteger(L,idx_type+3);
+		int size = (int)luaL_checkinteger(L,idx_type+3);
 		if (dest_string) {
 			session = skynet_sendname(context, source, dest_string, type | PTYPE_TAG_DONTCOPY, session, msg, size);
 		} else {
@@ -351,7 +351,7 @@ ltostring(lua_State *L) {
 		return 0;
 	}
 	char * msg = lua_touserdata(L,1);
-	int sz = luaL_checkinteger(L,2);
+	int sz = (int)luaL_checkinteger(L,2);
 	lua_pushlstring(L,msg,sz);
 	return 1;
 }
@@ -372,7 +372,7 @@ static int
 lpackstring(lua_State *L) {
 	luaseri_pack(L);
 	char * str = (char *)lua_touserdata(L, -2);
-	int sz = lua_tointeger(L, -1);
+	int sz = (int)lua_tointeger(L, -1);
 	lua_pushlstring(L, str, sz);
 	skynet_free(str);
 	return 1;
@@ -434,9 +434,9 @@ ltrace(lua_State *L) {
 		int level;
 		if (lua_isthread(L, 3)) {
 			co = lua_tothread (L, 3);
-			level = luaL_optinteger(L, 4, 1);
+			level = (int)luaL_optinteger(L, 4, 1);
 		} else {
-			level = luaL_optinteger(L, 3, 1);
+			level = (int)luaL_optinteger(L, 3, 1);
 		}
 		struct source_info si[MAX_LEVEL];
 		lua_Debug d;

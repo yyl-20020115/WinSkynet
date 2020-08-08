@@ -66,7 +66,7 @@ static Capture *doublecap (lua_State *L, Capture *cap, int captop,
 static Stack *doublestack (lua_State *L, Stack **stacklimit, int ptop) {
   Stack *stack = getstackbase(L, ptop);
   Stack *newstack;
-  int n = *stacklimit - stack;  /* current stack size */
+  int n = (int)(*stacklimit - stack);  /* current stack size */
   int max, newn;
   lua_getfield(L, LUA_REGISTRYINDEX, MAXSTACKIDX);
   max = (int)lua_tointeger(L, -1);  /* maximum allowed size */
@@ -301,7 +301,7 @@ const char *match (lua_State *L, const char *o, const char *s, const char *e,
         captop -= n;  /* remove nested captures */
         ndyncap -= rem;  /* update number of dynamic captures */
         fr -= rem;  /* 'rem' items were popped from Lua stack */
-        res = resdyncaptures(L, fr, s - o, e - o);  /* get result */
+        res = resdyncaptures(L, fr, (int)(s - o), (int)(e - o));  /* get result */
         if (res == -1)  /* fail? */
           goto fail;
         s = o + res;  /* else update current position */
@@ -326,7 +326,7 @@ const char *match (lua_State *L, const char *o, const char *s, const char *e,
         /* if possible, turn capture into a full capture */
         if (capture[captop - 1].siz == 0 &&
             s1 - capture[captop - 1].s < UCHAR_MAX) {
-          capture[captop - 1].siz = s1 - capture[captop - 1].s + 1;
+          capture[captop - 1].siz =(byte)( s1 - capture[captop - 1].s + 1);
           p++;
           continue;
         }

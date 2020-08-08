@@ -302,7 +302,7 @@ _cb(struct skynet_context * ctx, void * ud, int type, int session, uint32_t sour
 		int id = hashid_lookup(&g->hash, uid);
 		if (id>=0) {
 			// don't send id (last 4 bytes)
-			skynet_socket_send(ctx, uid, (void*)msg, sz-4);
+			skynet_socket_send(ctx, uid, (void*)msg, (int)sz-4);
 			// return 1 means don't free msg
 			return 1;
 		} else {
@@ -353,7 +353,7 @@ gate_init(struct gate *g , struct skynet_context * ctx, char * parm) {
 		return 1;
 	int r = 0;
 	int max = 0;
-	int sz = strlen(parm)+1;
+	int sz = (int)strlen(parm)+1;
 	char* watchdog = (char*) skynet_malloc(sz);
 	char* binding = (char*)skynet_malloc(sz); ;
 	int client_tag = 0;

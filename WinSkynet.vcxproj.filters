@@ -273,9 +273,6 @@
     <ClInclude Include="3rd\lua-md5\md5.h">
       <Filter>3rd\lua-md5</Filter>
     </ClInclude>
-    <ClInclude Include="3rd\lua\lua_defs.h">
-      <Filter>lualib-src</Filter>
-    </ClInclude>
     <ClInclude Include="skynet-src\skynet_harbor.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
@@ -286,6 +283,15 @@
       <Filter>skynet-src</Filter>
     </ClInclude>
     <ClInclude Include="skynet-src\socket_poll_win32.h">
+      <Filter>skynet-src</Filter>
+    </ClInclude>
+    <ClInclude Include="skynet-src\socket_poll.h">
+      <Filter>skynet-src</Filter>
+    </ClInclude>
+    <ClInclude Include="skynet-src\socket_epoll.h">
+      <Filter>skynet-src</Filter>
+    </ClInclude>
+    <ClInclude Include="skynet-src\socket_kqueue.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
   </ItemGroup>
@@ -535,9 +541,6 @@
     </ClCompile>
     <ClCompile Include="3rd\lua-md5\md5lib.c">
       <Filter>3rd\lua-md5</Filter>
-    </ClCompile>
-    <ClCompile Include="3rd\lua\lua_defs.cpp">
-      <Filter>lualib-src</Filter>
     </ClCompile>
     <ClCompile Include="win_implementations.c">
       <Filter>skynet-src</Filter>

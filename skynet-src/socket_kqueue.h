@@ -9,7 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-bool 
+static bool 
 sp_invalid(poll_fd kfd) {
 	return kfd == -1;
 }
@@ -19,12 +19,12 @@ sp_create() {
 	return kqueue();
 }
 
-void
+static void
 sp_release(poll_fd kfd) {
 	close(kfd);
 }
 
-void 
+static void
 sp_del(poll_fd kfd, int sock) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_READ, EV_DELETE, 0, 0, NULL);
@@ -33,7 +33,7 @@ sp_del(poll_fd kfd, int sock) {
 	kevent(kfd, &ke, 1, NULL, 0, NULL);
 }
 
-int 
+static int
 sp_add(poll_fd kfd, int sock, void *ud) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_READ, EV_ADD, 0, 0, ud);
@@ -54,7 +54,7 @@ sp_add(poll_fd kfd, int sock, void *ud) {
 	return 0;
 }
 
-void 
+static void
 sp_write(poll_fd kfd, int sock, void *ud, bool enable) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_WRITE, enable ? EV_ENABLE : EV_DISABLE, 0, 0, ud);
@@ -63,7 +63,7 @@ sp_write(poll_fd kfd, int sock, void *ud, bool enable) {
 	}
 }
 
-int 
+static int
 sp_wait(poll_fd kfd, struct event *e, int max) {
 	struct kevent ev[max];
 	int n = kevent(kfd, NULL, 0, ev, max, NULL);
@@ -82,7 +82,7 @@ sp_wait(poll_fd kfd, struct event *e, int max) {
 	return n;
 }
 
-void
+static void
 sp_nonblocking(int fd) {
 	int flag = fcntl(fd, F_GETFL, 0);
 	if ( -1 == flag ) {

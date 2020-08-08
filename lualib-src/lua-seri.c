@@ -216,7 +216,7 @@ static void pack_one(lua_State *L, struct write_block *b, int index, int depth);
 
 static int
 wb_table_array(lua_State *L, struct write_block * wb, int index, int depth) {
-	int array_size = lua_rawlen(L,index);
+	int array_size = (int)lua_rawlen(L,index);
 	if (array_size >= MAX_COOKIE-1) {
 		uint8_t n = COMBINE_TYPE(TYPE_TABLE, MAX_COOKIE-1);
 		wb_push(wb, &n, 1);
@@ -444,7 +444,7 @@ unpack_table(lua_State *L, struct read_block *rb, int array_size) {
 		if ((type & 7) != TYPE_NUMBER || cookie == TYPE_NUMBER_REAL) {
 			invalid_stream(L,rb);
 		}
-		array_size = get_integer(L,rb,cookie);
+		array_size = (int)get_integer(L,rb,cookie);
 	}
 	luaL_checkstack(L,LUA_MINSTACK,NULL);
 	lua_createtable(L,array_size,0);
@@ -565,7 +565,7 @@ luaseri_unpack(lua_State *L) {
 		len = (int)sz;
 	} else {
 		buffer = lua_touserdata(L,1);
-		len = luaL_checkinteger(L,2);
+		len = (int)luaL_checkinteger(L,2);
 	}
 	if (len == 0) {
 		return 0;

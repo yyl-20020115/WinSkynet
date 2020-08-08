@@ -10,7 +10,9 @@
 #include <mach/task.h>
 #include <mach/mach.h>
 #endif
-
+#ifdef _WIN32
+int clock_gettime(unsigned int clk_id, struct timespec* tv);
+#endif
 #define NANOSEC 1000000000
 #define MICROSEC 1000000
 

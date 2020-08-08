@@ -337,7 +337,7 @@ pushstring(lua_State *L, const char * msg, int size) {
 static int
 lfilter(lua_State *L) {
 	struct skynet_socket_message *message = lua_touserdata(L,2);
-	int size = luaL_checkinteger(L,3);
+	int size = (int)luaL_checkinteger(L,3);
 	char * buffer = message->buffer;
 	if (buffer == NULL) {
 		buffer = (char *)(message+1);
@@ -442,7 +442,7 @@ lpack(lua_State *L) {
 	}
 
 	uint8_t * buffer = skynet_malloc(len + 2);
-	write_size(buffer, len);
+	write_size(buffer, (int)len);
 	memcpy(buffer+2, ptr, len);
 
 	lua_pushlightuserdata(L, buffer);
@@ -454,7 +454,7 @@ lpack(lua_State *L) {
 static int
 ltostring(lua_State *L) {
 	void * ptr = lua_touserdata(L, 1);
-	int size = luaL_checkinteger(L, 2);
+	int size = (int)luaL_checkinteger(L, 2);
 	if (ptr == NULL) {
 		lua_pushliteral(L, "");
 	} else {

@@ -97,6 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +114,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +131,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +148,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,7 +190,6 @@
     <ClInclude Include="3rd\lua\lua.hpp" />
     <ClInclude Include="3rd\lua\luaconf.h" />
     <ClInclude Include="3rd\lua\lualib.h" />
-    <ClInclude Include="3rd\lua\lua_defs.h" />
     <ClInclude Include="3rd\lua\lundump.h" />
     <ClInclude Include="3rd\lua\lvm.h" />
     <ClInclude Include="3rd\lua\lzio.h" />
@@ -218,7 +221,10 @@
     <ClCompile Include="skynet-src\socket_epoll_win32.c">
       <FileType>CppHeader</FileType>
     </ClCompile>
+    <ClInclude Include="skynet-src\socket_epoll.h" />
     <ClInclude Include="skynet-src\socket_info.h" />
+    <ClInclude Include="skynet-src\socket_kqueue.h" />
+    <ClInclude Include="skynet-src\socket_poll.h" />
     <ClInclude Include="skynet-src\socket_poll_win32.h" />
     <ClInclude Include="skynet-src\socket_server.h" />
     <ClInclude Include="skynet-src\spinlock.h" />
@@ -264,7 +270,6 @@
     <ClCompile Include="3rd\lua\ltable.c" />
     <ClCompile Include="3rd\lua\ltablib.c" />
     <ClCompile Include="3rd\lua\ltm.c" />
-    <ClCompile Include="3rd\lua\lua_defs.cpp" />
     <ClCompile Include="3rd\lua\lundump.c" />
     <ClCompile Include="3rd\lua\lutf8lib.c" />
     <ClCompile Include="3rd\lua\lvm.c" />

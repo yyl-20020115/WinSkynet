@@ -9,15 +9,12 @@
 bool sp_invalid(poll_fd efd) {
 	return efd == INVALID_HANDLE_VALUE;
 }
-
 poll_fd sp_create() {
 	return epoll_create(1024);
 }
-
 void sp_release(poll_fd efd) {
 	epoll_close(efd);
 }
-
 int sp_add(poll_fd efd, int sock, void *ud) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
@@ -27,18 +24,15 @@ int sp_add(poll_fd efd, int sock, void *ud) {
 	}
 	return 0;
 }
-
 void sp_del(poll_fd efd, int sock) {
 	epoll_ctl(efd, EPOLL_CTL_DEL, sock , NULL);
 }
-
 void sp_write(poll_fd efd, int sock, void *ud, bool enable) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN | (enable ? EPOLLOUT : 0);
 	ev.data.ptr = ud;
 	epoll_ctl(efd, EPOLL_CTL_MOD, sock, &ev);
 }
-
 int sp_wait(poll_fd efd, struct event *e, int max) {
 	struct epoll_event* ev = (struct epoll_event*)malloc(sizeof(struct epoll_event*)*max);
 	int n = epoll_wait(efd , ev, max, -1);
@@ -76,7 +70,6 @@ int set_blocking_mode_epoll(const int socket, int is_blocking)
 
 	return ret;
 }
-
 void sp_nonblocking(int sock) {
 	set_blocking_mode_epoll(sock, FALSE);
 }

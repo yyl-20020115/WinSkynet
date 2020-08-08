@@ -229,7 +229,7 @@ pushvalue(lua_State *L, const void *v, int type, const struct document * doc) {
 static void
 copytable(lua_State *L, int tbl, struct proxy *p) {
 	const struct document * doc = (const struct document *)p->data; 
-	if (p->index < 0 || p->index >= doc->n) {
+	if (p->index < 0 || p->index >= (int)doc->n) {
 		luaL_error(L, "Invalid proxy (index = %d, total = %d)", p->index, (int)doc->n);
 	}
 	const struct table * t = gettable(doc, p->index);
@@ -238,11 +238,11 @@ copytable(lua_State *L, int tbl, struct proxy *p) {
 	}
 	const uint32_t * v = (const uint32_t *)((const char *)t + sizeof(uint32_t) + sizeof(uint32_t) + ((t->array + t->dict + 3) & ~3));
 	int i;
-	for (i=0;i<t->array;i++) {
+	for (i=0;i< (int)t->array;i++) {
 		pushvalue(L, v++, t->type[i], doc);
 		lua_rawseti(L, tbl, i+1);
 	}
-	for (i=0;i<t->dict;i++) {
+	for (i=0;i< (int)t->dict;i++) {
 		pushvalue(L, v++, VALUE_STRING, doc);
 		pushvalue(L, v++, t->type[t->array+i], doc);
 		lua_rawset(L, tbl);

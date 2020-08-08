@@ -116,7 +116,7 @@ _bio_read(lua_State* L, struct tls_context* tls_p) {
     char outbuff[4096];
     int all_read = 0;
     int read = 0;
-    int pending = BIO_ctrl_pending(tls_p->out_bio);
+    int pending = (int)BIO_ctrl_pending(tls_p->out_bio);
     if(pending >0) {
         luaL_Buffer b;
         luaL_buffinit(L, &b);
@@ -131,7 +131,7 @@ _bio_read(lua_State* L, struct tls_context* tls_p) {
             }else {
                 luaL_error(L, "invalid BIO_read:%d", read);
             }
-            pending = BIO_ctrl_pending(tls_p->out_bio);
+            pending = (int)BIO_ctrl_pending(tls_p->out_bio);
         }
         if(all_read>0) {
             luaL_pushresult(&b);
@@ -146,7 +146,7 @@ _bio_write(lua_State* L, struct tls_context* tls_p, const char* s, size_t len) {
     char* p = (char*)s;
     size_t sz = len;
     while(sz > 0) {
-        int written = BIO_write(tls_p->in_bio, p, sz);
+        int written = (int)BIO_write(tls_p->in_bio, p, (int)sz);
         // printf("BIO_write written:%d sz:%zu\n", written, sz);
         if(written <= 0) {
             luaL_error(L, "BIO_write error:%d", written);
@@ -242,7 +242,7 @@ _ltls_context_write(lua_State* L) {
     char* unencrypted_data = (char*)lua_tolstring(L, 2, &slen);
 
     while(slen > 0) {
-        int written = SSL_write(tls_p->ssl, unencrypted_data,  slen);
+        int written = SSL_write(tls_p->ssl, unencrypted_data, (int)slen);
         if(written <= 0) {
             int err = SSL_get_error(tls_p->ssl, written);
             luaL_error(L, "SSL_write error:%d", err);

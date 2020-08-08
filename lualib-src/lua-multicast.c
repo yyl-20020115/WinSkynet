@@ -71,7 +71,7 @@ mc_packremote(lua_State *L) {
 static int
 mc_unpacklocal(lua_State *L) {
 	struct mc_package ** pack = lua_touserdata(L,1);
-	int sz = luaL_checkinteger(L,2);
+	int sz = (int)luaL_checkinteger(L,2);
 	if (sz != sizeof(pack)) {
 		return luaL_error(L, "Invalid multicast package size %d", sz);
 	}
@@ -90,7 +90,7 @@ mc_unpacklocal(lua_State *L) {
 static int
 mc_bindrefer(lua_State *L) {
 	struct mc_package ** pack = lua_touserdata(L,1);
-	int ref = luaL_checkinteger(L,2);
+	int ref = (int)luaL_checkinteger(L,2);
 	if ((*pack)->reference != 0) {
 		return luaL_error(L, "Can't bind a multicast package more than once");
 	}

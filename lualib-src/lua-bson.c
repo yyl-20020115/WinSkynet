@@ -7,7 +7,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
-#include "lua_defs.h"
+int getpid();
+int gethostname(char* name, size_t len);
 #endif
 
 #include <stdint.h>
@@ -235,7 +236,7 @@ utf8_copy(const char *s, char *d, size_t limit) {
 
 static void
 write_string(struct bson *b, lua_State *L, const char *key, size_t sz) {
-	bson_reserve(b,sz+1);
+	bson_reserve(b,(int)sz+1);
 	char *dst = (char *)(b->ptr + b->size);
 	const char *src = key;
 	size_t n = sz;
@@ -249,7 +250,7 @@ write_string(struct bson *b, lua_State *L, const char *key, size_t sz) {
 		n -= c;
 	}
 	b->ptr[b->size+sz] = '\0';
-	b->size+=sz+1;
+	b->size+=(int)sz+1;
 }
 
 static inline int
@@ -301,7 +302,7 @@ append_number(struct bson *bs, lua_State *L, const char *key, size_t sz) {
 		int64_t i = lua_tointeger(L, -1);
 		if (is_32bit(i)) {
 			append_key(bs, L, BSON_INT32, key, sz);
-			write_int32(bs, i);
+			write_int32(bs, (int)i);
 		} else {
 			append_key(bs, L, BSON_INT64, key, sz);
 			write_int64(bs, i);
@@ -318,10 +319,10 @@ static void append_table(struct bson *bs, lua_State *L, const char *key, size_t 
 static void
 write_binary(struct bson *b, const void * buffer, size_t sz) {
 	int length = reserve_length(b);
-	bson_reserve(b,sz);
+	bson_reserve(b,(int)sz);
 	memcpy(b->ptr + b->size, buffer, sz);	// include sub type
-	b->size+=sz;
-	write_length(b, sz-1, length);	// not include sub type
+	b->size+= (int)sz;
+	write_length(b, (int)sz-1, length);	// not include sub type
 }
 
 static void
@@ -359,9 +360,9 @@ append_one(struct bson *bs, lua_State *L, const char *key, size_t sz, int depth)
 			case BSON_DBPOINTER:
 			case BSON_SYMBOL:
 			case BSON_CODEWS:
-				bson_reserve(bs,len-2);
+				bson_reserve(bs, (int)len-2);
 				memcpy(bs->ptr + bs->size, str+2, len-2);
-				bs->size += len-2;
+				bs->size += (int)len-2;
 				break;
 			case BSON_DATE: {
 				if (len != 2+4) {
@@ -408,7 +409,7 @@ append_one(struct bson *bs, lua_State *L, const char *key, size_t sz, int depth)
 			append_key(bs, L, BSON_STRING, key, sz);
 			int off = reserve_length(bs);
 			write_string(bs, L, str, len);
-			write_length(bs, len+1, off);		
+			write_length(bs, (int)len+1, off);
 		}
 		break;
 	}
@@ -442,7 +443,7 @@ pack_array(lua_State *L, struct bson *b, int depth, size_t len) {
 	size_t i;
 	for (i=1;i<=len;i++) {
 		char numberkey[32];
-		size_t sz = bson_numstr(numberkey, i - 1);
+		size_t sz = bson_numstr(numberkey, (int)i - 1);
 		const char * key = numberkey;
 		lua_geti(L, -1, i);
 		append_one(b, L, key, sz, depth);
@@ -657,7 +658,7 @@ unpack_dict(lua_State *L, struct bson_reader *br, bool array) {
 			break;
 		case BSON_DATE: {
 			int64_t date = read_int64(L, &t);
-			uint32_t v = date / 1000;
+			uint32_t v = (int)(date / 1000);
 			make_object(L, BSON_DATE, &v, 4);
 			break;
 		}
@@ -866,7 +867,7 @@ lreplace(lua_State *L) {
 	if (lua_rawget(L, -2) != LUA_TNUMBER) {
 		return luaL_error(L, "Can't replace key : %s", lua_tostring(L,2));
 	}
-	int id = lua_tointeger(L, -1);
+	int id = (int)lua_tointeger(L, -1);
 	int type = id & ((1<<(BSON_TYPE_SHIFT)) - 1);
 	int offset = id >> BSON_TYPE_SHIFT;
 	uint8_t * start = lua_touserdata(L,1);
@@ -887,7 +888,7 @@ lreplace(lua_State *L) {
 		if (!lua_isinteger(L, 3)) {
 			luaL_error(L, "%f must be a 32bit integer ", lua_tonumber(L, 3));
 		}
-		int32_t i = lua_tointeger(L,3);
+		int32_t i = (int)lua_tointeger(L,3);
 		write_int32(&b, i);
 		break;
 	}
@@ -1008,7 +1009,7 @@ lencode_order(lua_State *L) {
 
 static int
 ldate(lua_State *L) {
-	int d = luaL_checkinteger(L,1);
+	int d = (int)luaL_checkinteger(L,1);
 	luaL_Buffer b;
 	luaL_buffinit(L, &b);
 	luaL_addchar(&b, 0);
@@ -1021,7 +1022,7 @@ ldate(lua_State *L) {
 
 static int
 ltimestamp(lua_State *L) {
-	int d = luaL_checkinteger(L,1);
+	int d = (int)luaL_checkinteger(L,1);
 	luaL_Buffer b;
 	luaL_buffinit(L, &b);
 	luaL_addchar(&b, 0);
@@ -1226,9 +1227,13 @@ init_oid_header() {
 		// already init
 		return;
 	}
+#ifdef _WIN32
+	int pid = getpid();
+#else
 	pid_t pid = getpid();
+#endif
 	uint32_t h = 0;
-	char hostname[256];
+	char hostname[256] = { 0 };
 	if (gethostname(hostname, sizeof(hostname))==0) {
 		int i;
 		for (i=0;i<sizeof(hostname) && hostname[i];i++) {
@@ -1242,7 +1247,7 @@ init_oid_header() {
 	oid_header[3] = pid & 0xff;
 	oid_header[4] = (pid >> 8) & 0xff;
 	
-	uint32_t c = h ^ time(NULL) ^ (uintptr_t)&h;
+	uint32_t c = (unsigned int)(h ^ (time(NULL) ^ (uintptr_t)&h));
 	if (c == 0) {
 		c = 1;
 	}

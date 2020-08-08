@@ -141,7 +141,7 @@ lnewwriter(lua_State *L) {
 		memcpy(msg, tmp, sz);
 	}
 	struct boxstm * box = lua_newuserdata(L, sizeof(*box));
-	box->obj = stm_new(msg,sz);
+	box->obj = stm_new(msg, (int)sz);
 	lua_pushvalue(L, lua_upvalueindex(1));
 	lua_setmetatable(L, -2);
 
@@ -170,7 +170,7 @@ lupdate(lua_State *L) {
 		msg = skynet_malloc(sz);
 		memcpy(msg, tmp, sz);
 	}
-	stm_update(box->obj, msg, sz);
+	stm_update(box->obj, msg, (int)sz);
 
 	return 0;
 }

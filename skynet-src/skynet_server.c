@@ -429,8 +429,8 @@ cmd_query(struct skynet_context * context, const char * param) {
 
 static const char *
 cmd_name(struct skynet_context * context, const char * param) {
-	char ret = NULL;
-	int size = strlen(param);
+	char* ret = NULL;
+	int size = (int)strlen(param);
 	char* name = (char*)skynet_malloc(size+1);
 	char* handle = (char*)skynet_malloc(size+1);
 	memset(name, 0, size + 1);
@@ -444,7 +444,7 @@ cmd_name(struct skynet_context * context, const char * param) {
 		goto my_exit;
 	}
 	if (name[0] == '.') {			
-		ret=skynet_handle_namehandle(handle_id, name + 1);
+		ret=(char*)skynet_handle_namehandle(handle_id, name + 1);
 		goto my_exit;
 	} else {
 		skynet_error(context, "Can't set global name %s in C", name);
@@ -601,10 +601,21 @@ cmd_logon(struct skynet_context * context, const char * param) {
 		return NULL;
 	FILE *f = NULL;
 	FILE * lastf = ctx->logfile;
+
 	if (lastf == NULL) {
 		f = skynet_log_open(context, handle);
 		if (f) {
-			if (!ATOM_CAS_POINTER(&ctx->logfile, NULL, f)) {
+			if (
+#ifdef _WIN32
+#ifdef _WIN64
+				!ATOM_CAS_POINTER64(&ctx->logfile, NULL, f)
+#else
+				!ATOM_CAS_POINTER(&ctx->logfile, NULL, f)
+#endif
+#else
+				!ATOM_CAS_POINTER(&ctx->logfile, NULL, f)
+#endif
+				) {
 				// logfile opens in other thread, close this one.
 				fclose(f);
 			}
@@ -625,7 +636,17 @@ cmd_logoff(struct skynet_context * context, const char * param) {
 	FILE * f = ctx->logfile;
 	if (f) {
 		// logfile may close in other thread
-		if (ATOM_CAS_POINTER(&ctx->logfile, f, NULL)) {
+		if (
+#ifdef _WIN32
+#ifdef _WIN64
+			ATOM_CAS_POINTER64(&(long long) ctx->logfile, f, NULL)
+#else
+			ATOM_CAS_POINTER(&ctx->logfile, f, NULL)
+#endif
+#else
+			ATOM_CAS_POINTER(&ctx->logfile, f, NULL)
+#endif
+			) {
 			skynet_log_close(context, f, handle);
 		}
 	}

@@ -274,7 +274,7 @@ skynet_updatetime(void) {
 		TI->current_point = cp;
 		TI->current += diff;
 		int i;
-		for (i=0;i<diff;i++) {
+		for (i=0;i< (int)diff;i++) {
 			timer_update(TI);
 		}
 	}

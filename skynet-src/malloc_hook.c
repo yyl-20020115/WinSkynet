@@ -58,7 +58,15 @@ get_allocated_field(uint32_t handle) {
 			return 0;
 		}
 		if (old_alloc < 0) {
+#ifdef _WIN32
+#ifdef _WIN64
+			ATOM_CAS_POINTER64(&data->allocated, old_alloc, 0);
+#else
 			ATOM_CAS(&data->allocated, old_alloc, 0);
+#endif
+#else
+			ATOM_CAS(&data->allocated, old_alloc, 0);
+#endif
 		}
 	}
 	if(data->handle != handle) {
@@ -69,21 +77,57 @@ get_allocated_field(uint32_t handle) {
 
 inline static void
 update_xmalloc_stat_alloc(uint32_t handle, size_t __n) {
+#ifdef _WIN32
+#ifdef _WIN64
+	ATOM_ADD64(&_used_memory, __n);
+	ATOM_INC64(&_memory_block);
+#else
 	ATOM_ADD(&_used_memory, __n);
 	ATOM_INC(&_memory_block);
+#endif
+#else
+	ATOM_ADD(&_used_memory, __n);
+	ATOM_INC(&_memory_block);
+#endif
 	ssize_t* allocated = get_allocated_field(handle);
 	if(allocated) {
+#ifdef _WIN32
+#ifdef _WIN64
+		ATOM_ADD64(allocated, __n);
+#else
 		ATOM_ADD(allocated, __n);
+#endif
+#else
+		ATOM_ADD(allocated, __n);
+#endif
 	}
 }
 
 inline static void
 update_xmalloc_stat_free(uint32_t handle, size_t __n) {
+#ifdef _WIN32
+#ifdef _WIN64
+	ATOM_SUB64(&_used_memory, __n);
+	ATOM_DEC64(&_memory_block);
+#else
 	ATOM_SUB(&_used_memory, __n);
 	ATOM_DEC(&_memory_block);
+#endif
+#else
+	ATOM_SUB(&_used_memory, __n);
+	ATOM_DEC(&_memory_block);
+#endif
 	ssize_t* allocated = get_allocated_field(handle);
 	if(allocated) {
+#ifdef _WIN32
+#ifdef _WIN64
+		ATOM_SUB64(allocated, __n);
+#else
 		ATOM_SUB(allocated, __n);
+#endif
+#else
+		ATOM_SUB(allocated, __n);
+#endif
 	}
 }
 
@@ -213,6 +257,7 @@ skynet_calloc(size_t nmemb,size_t size) {
 	if(!ptr) malloc_oom(size);
 	return fill_prefix(ptr);
 }
+void * je_memalign(size_t alignment, size_t size);
 
 void *
 skynet_memalign(size_t alignment, size_t size) {

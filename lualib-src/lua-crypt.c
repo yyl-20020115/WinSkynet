@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>
+#else
+long int random(void);
 #endif
 
 #define PADDING_MODE_ISO7816_4 0
@@ -468,18 +470,18 @@ ldesencode(lua_State *L) {
 	size_t textsz = 0;
 	const uint8_t * text = (const uint8_t *)luaL_checklstring(L, 2, &textsz);
 	size_t chunksz = (textsz + 8) & ~7;
-	int padding_mode = luaL_optinteger(L, 3, PADDING_MODE_ISO7816_4);
+	int padding_mode = (int)luaL_optinteger(L, 3, PADDING_MODE_ISO7816_4);
 	uint8_t tmp[SMALL_CHUNK];
 	uint8_t *buffer = tmp;
 	if (chunksz > SMALL_CHUNK) {
 		buffer = lua_newuserdata(L, chunksz);
 	}
 	int i;
-	for (i=0;i<(int)textsz-7;i+=8) {
+	for (i=0;i<(int)(textsz-7);i+=8) {
 		des_crypt(SK, text+i, buffer+i);
 	}
 	uint8_t tail[8];
-	add_padding(L, tail, text+i, textsz - i, padding_mode);
+	add_padding(L, tail, text+i, (int)(textsz - i), padding_mode);
 	des_crypt(SK, tail, buffer+i);
 	lua_pushlstring(L, (const char *)buffer, chunksz);
 
@@ -501,7 +503,7 @@ ldesdecode(lua_State *L) {
 	if ((textsz & 7) || textsz == 0) {
 		return luaL_error(L, "Invalid des crypt text length %d", (int)textsz);
 	}
-	int padding_mode = luaL_optinteger(L, 3, PADDING_MODE_ISO7816_4);
+	int padding_mode = (int)luaL_optinteger(L, 3, PADDING_MODE_ISO7816_4);
 	uint8_t tmp[SMALL_CHUNK];
 	uint8_t *buffer = tmp;
 	if (textsz > SMALL_CHUNK) {
@@ -896,7 +898,7 @@ lb64encode(lua_State *L) {
 	static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	size_t sz = 0;
 	const uint8_t * text = (const uint8_t *)luaL_checklstring(L, 1, &sz);
-	int encode_sz = (sz + 2)/3*4;
+	int encode_sz = (int)(sz + 2)/3*4;
 	char tmp[SMALL_CHUNK];
 	char *buffer = tmp;
 	if (encode_sz > SMALL_CHUNK) {
@@ -912,7 +914,7 @@ lb64encode(lua_State *L) {
 		buffer[j+3] = encoding[(v) & 0x3f];
 		j+=4;
 	}
-	int padding = sz-i;
+	int padding = (int)(sz-i);
 	uint32_t v;
 	switch(padding) {
 	case 1 :
@@ -951,7 +953,7 @@ static int
 lb64decode(lua_State *L) {
 	size_t sz = 0;
 	const uint8_t * text = (const uint8_t *)luaL_checklstring(L, 1, &sz);
-	int decode_sz = (sz+3)/4*3;
+	int decode_sz = (int)(sz+3)/4*3;
 	char tmp[SMALL_CHUNK];
 	char *buffer = tmp;
 	if (decode_sz > SMALL_CHUNK) {
@@ -1034,6 +1036,8 @@ lxor_str(lua_State *L) {
 int lsha1(lua_State *L);
 int lhmac_sha1(lua_State *L);
 
+void srandom(unsigned int seed);
+int getpid();
 
 LUAMOD_API int
 luaopen_skynet_crypt(lua_State *L) {
@@ -1042,7 +1046,7 @@ luaopen_skynet_crypt(lua_State *L) {
 	if (!init) {
 		// Don't need call srandom more than once.
 		init = 1 ;
-		srandom((random() << 8) ^ (time(NULL) << 16) ^ getpid());
+		srandom((random() << 8) ^ (unsigned int)(time(NULL) << 16) ^ getpid());
 	}
 	luaL_Reg l[] = {
 		{ "hashkey", lhashkey },

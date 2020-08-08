@@ -15,6 +15,8 @@
 #include <arpa/inet.h>
 #else
 #include <WinSock2.h>
+const char* inet_ntop(int af, const void* src,
+	char* dst, int size);
 #endif
 #include "skynet_socket.h"
 
@@ -39,7 +41,7 @@ struct socket_buffer {
 static int
 lfreepool(lua_State *L) {
 	struct buffer_node * pool = lua_touserdata(L, 1);
-	int sz = lua_rawlen(L,1) / sizeof(*pool);
+	int sz = (int)lua_rawlen(L,1) / sizeof(*pool);
 	int i;
 	for (i=0;i<sz;i++) {
 		struct buffer_node *node = &pool[i];
@@ -109,12 +111,12 @@ lpushbuffer(lua_State *L) {
 	}
 	int pool_index = 2;
 	luaL_checktype(L,pool_index,LUA_TTABLE);
-	int sz = luaL_checkinteger(L,4);
+	int sz = (int)luaL_checkinteger(L,4);
 	lua_rawgeti(L,pool_index,1);
 	struct buffer_node * free_node = lua_touserdata(L,-1);	// sb poolt msg size free_node
 	lua_pop(L,1);
 	if (free_node == NULL) {
-		int tsz = lua_rawlen(L,pool_index);
+		int tsz = (int)lua_rawlen(L,pool_index);
 		if (tsz == 0)
 			tsz++;
 		int size = 8;
@@ -239,7 +241,7 @@ lpopbuffer(lua_State *L) {
 		return luaL_error(L, "Need buffer object at param 1");
 	}
 	luaL_checktype(L,2,LUA_TTABLE);
-	int sz = luaL_checkinteger(L,3);
+	int sz = (int)luaL_checkinteger(L,3);
 	if (sb->size < sz || sz == 0) {
 		lua_pushnil(L);
 	} else {
@@ -340,12 +342,12 @@ lreadline(lua_State *L) {
 	int from = sb->offset;
 	int bytes = current->sz - from;
 	for (i=0;i<=sb->size - (int)seplen;i++) {
-		if (check_sep(current, from, sep, seplen)) {
+		if (check_sep(current, from, sep, (int)seplen)) {
 			if (check) {
 				lua_pushboolean(L,true);
 			} else {
-				pop_lstring(L, sb, i+seplen, seplen);
-				sb->size -= i+seplen;
+				pop_lstring(L, sb, i+ (int)seplen, (int)seplen);
+				sb->size -= i+ (int)seplen;
 			}
 			return 1;
 		}
@@ -384,7 +386,7 @@ lstr2p(lua_State *L) {
 static int
 lunpack(lua_State *L) {
 	struct skynet_socket_message *message = lua_touserdata(L,1);
-	int size = luaL_checkinteger(L,2);
+	int size = (int)luaL_checkinteger(L,2);
 
 	lua_pushinteger(L, message->type);
 	lua_pushinteger(L, message->id);
@@ -438,7 +440,7 @@ address_port(lua_State *L, char *tmp, const char * addr, int port_index, int *po
 		}
 	} else {
 		host = addr;
-		*port = luaL_optinteger(L,port_index, 0);
+		*port = (int)luaL_optinteger(L,port_index, 0);
 	}
 	return host;
 }
@@ -465,7 +467,7 @@ lconnect(lua_State *L) {
 
 static int
 lclose(lua_State *L) {
-	int id = luaL_checkinteger(L,1);
+	int id = (int)luaL_checkinteger(L,1);
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
 	skynet_socket_close(ctx, id);
 	return 0;
@@ -473,7 +475,7 @@ lclose(lua_State *L) {
 
 static int
 lshutdown(lua_State *L) {
-	int id = luaL_checkinteger(L,1);
+	int id = (int)luaL_checkinteger(L,1);
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
 	skynet_socket_shutdown(ctx, id);
 	return 0;
@@ -482,8 +484,8 @@ lshutdown(lua_State *L) {
 static int
 llisten(lua_State *L) {
 	const char * host = luaL_checkstring(L,1);
-	int port = luaL_checkinteger(L,2);
-	int backlog = luaL_optinteger(L,3,BACKLOG);
+	int port = (int)luaL_checkinteger(L,2);
+	int backlog = (int)luaL_optinteger(L,3,BACKLOG);
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
 	int id = skynet_socket_listen(ctx, host,port,backlog);
 	if (id < 0) {
@@ -548,7 +550,7 @@ get_buffer(lua_State *L, int index, struct socket_sendbuffer *buf) {
 	case LUA_TLIGHTUSERDATA: {
 		int sz = -1;
 		if (lua_isinteger(L, index+1)) {
-			sz = lua_tointeger(L,index+1);
+			sz = (int)lua_tointeger(L,index+1);
 		}
 		if (sz < 0) {
 			buf->type = SOCKET_BUFFER_OBJECT;
@@ -578,7 +580,7 @@ get_buffer(lua_State *L, int index, struct socket_sendbuffer *buf) {
 static int
 lsend(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	struct socket_sendbuffer buf;
 	buf.id = id;
 	get_buffer(L, 2, &buf);
@@ -590,7 +592,7 @@ lsend(lua_State *L) {
 static int
 lsendlow(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	struct socket_sendbuffer buf;
 	buf.id = id;
 	get_buffer(L, 2, &buf);
@@ -602,7 +604,7 @@ lsendlow(lua_State *L) {
 static int
 lbind(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int fd = luaL_checkinteger(L, 1);
+	int fd = (int)luaL_checkinteger(L, 1);
 	int id = skynet_socket_bind(ctx,fd);
 	lua_pushinteger(L,id);
 	return 1;
@@ -611,7 +613,7 @@ lbind(lua_State *L) {
 static int
 lstart(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	skynet_socket_start(ctx,id);
 	return 0;
 }
@@ -619,7 +621,7 @@ lstart(lua_State *L) {
 static int
 lnodelay(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	skynet_socket_nodelay(ctx,id);
 	return 0;
 }
@@ -648,7 +650,7 @@ ludp(lua_State *L) {
 static int
 ludp_connect(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	size_t sz = 0;
 	const char * addr = luaL_checklstring(L,2,&sz);
 	char* tmp = (char*)skynet_malloc(sz + 1);
@@ -669,7 +671,7 @@ ludp_connect(lua_State *L) {
 static int
 ludp_send(lua_State *L) {
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
-	int id = luaL_checkinteger(L, 1);
+	int id = (int)luaL_checkinteger(L, 1);
 	const char * address = luaL_checkstring(L, 2);
 	struct socket_sendbuffer buf;
 	buf.id = id;

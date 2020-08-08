@@ -18,27 +18,37 @@ int sigfillset(sigset_t* set)
     return 0;
 }
 #endif
-
 void* dlopen(const char* filename, int flags)
 {
-    //TODO:
-    return 0;
+    return LoadLibraryA(filename);
 }
-
 int dlclose(void* handle)
 {
-    //TODO:
+    CloseHandle(handle);
     return 0;
+}
+static char szBuf[256] = { 0 };
+static char* GetLastErrorMessage() {
+    LPVOID lpMsgBuf;
+    DWORD dw = GetLastError();
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&lpMsgBuf,
+        0, NULL);
+    memset(szBuf, 0, sizeof(szBuf));
+    strncpy(szBuf, lpMsgBuf, sizeof(szBuf) - 1);
+    LocalFree(lpMsgBuf);
+    return szBuf;
 }
 char* dlerror(void) {
-    //TODO:
-    return 0;
+    return GetLastErrorMessage();
 }
 void* dlsym(void* handle, const char* symbol) {
-    //TODO:
-    return 0;
+    return GetProcAddress((HMODULE)handle,symbol);
 }
-
 LARGE_INTEGER getFILETIMEoffset()
 {
     SYSTEMTIME s = { 0 };
@@ -58,27 +68,31 @@ LARGE_INTEGER getFILETIMEoffset()
     t.QuadPart |= f.dwLowDateTime;
     return (t);
 }
+pid_t getpid()
+{
+    return GetCurrentProcessId();
+}
 int clock_gettime(unsigned int clk_id, struct timespec* tv)
 {
-    LARGE_INTEGER           t;
-    FILETIME            f;
-    double                  microseconds;
-    static LARGE_INTEGER    offset;
-    static double           frequencyToMicroseconds;
+    LARGE_INTEGER t = { 0 };
+    FILETIME f = { 0 };
+    double                  microseconds = 0.0;
+    static LARGE_INTEGER    offset = { 0 };
+    static double           frequencyToMicroseconds = 0.0;
     static int              initialized = 0;
     static BOOL             usePerformanceCounter = 0;
 
     if (!initialized) {
-        LARGE_INTEGER performanceFrequency;
+        LARGE_INTEGER performanceFrequency = { 0 };
         initialized = 1;
         usePerformanceCounter = QueryPerformanceFrequency(&performanceFrequency);
         if (usePerformanceCounter) {
             QueryPerformanceCounter(&offset);
-            frequencyToMicroseconds = (double)performanceFrequency.QuadPart / 1000000.;
+            frequencyToMicroseconds = (double)performanceFrequency.QuadPart / 1000000.0;
         }
         else {
             offset = getFILETIMEoffset();
-            frequencyToMicroseconds = 10.;
+            frequencyToMicroseconds = 10.0;
         }
     }
     if (usePerformanceCounter) QueryPerformanceCounter(&t);
@@ -91,12 +105,11 @@ int clock_gettime(unsigned int clk_id, struct timespec* tv)
 
     t.QuadPart -= offset.QuadPart;
     microseconds = (double)t.QuadPart / frequencyToMicroseconds;
-    t.QuadPart = microseconds;
+    t.QuadPart = (LONGLONG)microseconds;
     tv->tv_sec = t.QuadPart / 1000000;
     tv->tv_nsec = t.QuadPart % 1000000;
-    return (0);
+    return 0;
 }
-
 long int random(void) 
 {
     return rand();
@@ -106,7 +119,6 @@ unsigned int sleep(unsigned int seconds)
     Sleep(seconds * 1000);
     return 0;
 }
-
 void srandom(unsigned int seed)
 {
     srand(seed);
@@ -118,10 +130,8 @@ int daemon(int nochdir, int noclose) {
 char* strsep(char** stringp, const char* delim)
 {
     char* start = *stringp;
-    char* p;
-
+    char* p = 0;
     p = (start != NULL) ? strpbrk(start, delim) : NULL;
-
     if (p == NULL)
     {
         *stringp = NULL;
@@ -131,27 +141,22 @@ char* strsep(char** stringp, const char* delim)
         *p = '\0';
         *stringp = p + 1;
     }
-
     return start;
 }
-
 int usleep(unsigned int __useconds) {
-    LARGE_INTEGER litmp;
-    LONGLONG QPart1, QPart2;
-    double dfMinus, dfFreq, dfTim;
+    LARGE_INTEGER litmp = { 0 };
+    LONGLONG QPart1 = 0L, QPart2 = 0L;
+    double dfMinus = 0.0, dfFreq = 0.0, dfTim = 0.0;
     QueryPerformanceFrequency(&litmp);
     dfFreq = (double)litmp.QuadPart;
     QueryPerformanceCounter(&litmp);
     QPart1 = litmp.QuadPart;
     do {
-
         QueryPerformanceCounter(&litmp);
         QPart2 = litmp.QuadPart;
         dfMinus = (double)(QPart2 - QPart1);
         dfTim = dfMinus / dfFreq;
     } while (dfTim < (0.000001 * __useconds));
-
     return 0;
 }
-
 #endif
