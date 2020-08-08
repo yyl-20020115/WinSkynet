@@ -531,7 +531,9 @@
     <ClCompile Include="wepoll\wepoll.c">
       <Filter>wepoll</Filter>
     </ClCompile>
-    <ClCompile Include="skynet-src\socket_epoll_win32.c" />
+    <ClCompile Include="skynet-src\socket_epoll_win32.c">
+      <Filter>skynet-src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="test\pingserver.lua">
