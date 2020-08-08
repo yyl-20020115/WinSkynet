@@ -1,0 +1,3 @@
+F:\Working4\pthreads-w32\pthread.lib
+F:\Working4\pthreads-w32\pthread.pdb
+F:\Working4\WinSkynet\3rd\pthreads-w32\pthread.lib

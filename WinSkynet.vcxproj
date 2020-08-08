@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</ProjectGuid>
+    <RootNamespace>WinSkynet</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="3rd\lpeg\lpcap.h" />
+    <ClInclude Include="3rd\lpeg\lpcode.h" />
+    <ClInclude Include="3rd\lpeg\lpprint.h" />
+    <ClInclude Include="3rd\lpeg\lptree.h" />
+    <ClInclude Include="3rd\lpeg\lptypes.h" />
+    <ClInclude Include="3rd\lpeg\lpvm.h" />
+    <ClInclude Include="3rd\lua-md5\compat-5.2.h" />
+    <ClInclude Include="3rd\lua-md5\md5.h" />
+    <ClInclude Include="3rd\lua\lapi.h" />
+    <ClInclude Include="3rd\lua\lauxlib.h" />
+    <ClInclude Include="3rd\lua\lcode.h" />
+    <ClInclude Include="3rd\lua\lctype.h" />
+    <ClInclude Include="3rd\lua\ldebug.h" />
+    <ClInclude Include="3rd\lua\ldo.h" />
+    <ClInclude Include="3rd\lua\lfunc.h" />
+    <ClInclude Include="3rd\lua\lgc.h" />
+    <ClInclude Include="3rd\lua\llex.h" />
+    <ClInclude Include="3rd\lua\llimits.h" />
+    <ClInclude Include="3rd\lua\lmem.h" />
+    <ClInclude Include="3rd\lua\lobject.h" />
+    <ClInclude Include="3rd\lua\lopcodes.h" />
+    <ClInclude Include="3rd\lua\lparser.h" />
+    <ClInclude Include="3rd\lua\lprefix.h" />
+    <ClInclude Include="3rd\lua\lstate.h" />
+    <ClInclude Include="3rd\lua\lstring.h" />
+    <ClInclude Include="3rd\lua\ltable.h" />
+    <ClInclude Include="3rd\lua\ltm.h" />
+    <ClInclude Include="3rd\lua\lua.h" />
+    <ClInclude Include="3rd\lua\lua.hpp" />
+    <ClInclude Include="3rd\lua\luaconf.h" />
+    <ClInclude Include="3rd\lua\lualib.h" />
+    <ClInclude Include="3rd\lua\lua_defs.h" />
+    <ClInclude Include="3rd\lua\lundump.h" />
+    <ClInclude Include="3rd\lua\lvm.h" />
+    <ClInclude Include="3rd\lua\lzio.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="lualib-src\lua-seri.h" />
+    <ClInclude Include="lualib-src\sproto\msvcint.h" />
+    <ClInclude Include="lualib-src\sproto\sproto.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="service-src\databuffer.h" />
+    <ClInclude Include="service-src\hashid.h" />
+    <ClInclude Include="skynet-src\atomic.h" />
+    <ClInclude Include="skynet-src\malloc_hook.h" />
+    <ClInclude Include="skynet-src\rwlock.h" />
+    <ClInclude Include="skynet-src\skynet.h" />
+    <ClInclude Include="skynet-src\skynet_daemon.h" />
+    <ClInclude Include="skynet-src\skynet_env.h" />
+    <ClInclude Include="skynet-src\skynet_handle.h" />
+    <ClInclude Include="skynet-src\skynet_harbor.h" />
+    <ClInclude Include="skynet-src\skynet_imp.h" />
+    <ClInclude Include="skynet-src\skynet_log.h" />
+    <ClInclude Include="skynet-src\skynet_malloc.h" />
+    <ClInclude Include="skynet-src\skynet_module.h" />
+    <ClInclude Include="skynet-src\skynet_monitor.h" />
+    <ClInclude Include="skynet-src\skynet_mq.h" />
+    <ClInclude Include="skynet-src\skynet_server.h" />
+    <ClInclude Include="skynet-src\skynet_socket.h" />
+    <ClInclude Include="skynet-src\skynet_timer.h" />
+    <ClInclude Include="skynet-src\socket_buffer.h" />
+    <ClInclude Include="skynet-src\socket_epoll.h" />
+    <ClInclude Include="skynet-src\socket_info.h" />
+    <ClInclude Include="skynet-src\socket_kqueue.h" />
+    <ClInclude Include="skynet-src\socket_poll.h" />
+    <ClInclude Include="skynet-src\socket_server.h" />
+    <ClInclude Include="skynet-src\spinlock.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="WinSkynet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3rd\lpeg\lpcap.c" />
+    <ClCompile Include="3rd\lpeg\lpcode.c" />
+    <ClCompile Include="3rd\lpeg\lpprint.c" />
+    <ClCompile Include="3rd\lpeg\lptree.c" />
+    <ClCompile Include="3rd\lpeg\lpvm.c" />
+    <ClCompile Include="3rd\lua-md5\compat-5.2.c" />
+    <ClCompile Include="3rd\lua-md5\md5.c" />
+    <ClCompile Include="3rd\lua-md5\md5lib.c" />
+    <ClCompile Include="3rd\lua\lapi.c" />
+    <ClCompile Include="3rd\lua\lauxlib.c" />
+    <ClCompile Include="3rd\lua\lbaselib.c" />
+    <ClCompile Include="3rd\lua\lbitlib.c" />
+    <ClCompile Include="3rd\lua\lcode.c" />
+    <ClCompile Include="3rd\lua\lcorolib.c" />
+    <ClCompile Include="3rd\lua\lctype.c" />
+    <ClCompile Include="3rd\lua\ldblib.c" />
+    <ClCompile Include="3rd\lua\ldebug.c" />
+    <ClCompile Include="3rd\lua\ldo.c" />
+    <ClCompile Include="3rd\lua\ldump.c" />
+    <ClCompile Include="3rd\lua\lfunc.c" />
+    <ClCompile Include="3rd\lua\lgc.c" />
+    <ClCompile Include="3rd\lua\linit.c" />
+    <ClCompile Include="3rd\lua\liolib.c" />
+    <ClCompile Include="3rd\lua\llex.c" />
+    <ClCompile Include="3rd\lua\lmathlib.c" />
+    <ClCompile Include="3rd\lua\lmem.c" />
+    <ClCompile Include="3rd\lua\loadlib.c" />
+    <ClCompile Include="3rd\lua\lobject.c" />
+    <ClCompile Include="3rd\lua\lopcodes.c" />
+    <ClCompile Include="3rd\lua\loslib.c" />
+    <ClCompile Include="3rd\lua\lparser.c" />
+    <ClCompile Include="3rd\lua\lstate.c" />
+    <ClCompile Include="3rd\lua\lstring.c" />
+    <ClCompile Include="3rd\lua\lstrlib.c" />
+    <ClCompile Include="3rd\lua\ltable.c" />
+    <ClCompile Include="3rd\lua\ltablib.c" />
+    <ClCompile Include="3rd\lua\ltm.c" />
+    <ClCompile Include="3rd\lua\lua_defs.cpp" />
+    <ClCompile Include="3rd\lua\lundump.c" />
+    <ClCompile Include="3rd\lua\lutf8lib.c" />
+    <ClCompile Include="3rd\lua\lvm.c" />
+    <ClCompile Include="3rd\lua\lzio.c" />
+    <ClCompile Include="lualib-src\lsha1.c" />
+    <ClCompile Include="lualib-src\ltls.c" />
+    <ClCompile Include="lualib-src\lua-bson.c" />
+    <ClCompile Include="lualib-src\lua-clientsocket.c" />
+    <ClCompile Include="lualib-src\lua-cluster.c" />
+    <ClCompile Include="lualib-src\lua-crypt.c" />
+    <ClCompile Include="lualib-src\lua-datasheet.c" />
+    <ClCompile Include="lualib-src\lua-debugchannel.c" />
+    <ClCompile Include="lualib-src\lua-memory.c" />
+    <ClCompile Include="lualib-src\lua-mongo.c" />
+    <ClCompile Include="lualib-src\lua-multicast.c" />
+    <ClCompile Include="lualib-src\lua-netpack.c" />
+    <ClCompile Include="lualib-src\lua-profile.c" />
+    <ClCompile Include="lualib-src\lua-seri.c" />
+    <ClCompile Include="lualib-src\lua-sharedata.c" />
+    <ClCompile Include="lualib-src\lua-sharetable.c" />
+    <ClCompile Include="lualib-src\lua-skynet.c" />
+    <ClCompile Include="lualib-src\lua-socket.c" />
+    <ClCompile Include="lualib-src\lua-stm.c" />
+    <ClCompile Include="lualib-src\sproto\lsproto.c" />
+    <ClCompile Include="lualib-src\sproto\sproto.c" />
+    <ClCompile Include="service-src\service_gate.c" />
+    <ClCompile Include="service-src\service_harbor.c" />
+    <ClCompile Include="service-src\service_logger.c" />
+    <ClCompile Include="service-src\service_snlua.c" />
+    <ClCompile Include="skynet-src\malloc_hook.c" />
+    <ClCompile Include="skynet-src\skynet_daemon.c" />
+    <ClCompile Include="skynet-src\skynet_env.c" />
+    <ClCompile Include="skynet-src\skynet_error.c" />
+    <ClCompile Include="skynet-src\skynet_handle.c" />
+    <ClCompile Include="skynet-src\skynet_harbor.c" />
+    <ClCompile Include="skynet-src\skynet_log.c" />
+    <ClCompile Include="skynet-src\skynet_main.c" />
+    <ClCompile Include="skynet-src\skynet_module.c" />
+    <ClCompile Include="skynet-src\skynet_monitor.c" />
+    <ClCompile Include="skynet-src\skynet_mq.c" />
+    <ClCompile Include="skynet-src\skynet_server.c" />
+    <ClCompile Include="skynet-src\skynet_socket.c" />
+    <ClCompile Include="skynet-src\skynet_start.c" />
+    <ClCompile Include="skynet-src\skynet_timer.c" />
+    <ClCompile Include="skynet-src\socket_server.c" />
+    <ClCompile Include="win_implementations.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WinSkynet.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico" />
+    <Image Include="WinSkynet.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="examples\abort.lua" />
+    <None Include="examples\agent.lua" />
+    <None Include="examples\checkdeadloop.lua" />
+    <None Include="examples\client.lua" />
+    <None Include="examples\cluster1.lua" />
+    <None Include="examples\cluster2.lua" />
+    <None Include="examples\clustername.lua" />
+    <None Include="examples\config" />
+    <None Include="examples\config.c1" />
+    <None Include="examples\config.c2" />
+    <None Include="examples\config.login" />
+    <None Include="examples\config.mc" />
+    <None Include="examples\config.mongodb" />
+    <None Include="examples\config.mysql" />
+    <None Include="examples\config.path" />
+    <None Include="examples\config.userlog" />
+    <None Include="examples\config_log" />
+    <None Include="examples\globallog.lua" />
+    <None Include="examples\injectlaunch.lua" />
+    <None Include="examples\login\client.lua" />
+    <None Include="examples\login\gated.lua" />
+    <None Include="examples\login\logind.lua" />
+    <None Include="examples\login\main.lua" />
+    <None Include="examples\login\msgagent.lua" />
+    <None Include="examples\main.lua" />
+    <None Include="examples\main_log.lua" />
+    <None Include="examples\main_mongodb.lua" />
+    <None Include="examples\main_mysql.lua" />
+    <None Include="examples\preload.lua" />
+    <None Include="examples\proto.lua" />
+    <None Include="examples\protoloader.lua" />
+    <None Include="examples\share.lua" />
+    <None Include="examples\simpledb.lua" />
+    <None Include="examples\simplemonitor.lua" />
+    <None Include="examples\simpleweb.lua" />
+    <None Include="examples\simplewebsocket.lua" />
+    <None Include="examples\userlog.lua" />
+    <None Include="examples\watchdog.lua" />
+    <None Include="lualib\compat10\cluster.lua" />
+    <None Include="lualib\compat10\crypt.lua" />
+    <None Include="lualib\compat10\datacenter.lua" />
+    <None Include="lualib\compat10\dns.lua" />
+    <None Include="lualib\compat10\memory.lua" />
+    <None Include="lualib\compat10\mongo.lua" />
+    <None Include="lualib\compat10\mqueue.lua" />
+    <None Include="lualib\compat10\multicast.lua" />
+    <None Include="lualib\compat10\mysql.lua" />
+    <None Include="lualib\compat10\netpack.lua" />
+    <None Include="lualib\compat10\profile.lua" />
+    <None Include="lualib\compat10\redis.lua" />
+    <None Include="lualib\compat10\sharedata.lua" />
+    <None Include="lualib\compat10\sharemap.lua" />
+    <None Include="lualib\compat10\snax.lua" />
+    <None Include="lualib\compat10\socket.lua" />
+    <None Include="lualib\compat10\socketchannel.lua" />
+    <None Include="lualib\compat10\socketdriver.lua" />
+    <None Include="lualib\compat10\stm.lua" />
+    <None Include="lualib\http\httpc.lua" />
+    <None Include="lualib\http\httpd.lua" />
+    <None Include="lualib\http\internal.lua" />
+    <None Include="lualib\http\sockethelper.lua" />
+    <None Include="lualib\http\tlshelper.lua" />
+    <None Include="lualib\http\url.lua" />
+    <None Include="lualib\http\websocket.lua" />
+    <None Include="lualib\loader.lua" />
+    <None Include="lualib\md5.lua" />
+    <None Include="lualib\skynet.lua" />
+    <None Include="lualib\skynet\cluster.lua" />
+    <None Include="lualib\skynet\coroutine.lua" />
+    <None Include="lualib\skynet\datacenter.lua" />
+    <None Include="lualib\skynet\datasheet\builder.lua" />
+    <None Include="lualib\skynet\datasheet\dump.lua" />
+    <None Include="lualib\skynet\datasheet\init.lua" />
+    <None Include="lualib\skynet\db\mongo.lua" />
+    <None Include="lualib\skynet\db\mysql.lua" />
+    <None Include="lualib\skynet\db\redis.lua" />
+    <None Include="lualib\skynet\db\redis\cluster.lua" />
+    <None Include="lualib\skynet\db\redis\crc16.lua" />
+    <None Include="lualib\skynet\debug.lua" />
+    <None Include="lualib\skynet\dns.lua" />
+    <None Include="lualib\skynet\harbor.lua" />
+    <None Include="lualib\skynet\inject.lua" />
+    <None Include="lualib\skynet\injectcode.lua" />
+    <None Include="lualib\skynet\manager.lua" />
+    <None Include="lualib\skynet\mqueue.lua" />
+    <None Include="lualib\skynet\multicast.lua" />
+    <None Include="lualib\skynet\queue.lua" />
+    <None Include="lualib\skynet\remotedebug.lua" />
+    <None Include="lualib\skynet\service.lua" />
+    <None Include="lualib\skynet\sharedata.lua" />
+    <None Include="lualib\skynet\sharedata\corelib.lua" />
+    <None Include="lualib\skynet\sharemap.lua" />
+    <None Include="lualib\skynet\sharetable.lua" />
+    <None Include="lualib\skynet\snax.lua" />
+    <None Include="lualib\skynet\socket.lua" />
+    <None Include="lualib\skynet\socketchannel.lua" />
+    <None Include="lualib\snax\gateserver.lua" />
+    <None Include="lualib\snax\hotfix.lua" />
+    <None Include="lualib\snax\interface.lua" />
+    <None Include="lualib\snax\loginserver.lua" />
+    <None Include="lualib\snax\msgserver.lua" />
+    <None Include="lualib\sproto.lua" />
+    <None Include="lualib\sprotoloader.lua" />
+    <None Include="lualib\sprotoparser.lua" />
+    <None Include="service\bootstrap.lua" />
+    <None Include="service\cdummy.lua" />
+    <None Include="service\clusteragent.lua" />
+    <None Include="service\clusterd.lua" />
+    <None Include="service\clusterproxy.lua" />
+    <None Include="service\clustersender.lua" />
+    <None Include="service\cmaster.lua" />
+    <None Include="service\cmemory.lua" />
+    <None Include="service\console.lua" />
+    <None Include="service\cslave.lua" />
+    <None Include="service\datacenterd.lua" />
+    <None Include="service\dbg.lua" />
+    <None Include="service\debug_agent.lua" />
+    <None Include="service\debug_console.lua" />
+    <None Include="service\gate.lua" />
+    <None Include="service\launcher.lua" />
+    <None Include="service\multicastd.lua" />
+    <None Include="service\service_cell.lua" />
+    <None Include="service\service_mgr.lua" />
+    <None Include="service\service_provider.lua" />
+    <None Include="service\sharedatad.lua" />
+    <None Include="service\snaxd.lua" />
+    <None Include="test\pingserver.lua" />
+    <None Include="test\sharemap.sp" />
+    <None Include="test\testbson.lua" />
+    <None Include="test\testcoroutine.lua" />
+    <None Include="test\testcrypt.lua" />
+    <None Include="test\testdatacenter.lua" />
+    <None Include="test\testdatasheet.lua" />
+    <None Include="test\testdeadcall.lua" />
+    <None Include="test\testdeadloop.lua" />
+    <None Include="test\testdns.lua" />
+    <None Include="test\testecho.lua" />
+    <None Include="test\testendless.lua" />
+    <None Include="test\testharborlink.lua" />
+    <None Include="test\testhttp.lua" />
+    <None Include="test\testmemlimit.lua" />
+    <None Include="test\testmongodb.lua" />
+    <None Include="test\testmulticast.lua" />
+    <None Include="test\testmulticast2.lua" />
+    <None Include="test\testmysql.lua" />
+    <None Include="test\testoverload.lua" />
+    <None Include="test\testping.lua" />
+    <None Include="test\testpipeline.lua" />
+    <None Include="test\testqueue.lua" />
+    <None Include="test\testredis.lua" />
+    <None Include="test\testredis2.lua" />
+    <None Include="test\testrediscluster.lua" />
+    <None Include="test\testresponse.lua" />
+    <None Include="test\testservice\init.lua" />
+    <None Include="test\testservice\kvdb.lua" />
+    <None Include="test\testsha.lua" />
+    <None Include="test\testsharetable.lua" />
+    <None Include="test\testsm.lua" />
+    <None Include="test\testsocket.lua" />
+    <None Include="test\teststm.lua" />
+    <None Include="test\testterm.lua" />
+    <None Include="test\testtimeout.lua" />
+    <None Include="test\testtimer.lua" />
+    <None Include="test\testudp.lua" />
+    <None Include="test\time.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="3rd\jemalloc\msvc\projects\vc2017\jemalloc\jemalloc.vcxproj">
+      <Project>{8d6bb292-9e1c-413d-9f98-4864bdc1514a}</Project>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
+      <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
