@@ -28,7 +28,7 @@ int usleep(unsigned int __useconds);
 
 int set_blocking_mode(const int socket, int is_blocking)
 {
-	int ret = TRUE;
+	int ret = 1;
 
 #ifdef _WIN32
 	u_long flags = is_blocking ? 0 : 1;
@@ -67,7 +67,7 @@ lconnect(lua_State *L) {
 	}
 
 	//NOTICE: use cross-platform function.
-	set_blocking_mode(fd, FALSE);
+	set_blocking_mode(fd, 0);
 
 	//int flag = fcntl(fd, F_GETFL, 0);
 	//fcntl(fd, F_SETFL, flag | O_NONBLOCK);
