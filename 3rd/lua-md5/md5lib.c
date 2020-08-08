@@ -25,7 +25,7 @@ static int lmd5 (lua_State *L) {
   char buff[16];
   size_t l;
   const char *message = luaL_checklstring(L, 1, &l);
-  md5(message, l, buff);
+  md5(message, (long)l, buff);
   lua_pushlstring(L, buff, 16L);
   return 1;
 }
@@ -135,7 +135,7 @@ static int crypt (lua_State *L) {
   block[0] = (char)lseed;
   memcpy(block+1, seed, lseed);
   lua_pushlstring(L, block, lseed+1);  /* to concat with result */
-  lblock = initblock(L, seed, lseed, block);
+  lblock = initblock(L, seed, (int)lseed, block);
   codestream(L, msg, lmsg, block, lblock);
   lua_concat(L, 2);
   return 1;
@@ -161,7 +161,7 @@ static int decrypt (lua_State *L) {
                  "invalid cyphered string");
   cyphertext += lseed+1;
   lcyphertext -= lseed+1;
-  lblock = initblock(L, seed, lseed, block);
+  lblock = initblock(L, seed, (int)lseed, block);
   decodestream(L, cyphertext, lcyphertext, block, lblock);
   return 1;
 }

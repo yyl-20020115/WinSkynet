@@ -66,7 +66,7 @@ write_pid(const char *pidfile) {
 		return 0;
 	}
 #ifdef _WIN32
-	//TODO:
+	//TODO: Make pipe
 #else
 	if (flock(fd, LOCK_EX|LOCK_NB) == -1) {
 

@@ -69,7 +69,7 @@ static Stack *doublestack (lua_State *L, Stack **stacklimit, int ptop) {
   int n = *stacklimit - stack;  /* current stack size */
   int max, newn;
   lua_getfield(L, LUA_REGISTRYINDEX, MAXSTACKIDX);
-  max = lua_tointeger(L, -1);  /* maximum allowed size */
+  max = (int)lua_tointeger(L, -1);  /* maximum allowed size */
   lua_pop(L, 1);
   if (n >= max)  /* already at maximum size? */
     luaL_error(L, "backtrack stack overflow (current limit is %d)", max);
@@ -104,7 +104,7 @@ static int resdyncaptures (lua_State *L, int fr, int curr, int limit) {
       luaL_error(L, "invalid position returned by match-time capture");
   }
   lua_remove(L, fr);  /* remove first result (offset) */
-  return res;
+  return (int)res;
 }
 
 

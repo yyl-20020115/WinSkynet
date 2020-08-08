@@ -37,11 +37,12 @@ struct worker_parm {
 
 static volatile int SIG = 0;
 
-static void
-handle_hup(int signal) {
+static void handle_hup(int signal) {
+#ifndef _WIN32
 	if (signal == SIGHUP) {
 		SIG = 1;
 	}
+#endif
 }
 
 #define CHECK_ABORT if (skynet_context_total()==0) break;
@@ -254,13 +255,14 @@ bootstrap(struct skynet_context * logger, const char * cmdline) {
 
 void 
 skynet_start(struct skynet_config * config) {
+#ifndef _WIN32
 	// register SIGHUP for log file reopen
-	struct sigaction sa;
+	struct sigaction sa = { 0 };
 	sa.sa_handler = &handle_hup;
 	sa.sa_flags = SA_RESTART;
 	sigfillset(&sa.sa_mask);
 	sigaction(SIGHUP, &sa, NULL);
-
+#endif
 	if (config->daemon) {
 		if (daemon_init(config->daemon)) {
 			exit(1);

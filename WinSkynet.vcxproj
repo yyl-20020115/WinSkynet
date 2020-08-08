@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc\include\jemalloc;$(SolutionDir)3rd\jemalloc\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -215,13 +215,15 @@
     <ClInclude Include="skynet-src\skynet_socket.h" />
     <ClInclude Include="skynet-src\skynet_timer.h" />
     <ClInclude Include="skynet-src\socket_buffer.h" />
-    <ClInclude Include="skynet-src\socket_epoll.h" />
+    <ClCompile Include="skynet-src\socket_epoll_win32.c">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClInclude Include="skynet-src\socket_info.h" />
-    <ClInclude Include="skynet-src\socket_kqueue.h" />
-    <ClInclude Include="skynet-src\socket_poll.h" />
+    <ClInclude Include="skynet-src\socket_poll_win32.h" />
     <ClInclude Include="skynet-src\socket_server.h" />
     <ClInclude Include="skynet-src\spinlock.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="wepoll\wepoll.h" />
     <ClInclude Include="WinSkynet.h" />
   </ItemGroup>
   <ItemGroup>
@@ -308,6 +310,7 @@
     <ClCompile Include="skynet-src\skynet_start.c" />
     <ClCompile Include="skynet-src\skynet_timer.c" />
     <ClCompile Include="skynet-src\socket_server.c" />
+    <ClCompile Include="wepoll\wepoll.c" />
     <ClCompile Include="win_implementations.c" />
   </ItemGroup>
   <ItemGroup>
@@ -483,6 +486,7 @@
     <None Include="test\testtimer.lua" />
     <None Include="test\testudp.lua" />
     <None Include="test\time.lua" />
+    <None Include="wepoll\LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="3rd\jemalloc\msvc\projects\vc2017\jemalloc\jemalloc.vcxproj">

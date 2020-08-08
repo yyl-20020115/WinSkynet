@@ -1,5 +1,4 @@
-#ifndef poll_socket_epoll_h
-#define poll_socket_epoll_h
+#ifdef __linux__
 
 #include <netdb.h>
 #include <unistd.h>
@@ -10,23 +9,19 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 
-static bool 
-sp_invalid(int efd) {
+bool sp_invalid(poll_fd efd) {
 	return efd == -1;
 }
 
-static int
-sp_create() {
+poll_fd sp_create() {
 	return epoll_create(1024);
 }
 
-static void
-sp_release(int efd) {
+void sp_release(poll_fd efd) {
 	close(efd);
 }
 
-static int 
-sp_add(int efd, int sock, void *ud) {
+int sp_add(poll_fd efd, int sock, void *ud) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN;
 	ev.data.ptr = ud;
@@ -36,21 +31,18 @@ sp_add(int efd, int sock, void *ud) {
 	return 0;
 }
 
-static void 
-sp_del(int efd, int sock) {
+void sp_del(poll_fd efd, int sock) {
 	epoll_ctl(efd, EPOLL_CTL_DEL, sock , NULL);
 }
 
-static void 
-sp_write(int efd, int sock, void *ud, bool enable) {
+void sp_write(poll_fd efd, int sock, void *ud, bool enable) {
 	struct epoll_event ev;
 	ev.events = EPOLLIN | (enable ? EPOLLOUT : 0);
 	ev.data.ptr = ud;
 	epoll_ctl(efd, EPOLL_CTL_MOD, sock, &ev);
 }
 
-static int 
-sp_wait(int efd, struct event *e, int max) {
+int sp_wait(poll_fd efd, struct event *e, int max) {
 	struct epoll_event ev[max];
 	int n = epoll_wait(efd , ev, max, -1);
 	int i;
@@ -66,8 +58,7 @@ sp_wait(int efd, struct event *e, int max) {
 	return n;
 }
 
-static void
-sp_nonblocking(int fd) {
+void sp_nonblocking(int fd) {
 	int flag = fcntl(fd, F_GETFL, 0);
 	if ( -1 == flag ) {
 		return;

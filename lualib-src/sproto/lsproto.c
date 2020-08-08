@@ -8,6 +8,9 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "sproto.h"
+#ifdef _WIN32
+#include<intrin0.h>
+#endif
 
 #define MAX_GLOBALSPROTO 16
 #define ENCODE_BUFFERSIZE 2050
@@ -656,8 +659,21 @@ lsaveproto(lua_State *L) {
 	if (index < 0 || index >= MAX_GLOBALSPROTO) {
 		return luaL_error(L, "Invalid global slot index %d", index);
 	}
+	struct sproto* rp = 0;
+#ifndef _WIN32
 	/* TODO : release old object (memory leak now, but thread safe)*/
 	G_sproto[index] = sp;
+#else
+	/* USE InterlockedExchange to fix this memory leak in Windows*/
+#ifdef _WIN64
+	rp = (struct sproto*)_InterlockedExchange64(&G_sproto[index], sp);
+#else
+	rp = (struct sproto*)_InterlockedExchange(&G_sproto[index], sp);	_
+#endif
+#endif
+	if (rp) {
+		free(rp);
+	}	
 	return 0;
 }
 

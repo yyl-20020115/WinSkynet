@@ -1,5 +1,4 @@
-#ifndef poll_socket_kqueue_h
-#define poll_socket_kqueue_h
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined (__NetBSD__)
 
 #include <netdb.h>
 #include <unistd.h>
@@ -10,23 +9,23 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static bool 
-sp_invalid(int kfd) {
+bool 
+sp_invalid(poll_fd kfd) {
 	return kfd == -1;
 }
 
-static int
+static poll_fd
 sp_create() {
 	return kqueue();
 }
 
-static void
-sp_release(int kfd) {
+void
+sp_release(poll_fd kfd) {
 	close(kfd);
 }
 
-static void 
-sp_del(int kfd, int sock) {
+void 
+sp_del(poll_fd kfd, int sock) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_READ, EV_DELETE, 0, 0, NULL);
 	kevent(kfd, &ke, 1, NULL, 0, NULL);
@@ -34,8 +33,8 @@ sp_del(int kfd, int sock) {
 	kevent(kfd, &ke, 1, NULL, 0, NULL);
 }
 
-static int 
-sp_add(int kfd, int sock, void *ud) {
+int 
+sp_add(poll_fd kfd, int sock, void *ud) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_READ, EV_ADD, 0, 0, ud);
 	if (kevent(kfd, &ke, 1, NULL, 0, NULL) == -1 ||	ke.flags & EV_ERROR) {
@@ -55,8 +54,8 @@ sp_add(int kfd, int sock, void *ud) {
 	return 0;
 }
 
-static void 
-sp_write(int kfd, int sock, void *ud, bool enable) {
+void 
+sp_write(poll_fd kfd, int sock, void *ud, bool enable) {
 	struct kevent ke;
 	EV_SET(&ke, sock, EVFILT_WRITE, enable ? EV_ENABLE : EV_DISABLE, 0, 0, ud);
 	if (kevent(kfd, &ke, 1, NULL, 0, NULL) == -1 || ke.flags & EV_ERROR) {
@@ -64,8 +63,8 @@ sp_write(int kfd, int sock, void *ud, bool enable) {
 	}
 }
 
-static int 
-sp_wait(int kfd, struct event *e, int max) {
+int 
+sp_wait(poll_fd kfd, struct event *e, int max) {
 	struct kevent ev[max];
 	int n = kevent(kfd, NULL, 0, ev, max, NULL);
 
@@ -83,7 +82,7 @@ sp_wait(int kfd, struct event *e, int max) {
 	return n;
 }
 
-static void
+void
 sp_nonblocking(int fd) {
 	int flag = fcntl(fd, F_GETFL, 0);
 	if ( -1 == flag ) {

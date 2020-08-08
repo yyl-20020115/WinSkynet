@@ -1120,7 +1120,7 @@ static int cache_key = 0;
 
 static int cache_level(lua_State *L) {
 	int t = lua_rawgetp(L, LUA_REGISTRYINDEX, &cache_key);
-	int r = lua_tointeger(L, -1);
+	int r = (int)lua_tointeger(L, -1);
 	lua_pop(L,1);
 	if (t == LUA_TNUMBER) {
 		return r;
@@ -1137,7 +1137,7 @@ static int cache_mode(lua_State *L) {
 	};
 	if (lua_isnoneornil(L,1)) {
 		int t = lua_rawgetp(L, LUA_REGISTRYINDEX, &cache_key);
-		int r = lua_tointeger(L, -1);
+		int r = (int)lua_tointeger(L, -1);
 		if (t == LUA_TNUMBER) {
 			if (r < 0  || r >= CACHE_ON) {
 				r = CACHE_ON;

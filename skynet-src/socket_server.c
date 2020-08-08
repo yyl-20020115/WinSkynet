@@ -1,18 +1,18 @@
 #include "skynet.h"
-
-#include "socket_server.h"
-#include "socket_poll.h"
-#include "atomic.h"
-#include "spinlock.h"
-
-#include <sys/types.h>
 #ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/tcp.h>
 #include <unistd.h>
+#include "socket_poll_others.h"
 #else
 #include <WS2tcpip.h>
 #endif
+
+#include "socket_server.h"
+#include "atomic.h"
+#include "spinlock.h"
+
+#include <sys/types.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -20,10 +20,11 @@
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
-#ifdef _WIN32
-#include <winsock.h>
-#endif
+
 #include "../3rd/jemalloc/include/jemalloc/internal/jemalloc_internal_decls.h"
+#ifdef _WIN32
+#include "socket_poll_win32.h"
+#endif
 
 #define MAX_INFO 128
 // MAX_SOCKET will be 2^MAX_SOCKET_P
@@ -338,39 +339,6 @@ socket_keepalive(int fd) {
 	int keepalive = 1;
 	setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepalive , sizeof(keepalive));  
 }
-#ifdef _WIN32
-static void 
-sp_nonblocking(int fd) {
-	//TODO:
-}
-static bool sp_invalid(poll_fd fd) {
-	//TODO:
-	return true;
-}
-static void sp_release(poll_fd fd) {
-	//TODO:
-}
-static poll_fd sp_create() {
-	//TODO:
-	return 0;
-}
-static void sp_del(poll_fd fd, int sock) {
-	//TODO:
-}
-static void sp_write(poll_fd fd, int sock, void* ud, bool enable) {
-	//TODO:
-}
-
-static int sp_wait(poll_fd fd, struct event* e, int max)
-{
-	//TODO:
-	return 0;
-}
-static int sp_add(poll_fd fd, int sock, void* ud) {
-	//TODO:
-	return 0;
-}
-#endif
 
 static int
 reserve_id(struct socket_server *ss) {

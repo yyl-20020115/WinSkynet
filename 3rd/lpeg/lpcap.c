@@ -299,7 +299,7 @@ int runtimecap (CapState *cs, Capture *close, const char *s, int *rem) {
   }
   else
     *rem = 0;  /* no dynamic captures removed */
-  return close - open;  /* number of captures of all kinds removed */
+  return (int)(close - open);  /* number of captures of all kinds removed */
 }
 
 

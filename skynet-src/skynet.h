@@ -8,93 +8,12 @@
 
 #ifdef _WIN32
 int usleep(unsigned int __useconds);
-
-#define INET6_ADDRSTRLEN 46
-
-#if defined(_WIN64)
-# define __BITS_PER_LONG 64
-#else
-# define __BITS_PER_LONG 32
-#endif
-
-#define _NSIG           64
-#define _NSIG_BPW       __BITS_PER_LONG
-#define _NSIG_WORDS     (_NSIG / _NSIG_BPW)
-typedef void __signalfn_t(int);
-typedef __signalfn_t* __sighandler_t;
-
-typedef struct {
-	unsigned long sig[_NSIG_WORDS];
-} sigset_t;
-struct sigaction {
-	__sighandler_t sa_handler;
-	unsigned long sa_flags;
-#ifdef SA_RESTORER
-	__sigrestore_t sa_restorer;
-#endif
-	sigset_t sa_mask;               /* mask last for extensibility */
-};
-#define SA_RESTART    0x10000000
-#define SIGPIPE 13
-
-#define O_NONBLOCK     00004000
-
-#define F_DUPFD         0       /* dup */
-#define F_GETFD         1       /* get close_on_exec */
-#define F_SETFD         2       /* set/clear close_on_exec */
-#define F_GETFL         3       /* get file->f_flags */
-#define F_SETFL         4       /* set file->f_flags */
-
-
-#define SIGHUP           1
-#define SIGINT           2
-#define SIGQUIT          3
-#define SIGILL           4
-#define SIGTRAP          5
-#define SIGABRT          6
-#define SIGIOT           6
-#define SIGBUS           7
-#define SIGFPE           8
-#define SIGKILL          9
-#define SIGUSR1         10
-#define SIGSEGV         11
-#define SIGUSR2         12
-#define SIGPIPE         13
-#define SIGALRM         14
-#define SIGTERM         15
-#define SIGSTKFLT       16
-#define SIGCHLD         17
-#define SIGCONT         18
-#define SIGSTOP         19
-#define SIGTSTP         20
-#define SIGTTIN         21
-#define SIGTTOU         22
-#define SIGURG          23
-#define SIGXCPU         24
-#define SIGXFSZ         25
-#define SIGVTALRM       26
-#define SIGPROF         27
-#define SIGWINCH        28
-#define SIGIO           29
-#define SIGPOLL         SIGIO
-/*
-#define SIGLOST         29
-*/
-#define SIGPWR          30
-#define SIGSYS          31
-#define SIGUNUSED       31
-
-/* These should not be considered constants from userland.  */
-#define SIGRTMIN        32
-#ifndef SIGRTMAX
-#define SIGRTMAX        _NSIG
-#endif
+unsigned int sleep(unsigned int seconds);
+int clock_gettime(unsigned int clk_id, struct timespec* tv);
 
 #define CLOCK_MONOTONIC 1
 #define CLOCK_REALTIME  0
 #define CLOCK_THREAD_CPUTIME_ID 3
-typedef unsigned int socklen_t;
-#define AF_INET6 10
 
 /* The MODE argument to `dlopen' contains one of the following: */
 #define RTLD_LAZY       0x00001 /* Lazy function call binding.  */

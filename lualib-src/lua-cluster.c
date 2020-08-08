@@ -124,7 +124,7 @@ packreq_string(lua_State *L, int session, void * msg, uint32_t sz, int is_push) 
 
 	uint8_t buf[TEMP_LENGTH];
 	if (sz < MULTI_PART) {
-		fill_header(L, buf, sz+6+namelen);
+		fill_header(L, buf, sz+6+(int)namelen);
 		buf[2] = 0x80;
 		buf[3] = (uint8_t)namelen;
 		memcpy(buf+4, name, namelen);
@@ -135,7 +135,7 @@ packreq_string(lua_State *L, int session, void * msg, uint32_t sz, int is_push) 
 		return 0;
 	} else {
 		int part = (sz - 1) / MULTI_PART + 1;
-		fill_header(L, buf, 10+namelen);
+		fill_header(L, buf, 10+(int)namelen);
 		buf[2] = is_push ? 0xc1 : 0x81;	// multi push or request
 		buf[3] = (uint8_t)namelen;
 		memcpy(buf+4, name, namelen);
@@ -179,7 +179,7 @@ packrequest(lua_State *L, int is_push) {
 		return luaL_error(L, "Invalid request message");
 	}
 	uint32_t sz = (uint32_t)luaL_checkinteger(L,4);
-	int session = luaL_checkinteger(L,2);
+	int session = (int)luaL_checkinteger(L,2);
 	if (session <= 0) {
 		skynet_free(msg);
 		return luaL_error(L, "Invalid request session %d", session);
@@ -226,7 +226,7 @@ lpacktrace(lua_State *L) {
 	}
 	uint8_t buf[TEMP_LENGTH];
 	buf[2] = 4;
-	fill_header(L, buf, sz+1);
+	fill_header(L, buf, (int)sz+1);
 	memcpy(buf+3, tag, sz);
 	lua_pushlstring(L, (const char *)buf, sz+3);
 	return 1;
@@ -327,7 +327,7 @@ unpackreq_string(lua_State *L, const uint8_t * buf, int sz) {
 	lua_pushlstring(L, (const char *)buf+2, namesz);
 	uint32_t session = unpack_uint32(buf + namesz + 2);
 	lua_pushinteger(L, (uint32_t)session);
-	return_buffer(L, (const char *)buf+2+namesz+4, sz - namesz - 6);
+	return_buffer(L, (const char *)buf+2+namesz+4, sz -(int) namesz - 6);
 	if (session == 0) {
 		lua_pushnil(L);
 		lua_pushboolean(L,1);	// is_push, no reponse
@@ -364,7 +364,7 @@ lunpackrequest(lua_State *L) {
 	const char *msg;
 	if (lua_type(L, 1) == LUA_TLIGHTUSERDATA) {
 		msg = (const char *)lua_touserdata(L, 1);
-		sz = luaL_checkinteger(L, 2);
+		sz = (int)luaL_checkinteger(L, 2);
 	} else {
 		size_t ssz;
 		msg = luaL_checklstring(L,1,&ssz);
@@ -440,7 +440,7 @@ lpackresponse(lua_State *L) {
 	} else {
 		if (sz > MULTI_PART) {
 			// return 
-			int part = (sz - 1) / MULTI_PART + 1;
+			int part = ((int)sz - 1) / MULTI_PART + 1;
 			lua_createtable(L, part+1, 0);
 			uint8_t buf[TEMP_LENGTH];
 
@@ -460,7 +460,7 @@ lpackresponse(lua_State *L) {
 					s = MULTI_PART;
 					buf[6] = 3;
 				} else {
-					s = sz;
+					s = (int)sz;
 					buf[6] = 4;
 				}
 				fill_header(L, buf, s+5);
@@ -476,7 +476,7 @@ lpackresponse(lua_State *L) {
 	}
 
 	uint8_t buf[TEMP_LENGTH];
-	fill_header(L, buf, sz+5);
+	fill_header(L, buf, (int)sz+5);
 	fill_uint32(buf+2, session);
 	buf[6] = ok;
 	memcpy(buf+7,msg,sz);
@@ -541,7 +541,7 @@ lunpackresponse(lua_State *L) {
 static int
 lappend(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TTABLE);
-	int n = lua_rawlen(L, 1);
+	int n = (int)lua_rawlen(L, 1);
 	if (lua_isnil(L, 2)) {
 		lua_settop(L, 3);
 		lua_seti(L, 1, n + 1);
@@ -550,7 +550,7 @@ lappend(lua_State *L) {
 	void * buffer = lua_touserdata(L, 2);
 	if (buffer == NULL)
 		return luaL_error(L, "Need lightuserdata");
-	int sz = luaL_checkinteger(L, 3);
+	int sz = (int)luaL_checkinteger(L, 3);
 	lua_pushlstring(L, (const char *)buffer, sz);
 	skynet_free((void *)buffer);
 	lua_seti(L, 1, n+1);
@@ -563,7 +563,7 @@ lconcat(lua_State *L) {
 		return 0;
 	if (lua_geti(L,1,1) != LUA_TNUMBER)
 		return 0;
-	int sz = lua_tointeger(L,-1);
+	int sz = (int)lua_tointeger(L,-1);
 	lua_pop(L,1);
 	char * buff = skynet_malloc(sz);
 	int idx = 2;
@@ -577,7 +577,7 @@ lconcat(lua_State *L) {
 		}
 		memcpy(buff+offset, str, s);
 		lua_pop(L,1);
-		offset += s;
+		offset += (int)s;
 		++idx;
 	}
 	if (offset != sz) {
@@ -599,7 +599,7 @@ lisname(lua_State *L) {
 	}
 	return 0;
 }
-
+extern int gethostname(char* name, size_t len);
 static int
 lnodename(lua_State *L) {
 	pid_t pid = getpid();
