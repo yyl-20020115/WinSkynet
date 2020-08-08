@@ -4,11 +4,10 @@
 #include <math.h>
 #ifdef _WIN32
 #  include <windows.h>
-//NOTICE: commented out by YILIN    
-//#  include "msvc_compat/windows_extra.h"
+#  include "msvc_compat/windows_extra.h"
 #  ifdef _WIN64
 #    if LG_VADDR <= 32
-//#      error Generate the headers using x64 vcargs
+#      error Generate the headers using x64 vcargs
 #    endif
 #  else
 #    if LG_VADDR > 32
@@ -68,9 +67,7 @@
 #  define offsetof(type, member)	((size_t)&(((type *)NULL)->member))
 #endif
 #include <string.h>
-#ifndef _WIN32
 #include <strings.h>
-#endif
 #include <ctype.h>
 #ifdef _MSC_VER
 #  include <io.h>

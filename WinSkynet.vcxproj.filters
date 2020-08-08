@@ -265,9 +265,6 @@
     <ClInclude Include="wepoll\wepoll.h">
       <Filter>wepoll</Filter>
     </ClInclude>
-    <ClInclude Include="skynet-src\socket_epoll_win32.c">
-      <Filter>skynet-src</Filter>
-    </ClInclude>
     <ClInclude Include="skynet-src\socket_poll_win32.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
@@ -534,9 +531,7 @@
     <ClCompile Include="wepoll\wepoll.c">
       <Filter>wepoll</Filter>
     </ClCompile>
-    <ClCompile Include="config.txt">
-      <Filter>others</Filter>
-    </ClCompile>
+    <ClCompile Include="skynet-src\socket_epoll_win32.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test\pingserver.lua">
@@ -1037,5 +1032,8 @@
     <None Include="wepoll\LICENSE">
       <Filter>wepoll</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
   </ItemGroup>
 </Project>

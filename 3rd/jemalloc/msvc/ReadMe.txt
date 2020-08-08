@@ -18,9 +18,6 @@ How to build jemalloc for Windows
 
 5. Generate header files:
    sh -c "CC=cl ./autogen.sh"
-	./autogen.sh --with-jemalloc-prefix=je_ --enable-prof
-	Use following to generate solution file for skynet
-	sh -c "CC=cl ./autogen.sh --with-jemalloc-prefix=je_ --enable-prof"
 
 6. Now the project can be opened and built in Visual Studio:
    msvc\jemalloc_vc2017.sln

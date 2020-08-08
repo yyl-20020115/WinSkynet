@@ -23,7 +23,7 @@ typedef HANDLE pipe_fd;
 #include <assert.h>
 #include <string.h>
 
-#include "../3rd/jemalloc/include/jemalloc/internal/jemalloc_internal_decls.h"
+#include "internal/jemalloc_internal_decls.h"
 #ifdef _WIN32
 #include "socket_poll_win32.h"
 int pipe(SOCKET fd[2]);

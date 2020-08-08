@@ -18,7 +18,7 @@
 static size_t _used_memory = 0;
 static size_t _memory_block = 0;
 #ifdef _WIN32
-#include "../3rd/jemalloc/include/jemalloc/internal/jemalloc_internal_decls.h"
+#include "internal/jemalloc_internal_decls.h"
 #endif
 struct mem_data {
 	uint32_t handle;
