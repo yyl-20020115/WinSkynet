@@ -1,3 +1,12 @@
+请注意：
+
+目前正在移植中……请勿使用！
+刚刚可以实现编译通过……
+在学习框架原理的基础上，需要进一步调试功能……
+需要在Windows上进行优化。
+
+
+
 ## ![skynet logo](https://github.com/cloudwu/skynet/wiki/image/skynet_metro.jpg)
 
 Skynet is a lightweight online game framework which can be used in many other fields.
