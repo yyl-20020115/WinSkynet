@@ -101,7 +101,7 @@ pool_alloc(struct pool *p, size_t sz) {
 		return ret;
 	}
 
-	if (sz >= p->current_used) {
+	if ((int)sz >= p->current_used) {
 		return pool_newchunk(p, sz);
 	} else {
 		void * ret = pool_newchunk(p, CHUNK_SIZE);
@@ -150,7 +150,7 @@ struct_field(const uint8_t * stream, size_t sz) {
 		return -1;
 	fn = toword(stream);
 	header = SIZEOF_HEADER + SIZEOF_FIELD * fn;
-	if (sz < header)
+	if ((int)sz < header)
 		return -1;
 	field = stream + SIZEOF_HEADER;
 	sz -= header;

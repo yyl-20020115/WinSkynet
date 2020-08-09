@@ -322,7 +322,7 @@ unpackreq_string(lua_State *L, const uint8_t * buf, int sz) {
 		return luaL_error(L, "Invalid cluster message (size=%d)", sz);
 	}
 	size_t namesz = buf[1];
-	if (sz < namesz + 6) {
+	if (sz < (int)namesz + 6) {
 		return luaL_error(L, "Invalid cluster message (size=%d)", sz);
 	}
 	lua_pushlstring(L, (const char *)buf+2, namesz);
@@ -344,7 +344,7 @@ unpackmreq_string(lua_State *L, const uint8_t * buf, int sz, int is_push) {
 		return luaL_error(L, "Invalid cluster message (size=%d)", sz);
 	}
 	size_t namesz = buf[1];
-	if (sz < namesz + 10) {
+	if (sz < (int)namesz + 10) {
 		return luaL_error(L, "Invalid cluster message (size=%d)", sz);
 	}
 	lua_pushlstring(L, (const char *)buf+2, namesz);
@@ -572,7 +572,7 @@ lconcat(lua_State *L) {
 	while(lua_geti(L,1,idx) == LUA_TSTRING) {
 		size_t s;
 		const char * str = lua_tolstring(L, -1, &s);
-		if (s+offset > sz) {
+		if ((int)s+offset > sz) {
 			skynet_free(buff);
 			return 0;
 		}

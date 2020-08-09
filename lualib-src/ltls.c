@@ -150,7 +150,7 @@ _bio_write(lua_State* L, struct tls_context* tls_p, const char* s, size_t len) {
         // printf("BIO_write written:%d sz:%zu\n", written, sz);
         if(written <= 0) {
             luaL_error(L, "BIO_write error:%d", written);
-        }else if (written <= sz) {
+        }else if (written <= (int)sz) {
             p += written;
             sz -= written;
         }else {
@@ -246,7 +246,7 @@ _ltls_context_write(lua_State* L) {
         if(written <= 0) {
             int err = SSL_get_error(tls_p->ssl, written);
             luaL_error(L, "SSL_write error:%d", err);
-        }else if(written <= slen) {
+        }else if(written <= (int)slen) {
             unencrypted_data += written;
             slen -= written;
         }else {

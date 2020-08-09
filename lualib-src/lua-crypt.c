@@ -509,7 +509,7 @@ ldesdecode(lua_State *L) {
 	if (textsz > SMALL_CHUNK) {
 		buffer = lua_newuserdata(L, textsz);
 	}
-	for (i=0;i<textsz;i+=8) {
+	for (i=0;i< (int)textsz;i+=8) {
 		des_crypt(SK, text+i, buffer+i);
 	}
 	int padding = remove_padding(L, buffer + textsz - 1, padding_mode);
@@ -565,7 +565,7 @@ ltohex(lua_State *L) {
 		buffer = lua_newuserdata(L, sz * 2);
 	}
 	int i;
-	for (i=0;i<sz;i++) {
+	for (i=0;i< (int)sz;i++) {
 		buffer[i*2] = hex[text[i] >> 4];
 		buffer[i*2+1] = hex[text[i] & 0xf];
 	}
@@ -588,7 +588,7 @@ lfromhex(lua_State *L) {
 		buffer = lua_newuserdata(L, sz / 2);
 	}
 	int i;
-	for (i=0;i<sz;i+=2) {
+	for (i=0;i< (int)sz;i+=2) {
 		uint8_t hi,low;
 		HEX(hi, text[i]);
 		HEX(low, text[i+1]);
@@ -961,11 +961,11 @@ lb64decode(lua_State *L) {
 	}
 	int i,j;
 	int output = 0;
-	for (i=0;i<sz;) {
+	for (i=0;i< (int)sz;) {
 		int padding = 0;
 		int c[4];
 		for (j=0;j<4;) {
-			if (i>=sz) {
+			if (i>= (int)sz) {
 				return luaL_error(L, "Invalid base64 text");
 			}
 			c[j] = b64index(text[i]);
@@ -1024,7 +1024,7 @@ lxor_str(lua_State *L) {
 	luaL_Buffer b;
 	char * buffer = luaL_buffinitsize(L, &b, len1);
 	int i;
-	for (i=0;i<len1;i++) {
+	for (i=0;i< (int)len1;i++) {
 		buffer[i] = s1[i] ^ s2[i % len2];
 	}
 	luaL_addsize(&b, len1);

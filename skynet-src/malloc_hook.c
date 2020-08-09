@@ -54,18 +54,14 @@ get_allocated_field(uint32_t handle) {
 	ssize_t old_alloc = data->allocated;
 	if(old_handle == 0 || old_alloc <= 0) {
 		// data->allocated may less than zero, because it may not count at start.
-		if(!ATOM_CAS(&data->handle, old_handle, handle)) {
+		if(!ATOM_CAS32(&data->handle, old_handle, handle)) {
 			return 0;
 		}
 		if (old_alloc < 0) {
-#ifdef _WIN32
 #ifdef _WIN64
-			ATOM_CAS_POINTER64(&data->allocated, old_alloc, 0);
+			ATOM_CAS64(&data->allocated, old_alloc, 0);
 #else
-			ATOM_CAS(&data->allocated, old_alloc, 0);
-#endif
-#else
-			ATOM_CAS(&data->allocated, old_alloc, 0);
+			ATOM_CAS32(&data->allocated, old_alloc, 0);
 #endif
 		}
 	}

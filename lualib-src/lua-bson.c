@@ -221,7 +221,7 @@ utf8_copy(const char *s, char *d, size_t limit) {
 		int count = 0;
 		while (c & 0x40) {
 			int cc = s[++count];
-			if (limit <= count || (cc & 0xC0) != 0x80)
+			if ((int)limit <= count || (cc & 0xC0) != 0x80)
 				return 0;
 			d[count] = s[count];
 			res = (res << 6) | (cc & 0x3F);
@@ -533,7 +533,7 @@ append_table(struct bson *bs, lua_State *L, const char *key, size_t sz, int dept
 		if (!lua_isinteger(L, -1)) {
 			luaL_error(L, "__len should return integer");
 		}
-		size_t len = lua_tointeger(L, -1);
+		size_t len = (size_t)lua_tointeger(L, -1);
 		lua_pop(L, 1);
 		append_key(bs, L, BSON_ARRAY, key, sz);
 		pack_array(L, bs, depth, len);

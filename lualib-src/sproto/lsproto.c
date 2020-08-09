@@ -269,7 +269,7 @@ encode(const struct sproto_arg *args) {
 		} else {
 			str = lua_tolstring(L, -1, &sz);
 		}
-		if (sz > args->length)
+		if ((int)sz > args->length)
 			return SPROTO_CB_ERROR;
 		memcpy(args->value, str, sz);
 		lua_pop(L,1);
@@ -494,7 +494,7 @@ getbuffer(lua_State *L, int index, size_t *sz) {
 			return NULL;
 		}
 		buffer = lua_touserdata(L, index);
-		*sz = luaL_checkinteger(L, index+1);
+		*sz = (size_t)luaL_checkinteger(L, index+1);
 	}
 	return buffer;
 }
@@ -561,11 +561,11 @@ lpack(lua_State *L) {
 	void * output = lua_touserdata(L, lua_upvalueindex(1));
 	int bytes;
 	int osz = (int)lua_tointeger(L, lua_upvalueindex(2));
-	if (osz < maxsz) {
+	if (osz < (int)maxsz) {
 		output = expand_buffer(L, osz, (int)maxsz);
 	}
 	bytes = sproto_pack(buffer, (int)sz, output, (int)maxsz);
-	if (bytes > maxsz) {
+	if (bytes > (int) maxsz) {
 		return luaL_error(L, "packing error, return size = %d", bytes);
 	}
 	lua_pushlstring(L, output, bytes);
@@ -667,9 +667,9 @@ lsaveproto(lua_State *L) {
 #else
 	/* USE InterlockedExchange to fix this memory leak in Windows*/
 #ifdef _WIN64
-	rp = (struct sproto*)_InterlockedExchange64((long long*)&G_sproto[index],(long long) sp);
+	rp = (struct sproto*)_InterlockedExchange64((volatile long long*)&G_sproto[index],(long long) sp);
 #else
-	rp = (struct sproto*)_InterlockedExchange(&G_sproto[index], (long) sp);
+	rp = (struct sproto*)_InterlockedExchange((volatile long*)&G_sproto[index], (long) sp);
 #endif
 #endif
 	if (rp) {
