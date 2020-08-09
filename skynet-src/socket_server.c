@@ -354,11 +354,7 @@ reserve_id(struct socket_server *ss) {
 		struct socket *s = &ss->slot[HASH_ID(id)];
 		if (s->type == SOCKET_TYPE_INVALID) {
 			if (
-#ifdef _WIN32
-				_InterlockedCompareExchange8(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)
-#else
-				ATOM_CAS(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)
-#endif				
+				ATOM_CAS8(&s->type, SOCKET_TYPE_INVALID, SOCKET_TYPE_RESERVE)
 				) {
 				s->id = id;
 				s->protocol = PROTOCOL_UNKNOWN;
@@ -1528,21 +1524,21 @@ int
 socket_server_poll(struct socket_server *ss, struct socket_message * result, int * more) {
 	for (;;) {
 		if (ss->checkctrl) {
-			int type = 0;
-			if (has_cmd(ss))
-			if (type = ctrl_cmd(ss, result))
-			{
+
+			if (has_cmd(ss)) {
+				int type = ctrl_cmd(ss, result);
 				if (type != -1) {
 					clear_closed_event(ss, result, type);
 					return type;
 				}
-				else
+				else {
 					continue;
+				}
 			}
 			else {
 				ss->checkctrl = 0;
 			}
-			
+
 		}
 		if (ss->event_index == ss->event_n) {
 			ss->event_n = sp_wait(ss->event_fd, ss->ev, MAX_EVENT);
