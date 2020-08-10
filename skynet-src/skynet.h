@@ -71,14 +71,48 @@ const char * skynet_command(struct skynet_context * context, const char * cmd , 
 uint32_t skynet_queryname(struct skynet_context * context, const char * name);
 int skynet_send(struct skynet_context * context, uint32_t source, uint32_t destination , int type, int session, void * msg, size_t sz);
 int skynet_sendname(struct skynet_context * context, uint32_t source, const char * destination , int type, int session, void * msg, size_t sz);
-
 int skynet_isremote(struct skynet_context *, uint32_t handle, int * harbor);
-
 typedef int (*skynet_cb)(struct skynet_context * context, void *ud, int type, int session, uint32_t source , const void * msg, size_t sz);
 void skynet_callback(struct skynet_context * context, void *ud, skynet_cb cb);
-
+void* skynet_lalloc(void* ptr, size_t osize, size_t nsize);
 uint32_t skynet_current_handle(void);
 uint64_t skynet_now(void);
 void skynet_debug_memory(const char *info);	// for debug use, output current service memory to stderr
+//function pointers:
+typedef void (*skynet_error_ptr)(struct skynet_context* context, const char* msg, ...);
+typedef const char* (*skynet_command_ptr)(struct skynet_context* context, const char* cmd, const char* parm);
+typedef uint32_t (*skynet_queryname_ptr)(struct skynet_context* context, const char* name);
+typedef int (*skynet_send_ptr)(struct skynet_context* context, uint32_t source, uint32_t destination, int type, int session, void* msg, size_t sz);
+typedef int (*skynet_sendname_ptr)(struct skynet_context* context, uint32_t source, const char* destination, int type, int session, void* msg, size_t sz);
+
+typedef int (*skynet_isremote_ptr)(struct skynet_context*, uint32_t handle, int* harbor);
+
+typedef int (*skynet_cb)(struct skynet_context* context, void* ud, int type, int session, uint32_t source, const void* msg, size_t sz);
+typedef void (*skynet_callback_ptr)(struct skynet_context* context, void* ud, skynet_cb cb);
+typedef void* (*skynet_lalloc_ptr)(void* ptr, size_t osize, size_t nsize);
+
+typedef uint32_t (*skynet_current_handle_ptr)(void);
+typedef uint64_t (*skynet_now_ptr)(void);
+typedef void (*skynet_debug_memory_ptr)(const char* info);	// for debug use, output current service memory to stderr
+
+typedef struct _skynet_functions{
+	skynet_error_ptr error_function;
+	skynet_command_ptr command_function;
+	skynet_queryname_ptr queryname_function;
+	skynet_send_ptr send_function;
+	skynet_sendname_ptr sendname_function;
+	skynet_isremote_ptr is_remote_function;
+	skynet_callback_ptr call_back_function;
+	skynet_lalloc_ptr lalloc_function;
+	skynet_current_handle_ptr current_handle_function;
+	skynet_now_ptr _now_function;
+	skynet_debug_memory_ptr _debug_memory_function;
+} skynet_functions;
+
+typedef int (*get_skynet_functions_ptr)(skynet_functions* pfs);
+int get_skynet_functions(skynet_functions* pfs);
+
+//this is called in the dll(which calls get_skynet_functions in main application)
+int init_skynet_functions(skynet_functions* pfs);
 
 #endif

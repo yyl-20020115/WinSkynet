@@ -351,3 +351,4 @@ skynet_debug_memory(const char *info) {
 	size_t mem = malloc_current_memory();
 	fprintf(stderr, "[:%08x] %s %p\n", handle, info, (void *)mem);
 }
+

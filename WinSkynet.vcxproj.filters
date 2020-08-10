@@ -10,9 +10,6 @@
     <Filter Include="skynet-src">
       <UniqueIdentifier>{e85c08ab-1ee3-468e-b7bd-bd5dbf1b3d78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="service-src">
-      <UniqueIdentifier>{fbba5366-7b24-4dc4-85ae-d5d219f5ce2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="service">
       <UniqueIdentifier>{44173efa-9d1d-4c73-a960-b358a414ea7f}</UniqueIdentifier>
     </Filter>
@@ -138,12 +135,6 @@
     </ClInclude>
     <ClInclude Include="skynet-src\spinlock.h">
       <Filter>skynet-src</Filter>
-    </ClInclude>
-    <ClInclude Include="service-src\databuffer.h">
-      <Filter>service-src</Filter>
-    </ClInclude>
-    <ClInclude Include="service-src\hashid.h">
-      <Filter>service-src</Filter>
     </ClInclude>
     <ClInclude Include="lualib-src\lua-seri.h">
       <Filter>lualib-src</Filter>
@@ -326,18 +317,6 @@
     </ClCompile>
     <ClCompile Include="skynet-src\socket_server.c">
       <Filter>skynet-src</Filter>
-    </ClCompile>
-    <ClCompile Include="service-src\service_gate.c">
-      <Filter>service-src</Filter>
-    </ClCompile>
-    <ClCompile Include="service-src\service_harbor.c">
-      <Filter>service-src</Filter>
-    </ClCompile>
-    <ClCompile Include="service-src\service_logger.c">
-      <Filter>service-src</Filter>
-    </ClCompile>
-    <ClCompile Include="service-src\service_snlua.c">
-      <Filter>service-src</Filter>
     </ClCompile>
     <ClCompile Include="lualib-src\lsha1.c">
       <Filter>lualib-src</Filter>
@@ -525,13 +504,13 @@
     <ClCompile Include="3rd\lua-md5\md5lib.c">
       <Filter>3rd\lua-md5</Filter>
     </ClCompile>
-    <ClCompile Include="win_implementations.c">
-      <Filter>skynet-src</Filter>
-    </ClCompile>
     <ClCompile Include="wepoll\wepoll.c">
       <Filter>wepoll</Filter>
     </ClCompile>
     <ClCompile Include="skynet-src\socket_epoll_win32.c">
+      <Filter>skynet-src</Filter>
+    </ClCompile>
+    <ClCompile Include="skynet-src\win_impl.c">
       <Filter>skynet-src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1034,6 +1013,7 @@
     <None Include="wepoll\LICENSE">
       <Filter>wepoll</Filter>
     </None>
+    <None Include="skynet-src\skynet.def" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.lua" />

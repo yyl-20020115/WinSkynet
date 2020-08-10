@@ -1,0 +1,7 @@
+LIBRARY "harbor"
+
+EXPORTS
+    harbor_create
+    harbor_init
+    harbor_release
+    harbor_signal

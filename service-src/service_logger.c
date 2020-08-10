@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#ifdef _WIN32
+#include "skynet_functions_win32.h"
+#endif
 
 struct logger {
 	FILE * handle;
@@ -49,9 +52,18 @@ logger_cb(struct skynet_context * context, void *ud, int type, int session, uint
 
 	return 0;
 }
+void logger_signal(void* inst, int signal) 
+{
+	//NOTHING TO DO WITH LOGGER IN SIGNAL
+}
 
 int
 logger_init(struct logger * inst, struct skynet_context *ctx, const char * parm) {
+#ifdef _WIN32
+	if (!init_skynet_functions(&sfs)) return 1;
+	if (!init_skynet_socket_functions(&ssf)) return 1;
+	if (!init_skynet_harbor_functions(&shf)) return 1;
+#endif
 	if (parm) {
 		inst->handle = fopen(parm,"w");
 		if (inst->handle == NULL) {
@@ -67,5 +79,6 @@ logger_init(struct logger * inst, struct skynet_context *ctx, const char * parm)
 		skynet_callback(ctx, inst, logger_cb);
 		return 0;
 	}
+
 	return 1;
 }

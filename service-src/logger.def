@@ -1,0 +1,7 @@
+LIBRARY "logger"
+
+EXPORTS
+    logger_create
+    logger_init
+    logger_release
+    logger_signal

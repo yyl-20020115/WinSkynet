@@ -406,19 +406,19 @@ socket_server_create(uint64_t time) {
 		fprintf(stderr, "socket-server: create socket pair failed.\n");
 		return NULL;
 	}
+#ifdef _WIN32
+
+#else
 	if (sp_add(efd, fd[0], NULL)) {
 		// add recvctrl_fd to event poll
 		fprintf(stderr, "socket-server: can't add server fd to event pool.\n");
-#ifdef _WIN32
-		if (fd[0] != 0) CloseHandle((HANDLE)fd[0]);
-		if (fd[1] != 0) CloseHandle((HANDLE)fd[1]);
-#else
+
 		close(fd[0]);
 		close(fd[1]);
-#endif
 		sp_release(efd);
 		return NULL;
 	}
+#endif
 
 	struct socket_server *ss = MALLOC(sizeof(*ss));
 	ss->time = time;

@@ -1,0 +1,7 @@
+LIBRARY "snlua"
+
+EXPORTS
+    snlua_create
+    snlua_init
+    snlua_release
+    snlua_signal

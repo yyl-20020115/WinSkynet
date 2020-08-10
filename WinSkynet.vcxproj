@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -103,6 +103,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,6 +124,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,6 +141,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,6 +162,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -197,8 +205,6 @@
     <ClInclude Include="lualib-src\lua-seri.h" />
     <ClInclude Include="lualib-src\sproto\msvcint.h" />
     <ClInclude Include="lualib-src\sproto\sproto.h" />
-    <ClInclude Include="service-src\databuffer.h" />
-    <ClInclude Include="service-src\hashid.h" />
     <ClInclude Include="skynet-src\atomic.h" />
     <ClInclude Include="skynet-src\malloc_hook.h" />
     <ClInclude Include="skynet-src\rwlock.h" />
@@ -296,10 +302,6 @@
     <ClCompile Include="lualib-src\lua-stm.c" />
     <ClCompile Include="lualib-src\sproto\lsproto.c" />
     <ClCompile Include="lualib-src\sproto\sproto.c" />
-    <ClCompile Include="service-src\service_gate.c" />
-    <ClCompile Include="service-src\service_harbor.c" />
-    <ClCompile Include="service-src\service_logger.c" />
-    <ClCompile Include="service-src\service_snlua.c" />
     <ClCompile Include="skynet-src\malloc_hook.c" />
     <ClCompile Include="skynet-src\skynet_daemon.c" />
     <ClCompile Include="skynet-src\skynet_env.c" />
@@ -316,8 +318,8 @@
     <ClCompile Include="skynet-src\skynet_start.c" />
     <ClCompile Include="skynet-src\skynet_timer.c" />
     <ClCompile Include="skynet-src\socket_server.c" />
+    <ClCompile Include="skynet-src\win_impl.c" />
     <ClCompile Include="wepoll\wepoll.c" />
-    <ClCompile Include="win_implementations.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="examples\abort.lua" />
@@ -446,6 +448,7 @@
     <None Include="service\service_provider.lua" />
     <None Include="service\sharedatad.lua" />
     <None Include="service\snaxd.lua" />
+    <None Include="skynet-src\skynet.def" />
     <None Include="test\pingserver.lua" />
     <None Include="test\sharemap.sp" />
     <None Include="test\testbson.lua" />

@@ -8,6 +8,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _WIN32
+#include "skynet_functions_win32.h"
+#endif
+
+
 
 #define MEMORY_WARNING_REPORT (1024 * 1024 * 32)
 
@@ -65,7 +70,7 @@ report_launcher_error(struct skynet_context *ctx) {
 
 static const char *
 optstring(struct skynet_context *ctx, const char *key, const char * str) {
-	const char * ret = skynet_command(ctx, "GETENV", key);
+	const char* ret = skynet_command(ctx, "GETENV", key);
 	if (ret == NULL) {
 		return str;
 	}
@@ -146,10 +151,19 @@ launch_cb(struct skynet_context * context, void *ud, int type, int session, uint
 
 int
 snlua_init(struct snlua *l, struct skynet_context *ctx, const char * args) {
-	int sz = (int)strlen(args);
-	char * tmp = skynet_malloc(sz);
-	memcpy(tmp, args, sz);
+#ifdef _WIN32
+	if (init_skynet_functions(&sfs)) {
+		sfs.call_back_function(ctx, (void*)1, launch_cb);
+	}
+	else {
+		return 1;
+	}
+#else
 	skynet_callback(ctx, l , launch_cb);
+#endif
+	int sz = (int)strlen(args);
+	char* tmp = skynet_malloc(sz);
+	memcpy(tmp, args, sz);
 	const char * self = skynet_command(ctx, "REG", NULL);
 	uint32_t handle_id = strtoul(self+1, NULL, 16);
 	// it must be first message

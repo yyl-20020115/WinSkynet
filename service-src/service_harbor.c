@@ -2,7 +2,7 @@
 #include "skynet_harbor.h"
 #include "skynet_socket.h"
 #include "skynet_handle.h"
-
+#include "skynet_functions_win32.h"
 /*
 	harbor listen the PTYPE_HARBOR (in text)
 	N name : update the global name
@@ -734,6 +734,12 @@ mainloop(struct skynet_context * context, void * ud, int type, int session, uint
 
 int
 harbor_init(struct harbor *h, struct skynet_context *ctx, const char * args) {
+#ifdef _WIN32
+	if (!init_skynet_functions(&sfs)) return 1;
+	if (!init_skynet_socket_functions(&ssf)) return 1;
+	if (!init_skynet_harbor_functions(&shf)) return 1;
+#endif
+
 	h->ctx = ctx;
 	int harbor_id = 0;
 	uint32_t slave = 0;
@@ -747,4 +753,8 @@ harbor_init(struct harbor *h, struct skynet_context *ctx, const char * args) {
 	skynet_harbor_start(ctx);
 
 	return 0;
+}
+void harbor_signal(void* inst, int signal)
+{
+	//NOTHING TO DO WITH HARBOR IN SIGNAL
 }

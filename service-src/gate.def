@@ -1,0 +1,7 @@
+LIBRARY "gate"
+
+EXPORTS
+    gate_create
+    gate_init
+    gate_release
+    gate_signal
