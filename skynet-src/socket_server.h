@@ -61,7 +61,7 @@ const struct socket_udp_address * socket_server_udp_address(struct socket_server
 struct socket_object_interface {
 	const void * (*buffer)(const void *);
 	size_t (*size)(const void *);
-	void (*do_free)(void *);
+	void (*free)(void *);
 };
 
 // if you send package with type SOCKET_BUFFER_OBJECT, use soi.
