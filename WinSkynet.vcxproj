@@ -490,6 +490,7 @@
   <ItemGroup>
     <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc.vcxproj">
       <Project>{abb5eae7-b3e6-432e-b636-333449892ea6}</Project>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>

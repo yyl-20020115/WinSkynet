@@ -1,3 +1,9 @@
+#ifdef _WIN32
+//#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 #include "skynet.h"
 
 #include "skynet_imp.h"
@@ -114,9 +120,12 @@ static const char * load_config = "\
 	setmetatable(result, nil)\n\
 	return result\n\
 ";
-
+#include <mimalloc-override.h>
 int
 main(int argc, char *argv[]) {
+#ifdef _WIN32
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 	const char * config_file = NULL ;
 	if (argc > 1) {
 		config_file = argv[1];

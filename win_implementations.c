@@ -31,12 +31,12 @@ static char szBuf[256] = { 0 };
 static char* GetLastErrorMessage() {
     LPVOID lpMsgBuf;
     DWORD dw = GetLastError();
-    FormatMessage(
+    FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
         NULL,
         dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR)&lpMsgBuf,
+        MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),
+        (LPSTR)&lpMsgBuf,
         0, NULL);
     memset(szBuf, 0, sizeof(szBuf));
     strncpy(szBuf, lpMsgBuf, sizeof(szBuf) - 1);
