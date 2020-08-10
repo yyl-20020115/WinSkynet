@@ -1,4 +1,4 @@
-LIBRARY "skynet"
+LIBRARY "WinSkynet"
 
 EXPORTS
 	strsep
@@ -103,6 +103,9 @@ EXPORTS
 	skynet_log_output
 
 	skynet_start
+	skynet_globalinit
+	skynet_globalexit
+	skynet_env_init
 
 	skynet_harbor_send
 	skynet_harbor_message_isremote
@@ -141,3 +144,5 @@ EXPORTS
 	skynet_isremote
 	skynet_callback
 	skynet_current_handle
+
+	

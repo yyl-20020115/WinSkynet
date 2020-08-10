@@ -36,6 +36,8 @@
     </ProjectReference>
     <ProjectReference Include="WinSkynet.vcxproj">
       <Project>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
