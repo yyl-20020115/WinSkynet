@@ -120,7 +120,7 @@ static const char * load_config = "\
 	setmetatable(result, nil)\n\
 	return result\n\
 ";
-#include <mimalloc-override.h>
+
 int
 main(int argc, char *argv[]) {
 #ifdef _WIN32
