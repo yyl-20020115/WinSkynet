@@ -9,7 +9,7 @@
 #include "lauxlib.h"
 #include "sproto.h"
 #ifdef _WIN32
-#include<intrin0.h>
+#include<intrin.h>
 #endif
 
 #define MAX_GLOBALSPROTO 16

@@ -1,14 +1,8 @@
 #ifndef SKYNET_RWLOCK_H
 #define SKYNET_RWLOCK_H
-
-#ifdef _WIN32
-#define USE_PTHREAD_LOCK
-#endif
-
 #ifndef USE_PTHREAD_LOCK
 #ifdef _WIN32
 #include <intrin.h>
-#include <intrin0.h>
 #endif
 struct rwlock {
 	int write;

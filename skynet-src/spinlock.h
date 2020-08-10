@@ -5,12 +5,10 @@
 #define SPIN_LOCK(q) spinlock_lock(&(q)->lock);
 #define SPIN_UNLOCK(q) spinlock_unlock(&(q)->lock);
 #define SPIN_DESTROY(q) spinlock_destroy(&(q)->lock);
-#ifdef _WIN32
-#define USE_PTHREAD_LOCK
-#endif
+
 #ifndef USE_PTHREAD_LOCK
 #ifdef _WIN32
-#include <intrin0.h>
+#include <intrin.h>
 #endif
 struct spinlock {
 	int lock;

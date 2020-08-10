@@ -217,7 +217,7 @@
     <ClInclude Include="skynet-src\skynet_socket.h" />
     <ClInclude Include="skynet-src\skynet_timer.h" />
     <ClInclude Include="skynet-src\socket_buffer.h" />
-    <Text Include="config.txt">
+    <Text Include="config.lua">
       <FileType>CppCode</FileType>
     </Text>
     <ClCompile Include="skynet-src\socket_epoll_win32.c">

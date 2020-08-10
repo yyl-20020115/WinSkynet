@@ -1036,6 +1036,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="config.txt" />
+    <Text Include="config.lua" />
   </ItemGroup>
 </Project>
