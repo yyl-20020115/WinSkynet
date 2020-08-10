@@ -1,3 +1,6 @@
 [submodule "3rd/jemalloc"]
 	path = 3rd/jemalloc
 	url = https://github.com/jemalloc/jemalloc.git
+[submodule "3rd/mimalloc"]
+	path = 3rd/mimalloc
+	url = https://github.com/microsoft/mimalloc.git

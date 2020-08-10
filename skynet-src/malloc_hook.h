@@ -1,5 +1,7 @@
 #ifndef SKYNET_MALLOC_HOOK_H
 #define SKYNET_MALLOC_HOOK_H
+
+#ifdef _WIN32
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
@@ -9,6 +11,8 @@ typedef long long ssize_t;
 #else
 typedef long ssize_t;
 #endif
+#endif
+#include <mimalloc.h>
 #endif
 
 #include <stdlib.h>
