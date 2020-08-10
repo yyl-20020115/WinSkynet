@@ -8,7 +8,9 @@
 #include <string.h>
 
 #include "atomic.h"
-
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif
 struct mc_package {
 	int reference;
 	uint32_t size;

@@ -10,6 +10,7 @@
 #include "atomic.h"
 #ifdef _WIN32
 #define NOUSE_JEMALLOC
+#include <mimalloc-override.h>
 #endif
 // turn on MEMORY_CHECK can do more memory check, such as double free
 // #define MEMORY_CHECK

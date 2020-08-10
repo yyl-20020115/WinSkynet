@@ -293,7 +293,7 @@ send_object_init(struct socket_server *ss, struct send_object *so, const void *o
 	if (sz == USEROBJECT) {
 		so->buffer = ss->soi.buffer(object);
 		so->sz = ss->soi.size(object);
-		so->free_func = ss->soi.free;
+		so->free_func = ss->soi.do_free;
 		return true;
 	} else {
 		so->buffer = object;
@@ -334,7 +334,7 @@ send_object_init_from_sendbuffer(struct socket_server *ss, struct send_object *s
 static inline void
 write_buffer_free(struct socket_server *ss, struct write_buffer *wb) {
 	if (wb->userobject) {
-		ss->soi.free((void *)wb->buffer);
+		ss->soi.do_free((void *)wb->buffer);
 	} else {
 		FREE((void *)wb->buffer);
 	}
@@ -461,7 +461,7 @@ free_buffer(struct socket_server *ss, struct socket_sendbuffer *buf) {
 		FREE((void *)buffer);
 		break;
 	case SOCKET_BUFFER_OBJECT:
-		ss->soi.free(buffer);
+		ss->soi.do_free(buffer);
 		break;
 	case SOCKET_BUFFER_RAWPOINTER:
 		break;

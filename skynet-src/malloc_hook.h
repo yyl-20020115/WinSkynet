@@ -12,7 +12,6 @@ typedef long long ssize_t;
 typedef long ssize_t;
 #endif
 #endif
-#include <mimalloc.h>
 #endif
 
 #include <stdlib.h>
