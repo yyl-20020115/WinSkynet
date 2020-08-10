@@ -121,8 +121,13 @@ struct socket {
 
 struct socket_server {
 	volatile uint64_t time;
+#ifndef _WIN32
+	int recvctrl_fd;
+	int sendctrl_fd;
+#else
 	SOCKET recvctrl_fd;
 	SOCKET sendctrl_fd;
+#endif
 	int checkctrl;
 	poll_fd event_fd;
 	int alloc_id;
@@ -385,7 +390,11 @@ clear_wb_list(struct wb_list *list) {
 struct socket_server * 
 socket_server_create(uint64_t time) {
 	int i;
+#ifdef _WIN32
 	SOCKET fd[2] = { 0 };
+#else
+	int fd[2] = { 0 };
+#endif
 	poll_fd efd = sp_create();
 	if (sp_invalid(efd)) {
 		fprintf(stderr, "socket-server: create event pool failed.\n");
