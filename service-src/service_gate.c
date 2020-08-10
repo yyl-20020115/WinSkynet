@@ -9,15 +9,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
-
-#include "skynet_functions_win32.h"
-#ifdef _WIN32
-static int gate_skynet_socket_send(struct skynet_context* ctx, int id, void* buffer, int sz) {
-	struct socket_sendbuffer tmp;
-	sendbuffer_init_(&tmp, id, buffer, sz);
-	return skynet_socket_sendbuffer(ctx, &tmp);
-}
-#endif
 #define BACKLOG 128
 
 struct connection {
@@ -309,11 +300,7 @@ _cb(struct skynet_context * ctx, void * ud, int type, int session, uint32_t sour
 		int id = hashid_lookup(&g->hash, uid);
 		if (id>=0) {
 			// don't send id (last 4 bytes)
-#ifdef _WIN32
-			gate_skynet_socket_send(ctx, uid, (void*)msg, (int)sz - 4);
-#else
 			skynet_socket_send(ctx, uid, (void*)msg, (int)sz - 4);
-#endif
 			// return 1 means don't free msg
 			return 1;
 		} else {
@@ -365,11 +352,6 @@ int
 gate_init(struct gate *g , struct skynet_context * ctx, char * parm) {
 	if (parm == NULL)
 		return 1;
-#ifdef _WIN32
-	if (!init_skynet_functions(&sfs)) return 1;
-	if (!init_skynet_socket_functions(&ssf)) return 1;
-	if (!init_skynet_harbor_functions(&shf)) return 1;
-#endif
 	int r = 0;
 	int max = 0;
 	int sz = (int)strlen(parm)+1;

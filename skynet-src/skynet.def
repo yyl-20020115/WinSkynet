@@ -1,4 +1,143 @@
+LIBRARY "skynet"
+
 EXPORTS
-	get_skynet_functions
-	get_skynet_socket_functions
-	get_skynet_harbor_functions
+	strsep
+	malloc_used_memory
+	malloc_memory_block
+	malloc_current_memory
+	memory_info_dump
+	mallctl_int64
+	mallctl_opt
+	dump_c_mem
+	dump_mem_lua
+
+	socket_server_create
+	socket_server_release
+	socket_server_poll
+	socket_server_exit
+	socket_server_close
+	socket_server_start
+	socket_server_send
+	socket_server_send_lowpriority
+	socket_server_listen
+	socket_server_connect
+	socket_server_bind
+	socket_server_nodelay
+	socket_server_udp
+	socket_server_udp_connect
+	socket_server_udp_send
+	socket_server_udp_address
+	socket_server_userobject
+
+	skynet_callback
+	skynet_timeout
+	skynet_updatetime
+	skynet_timer_init
+	skynet_now
+
+	skynet_socket_init
+	skynet_socket_exit
+	skynet_socket_free
+	skynet_socket_poll
+	skynet_socket_sendbuffer
+	skynet_socket_send
+	skynet_socket_send_lowpriority
+	skynet_socket_listen
+	skynet_socket_connect
+	skynet_socket_bind
+	skynet_socket_close
+	skynet_socket_start
+	skynet_socket_nodelay
+	skynet_socket_udp
+	skynet_socket_udp_connect
+	skynet_socket_udp_send
+	skynet_socket_udp_address
+	skynet_socket_shutdown
+
+	skynet_context_new
+	skynet_context_grab
+	skynet_context_reserve
+	skynet_context_release
+	skynet_context_handle
+	skynet_context_push
+	skynet_context_send
+	skynet_context_newsession
+	skynet_context_message_dispatch
+	skynet_context_total
+	skynet_context_dispatchall
+	skynet_context_endless
+	skynet_globalinit
+	skynet_globalexit
+	skynet_initthread
+
+	skynet_globalmq_push
+	skynet_globalmq_pop
+	skynet_mq_create
+	skynet_mq_mark_release
+	skynet_mq_release
+	skynet_mq_handle
+	skynet_mq_pop
+	skynet_mq_push
+	skynet_mq_length
+	skynet_mq_overload
+	skynet_mq_init
+
+	skynet_monitor_new
+	skynet_monitor_delete
+	skynet_monitor_trigger
+	skynet_monitor_check
+
+	skynet_module_insert
+	skynet_module_query
+	skynet_module_instance_create
+	skynet_module_instance_init
+	skynet_module_instance_release
+	skynet_module_instance_signal
+	skynet_module_init
+
+	skynet_strdup
+	skynet_lalloc
+
+	skynet_log_open
+	skynet_log_close
+	skynet_log_output
+
+	skynet_start
+
+	skynet_harbor_send
+	skynet_harbor_message_isremote
+	skynet_harbor_init
+	skynet_harbor_start
+	skynet_harbor_exit
+
+	skynet_handle_register
+	skynet_handle_retire
+	skynet_handle_grab
+	skynet_handle_retireall
+	skynet_handle_findname
+	skynet_handle_namehandle
+	skynet_handle_init
+
+	skynet_getenv
+	skynet_setenv
+	skynet_env_init
+
+	daemon_init
+	daemon_exit
+
+	skynet_error
+	skynet_command
+	skynet_queryname
+	skynet_send
+	skynet_sendname
+	skynet_isremote
+	skynet_current_handle
+
+	skynet_error
+	skynet_command
+	skynet_queryname
+	skynet_send
+	skynet_sendname
+	skynet_isremote
+	skynet_callback
+	skynet_current_handle

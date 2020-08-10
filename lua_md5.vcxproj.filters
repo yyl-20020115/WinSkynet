@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lua-md5">
+      <UniqueIdentifier>{b45ff9d0-87d9-44fc-99f4-676b4047f878}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3rd\lua-md5\compat-5.2.c">
+      <Filter>lua-md5</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lua-md5\md5.c">
+      <Filter>lua-md5</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lua-md5\md5lib.c">
+      <Filter>lua-md5</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rd\lua-md5\compat-5.2.h">
+      <Filter>lua-md5</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lua-md5\md5.h">
+      <Filter>lua-md5</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\lua_md5.def" />
+  </ItemGroup>
+</Project>

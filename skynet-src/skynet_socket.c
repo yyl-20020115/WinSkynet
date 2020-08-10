@@ -200,3 +200,32 @@ struct socket_info *
 skynet_socket_info() {
 	return socket_server_info(SOCKET_SERVER);
 }
+void sendbuffer_init_(struct socket_sendbuffer* buf, int id, const void* buffer, int sz) {
+	buf->id = id;
+	buf->buffer = buffer;
+	if (sz < 0) {
+		buf->type = SOCKET_BUFFER_OBJECT;
+	}
+	else {
+		buf->type = SOCKET_BUFFER_MEMORY;
+	}
+	buf->sz = (size_t)sz;
+}
+
+int skynet_socket_send(struct skynet_context* ctx, int id, void* buffer, int sz) {
+	struct socket_sendbuffer tmp;
+	sendbuffer_init_(&tmp, id, buffer, sz);
+	return skynet_socket_sendbuffer(ctx, &tmp);
+}
+
+int skynet_socket_send_lowpriority(struct skynet_context* ctx, int id, void* buffer, int sz) {
+	struct socket_sendbuffer tmp;
+	sendbuffer_init_(&tmp, id, buffer, sz);
+	return skynet_socket_sendbuffer_lowpriority(ctx, &tmp);
+}
+
+int skynet_socket_udp_send(struct skynet_context* ctx, int id, const char* address, const void* buffer, int sz) {
+	struct socket_sendbuffer tmp;
+	sendbuffer_init_(&tmp, id, buffer, sz);
+	return skynet_socket_udp_sendbuffer(ctx, address, &tmp);
+}

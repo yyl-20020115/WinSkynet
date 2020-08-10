@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="3rd\lpeg\lpcap.c">
+      <Filter>lpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lpeg\lpcode.c">
+      <Filter>lpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lpeg\lpprint.c">
+      <Filter>lpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lpeg\lptree.c">
+      <Filter>lpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\lpeg\lpvm.c">
+      <Filter>lpeg</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rd\lpeg\lpvm.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lpeg\lpcap.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lpeg\lpcode.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lpeg\lpprint.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lpeg\lptree.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\lpeg\lptypes.h">
+      <Filter>lpeg</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="lpeg">
+      <UniqueIdentifier>{bc79e8fb-98d5-4d9e-b742-31080e66ff5b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\lpeg.def" />
+  </ItemGroup>
+</Project>

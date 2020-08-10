@@ -19,34 +19,79 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="service-src\service_gate.c" />
+    <ClCompile Include="3rd\lua\lapi.c" />
+    <ClCompile Include="3rd\lua\lauxlib.c" />
+    <ClCompile Include="3rd\lua\lbaselib.c" />
+    <ClCompile Include="3rd\lua\lbitlib.c" />
+    <ClCompile Include="3rd\lua\lcode.c" />
+    <ClCompile Include="3rd\lua\lcorolib.c" />
+    <ClCompile Include="3rd\lua\lctype.c" />
+    <ClCompile Include="3rd\lua\ldblib.c" />
+    <ClCompile Include="3rd\lua\ldebug.c" />
+    <ClCompile Include="3rd\lua\ldo.c" />
+    <ClCompile Include="3rd\lua\ldump.c" />
+    <ClCompile Include="3rd\lua\lfunc.c" />
+    <ClCompile Include="3rd\lua\lgc.c" />
+    <ClCompile Include="3rd\lua\linit.c" />
+    <ClCompile Include="3rd\lua\liolib.c" />
+    <ClCompile Include="3rd\lua\llex.c" />
+    <ClCompile Include="3rd\lua\lmathlib.c" />
+    <ClCompile Include="3rd\lua\lmem.c" />
+    <ClCompile Include="3rd\lua\loadlib.c" />
+    <ClCompile Include="3rd\lua\lobject.c" />
+    <ClCompile Include="3rd\lua\lopcodes.c" />
+    <ClCompile Include="3rd\lua\loslib.c" />
+    <ClCompile Include="3rd\lua\lparser.c" />
+    <ClCompile Include="3rd\lua\lstate.c" />
+    <ClCompile Include="3rd\lua\lstring.c" />
+    <ClCompile Include="3rd\lua\lstrlib.c" />
+    <ClCompile Include="3rd\lua\ltable.c" />
+    <ClCompile Include="3rd\lua\ltablib.c" />
+    <ClCompile Include="3rd\lua\ltm.c" />
+    <ClCompile Include="3rd\lua\lundump.c" />
+    <ClCompile Include="3rd\lua\lutf8lib.c" />
+    <ClCompile Include="3rd\lua\lvm.c" />
+    <ClCompile Include="3rd\lua\lzio.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="service-src\databuffer.h" />
-    <ClInclude Include="service-src\hashid.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="service-src\gate.def" />
+    <ClInclude Include="3rd\lua\lapi.h" />
+    <ClInclude Include="3rd\lua\lauxlib.h" />
+    <ClInclude Include="3rd\lua\lcode.h" />
+    <ClInclude Include="3rd\lua\lctype.h" />
+    <ClInclude Include="3rd\lua\ldebug.h" />
+    <ClInclude Include="3rd\lua\ldo.h" />
+    <ClInclude Include="3rd\lua\lfunc.h" />
+    <ClInclude Include="3rd\lua\lgc.h" />
+    <ClInclude Include="3rd\lua\llex.h" />
+    <ClInclude Include="3rd\lua\llimits.h" />
+    <ClInclude Include="3rd\lua\lmem.h" />
+    <ClInclude Include="3rd\lua\lobject.h" />
+    <ClInclude Include="3rd\lua\lopcodes.h" />
+    <ClInclude Include="3rd\lua\lparser.h" />
+    <ClInclude Include="3rd\lua\lprefix.h" />
+    <ClInclude Include="3rd\lua\lstate.h" />
+    <ClInclude Include="3rd\lua\lstring.h" />
+    <ClInclude Include="3rd\lua\ltable.h" />
+    <ClInclude Include="3rd\lua\ltm.h" />
+    <ClInclude Include="3rd\lua\lua.h" />
+    <ClInclude Include="3rd\lua\lua.hpp" />
+    <ClInclude Include="3rd\lua\luaconf.h" />
+    <ClInclude Include="3rd\lua\lualib.h" />
+    <ClInclude Include="3rd\lua\lundump.h" />
+    <ClInclude Include="3rd\lua\lvm.h" />
+    <ClInclude Include="3rd\lua\lzio.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
       <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
     </ProjectReference>
-    <ProjectReference Include="lua.vcxproj">
-      <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
-    </ProjectReference>
-    <ProjectReference Include="WinSkynet.vcxproj">
-      <Project>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e4129de1-12a3-47ad-8340-f6379f585aff}</ProjectGuid>
-    <RootNamespace>WinSkynetGate</RootNamespace>
+    <ProjectGuid>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</ProjectGuid>
+    <RootNamespace>lua</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>gate</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -95,40 +140,36 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\mimalloc\include;$(IncludePath)</IncludePath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\mimalloc\include;$(IncludePath)</IncludePath>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\mimalloc\include;$(IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);LUA_BUILD_AS_DLL;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,7 +178,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);LUA_BUILD_AS_DLL;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -145,22 +186,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);LUA_BUILD_AS_DLL;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +208,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);LUA_BUILD_AS_DLL;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -177,8 +216,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -32,6 +32,10 @@
 
 
 
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif
+
 const char lua_ident[] =
   "$LuaVersion: " LUA_COPYRIGHT " $"
   "$LuaAuthors: " LUA_AUTHORS " $";

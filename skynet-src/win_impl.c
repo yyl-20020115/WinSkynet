@@ -2,40 +2,6 @@
 #include "skynet.h"
 #include <time.h>
 #include <Windows.h>
-#include <skynet_socket.h>
-#include <skynet_harbor.h>
-
-int get_skynet_functions(skynet_functions* pfs) {
-    pfs->error_function = skynet_error;
-    pfs->command_function = skynet_command;
-    pfs->queryname_function = skynet_queryname;
-    pfs->send_function = skynet_send;
-    pfs->sendname_function = skynet_sendname;
-    pfs->is_remote_function = skynet_isremote;
-    pfs->call_back_function = skynet_callback;
-    pfs->lalloc_function = skynet_lalloc;
-    pfs->current_handle_function = skynet_current_handle;
-    pfs->_now_function = skynet_now;
-    pfs->_debug_memory_function = skynet_debug_memory;
-
-    return 1;
-}
-int get_skynet_socket_functions(skynet_socket_functions* sfs) {
-    sfs->start_function = skynet_socket_start;
-    sfs->listen_function = skynet_socket_listen;
-    sfs->sendbuffer_function = skynet_socket_sendbuffer;
-    sfs->close_function = skynet_socket_close;
-    return 1;
-}
-int get_skynet_harbor_functions(skynet_harbor_functions* shf) {
-    shf->exit_function = skynet_harbor_exit;
-    shf->init_function = skynet_harbor_init;
-    shf->message_isremote_function = skynet_harbor_message_isremote;
-    shf->send_function = skynet_harbor_send;
-    shf->start_function = skynet_harbor_start;
-
-    return 1;
-}
 
 
 #if 0

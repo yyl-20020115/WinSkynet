@@ -42,56 +42,16 @@ int skynet_socket_udp_connect(struct skynet_context *ctx, int id, const char * a
 int skynet_socket_udp_sendbuffer(struct skynet_context *ctx, const char * address, struct socket_sendbuffer *buffer);
 const char * skynet_socket_udp_address(struct skynet_socket_message *, int *addrsz);
 
-typedef void (*skynet_socket_start_ptr)(struct skynet_context* ctx, int id);
-typedef void (*skynet_socket_close_ptr)(struct skynet_context* ctx, int id);
-typedef int  (*skynet_socket_listen_ptr)(struct skynet_context* ctx, const char* host, int port, int backlog);
-typedef int  (*skynet_socket_sendbuffer_ptr)(struct skynet_context* ctx, struct socket_sendbuffer* buffer);
-typedef struct _skynet_socket_functions {
-	skynet_socket_start_ptr start_function;
-	skynet_socket_close_ptr close_function;
-	skynet_socket_listen_ptr listen_function;
-	skynet_socket_sendbuffer_ptr sendbuffer_function;
-
-}skynet_socket_functions;
-
-int get_skynet_socket_functions(skynet_socket_functions* ssf);
-typedef int (*get_skynet_socket_functions_ptr)(skynet_socket_functions* ssf);
-
-int init_skynet_socket_functions(skynet_socket_functions* ssf);
-
-
 struct socket_info * skynet_socket_info();
 
 // legacy APIs
 
-static inline void sendbuffer_init_(struct socket_sendbuffer *buf, int id, const void *buffer, int sz) {
-	buf->id = id;
-	buf->buffer = buffer;
-	if (sz < 0) {
-		buf->type = SOCKET_BUFFER_OBJECT;
-	} else {
-		buf->type = SOCKET_BUFFER_MEMORY;
-	}
-	buf->sz = (size_t)sz;
-}
+void sendbuffer_init_(struct socket_sendbuffer* buf, int id, const void* buffer, int sz);
 
-static inline int skynet_socket_send(struct skynet_context *ctx, int id, void *buffer, int sz) {
-	struct socket_sendbuffer tmp;
-	sendbuffer_init_(&tmp, id, buffer, sz);
-	return skynet_socket_sendbuffer(ctx, &tmp);
-}
+int skynet_socket_send(struct skynet_context* ctx, int id, void* buffer, int sz);
 
-static inline int skynet_socket_send_lowpriority(struct skynet_context *ctx, int id, void *buffer, int sz) {
-	struct socket_sendbuffer tmp;
-	sendbuffer_init_(&tmp, id, buffer, sz);
-	return skynet_socket_sendbuffer_lowpriority(ctx, &tmp);
-}
+int skynet_socket_send_lowpriority(struct skynet_context* ctx, int id, void* buffer, int sz);
 
-static inline int skynet_socket_udp_send(struct skynet_context *ctx, int id, const char * address, const void *buffer, int sz) {
-	struct socket_sendbuffer tmp;
-	sendbuffer_init_(&tmp, id, buffer, sz);
-	return skynet_socket_udp_sendbuffer(ctx, address, &tmp);
-}
-
+int skynet_socket_udp_send(struct skynet_context* ctx, int id, const char* address, const void* buffer, int sz);
 
 #endif

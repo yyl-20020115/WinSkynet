@@ -10,7 +10,7 @@
 #include "atomic.h"
 #ifdef _WIN32
 #define NOUSE_JEMALLOC
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif
 // turn on MEMORY_CHECK can do more memory check, such as double free
 // #define MEMORY_CHECK
@@ -352,3 +352,7 @@ skynet_debug_memory(const char *info) {
 	fprintf(stderr, "[:%08x] %s %p\n", handle, info, (void *)mem);
 }
 
+
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif

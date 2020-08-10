@@ -8,10 +8,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#ifdef _WIN32
-#include "skynet_functions_win32.h"
-#endif
-
 
 
 #define MEMORY_WARNING_REPORT (1024 * 1024 * 32)
@@ -151,16 +147,7 @@ launch_cb(struct skynet_context * context, void *ud, int type, int session, uint
 
 int
 snlua_init(struct snlua *l, struct skynet_context *ctx, const char * args) {
-#ifdef _WIN32
-	if (init_skynet_functions(&sfs)) {
-		sfs.call_back_function(ctx, (void*)1, launch_cb);
-	}
-	else {
-		return 1;
-	}
-#else
 	skynet_callback(ctx, l , launch_cb);
-#endif
 	int sz = (int)strlen(args);
 	char* tmp = skynet_malloc(sz);
 	memcpy(tmp, args, sz);
@@ -219,3 +206,8 @@ snlua_signal(struct snlua *l, int signal) {
 		skynet_error(l->ctx, "Current Memory %.3fK", (float)l->mem / 1024);
 	}
 }
+
+
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif

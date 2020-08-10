@@ -362,3 +362,7 @@ const char *match (lua_State *L, const char *o, const char *s, const char *e,
 /* }====================================================== */
 
 
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif
+

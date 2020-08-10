@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#ifdef _WIN32
-#include "skynet_functions_win32.h"
-#endif
 
 struct logger {
 	FILE * handle;
@@ -16,6 +13,7 @@ struct logger {
 
 struct logger *
 logger_create(void) {
+
 	struct logger * inst = skynet_malloc(sizeof(*inst));
 	inst->handle = NULL;
 	inst->close = 0;
@@ -59,11 +57,7 @@ void logger_signal(void* inst, int signal)
 
 int
 logger_init(struct logger * inst, struct skynet_context *ctx, const char * parm) {
-#ifdef _WIN32
-	if (!init_skynet_functions(&sfs)) return 1;
-	if (!init_skynet_socket_functions(&ssf)) return 1;
-	if (!init_skynet_harbor_functions(&shf)) return 1;
-#endif
+
 	if (parm) {
 		inst->handle = fopen(parm,"w");
 		if (inst->handle == NULL) {
@@ -82,3 +76,10 @@ logger_init(struct logger * inst, struct skynet_context *ctx, const char * parm)
 
 	return 1;
 }
+
+
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif
+
+

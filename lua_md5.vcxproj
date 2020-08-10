@@ -19,14 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="service-src\service_gate.c" />
+    <ClCompile Include="3rd\lua-md5\compat-5.2.c" />
+    <ClCompile Include="3rd\lua-md5\md5.c" />
+    <ClCompile Include="3rd\lua-md5\md5lib.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="service-src\databuffer.h" />
-    <ClInclude Include="service-src\hashid.h" />
+    <ClInclude Include="3rd\lua-md5\compat-5.2.h" />
+    <ClInclude Include="3rd\lua-md5\md5.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="service-src\gate.def" />
+    <None Include="service-src\lua_md5.def" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
@@ -34,19 +36,15 @@
     </ProjectReference>
     <ProjectReference Include="lua.vcxproj">
       <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
-    </ProjectReference>
-    <ProjectReference Include="WinSkynet.vcxproj">
-      <Project>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e4129de1-12a3-47ad-8340-f6379f585aff}</ProjectGuid>
-    <RootNamespace>WinSkynetGate</RootNamespace>
+    <ProjectGuid>{4d9ee6af-741c-4d88-825a-22491e262c9f}</ProjectGuid>
+    <RootNamespace>luamd5</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>gate</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -95,40 +93,35 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)3rd\mimalloc\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -145,22 +138,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +160,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -177,8 +168,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>service-src\gate.def</ModuleDefinitionFile>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

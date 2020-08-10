@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #ifdef _WIN32
+//#include<mimalloc.h>
 #define skynet_malloc(sz) malloc(sz)
 #define skynet_calloc(sz,ss) calloc(sz,ss)
 #define skynet_realloc(ptr,sz) realloc(ptr,sz)

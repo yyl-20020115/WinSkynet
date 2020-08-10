@@ -27,26 +27,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -74,21 +74,25 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,40 +171,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="3rd\lpeg\lpcap.h" />
-    <ClInclude Include="3rd\lpeg\lpcode.h" />
-    <ClInclude Include="3rd\lpeg\lpprint.h" />
-    <ClInclude Include="3rd\lpeg\lptree.h" />
-    <ClInclude Include="3rd\lpeg\lptypes.h" />
-    <ClInclude Include="3rd\lpeg\lpvm.h" />
-    <ClInclude Include="3rd\lua-md5\compat-5.2.h" />
-    <ClInclude Include="3rd\lua-md5\md5.h" />
-    <ClInclude Include="3rd\lua\lapi.h" />
-    <ClInclude Include="3rd\lua\lauxlib.h" />
-    <ClInclude Include="3rd\lua\lcode.h" />
-    <ClInclude Include="3rd\lua\lctype.h" />
-    <ClInclude Include="3rd\lua\ldebug.h" />
-    <ClInclude Include="3rd\lua\ldo.h" />
-    <ClInclude Include="3rd\lua\lfunc.h" />
-    <ClInclude Include="3rd\lua\lgc.h" />
-    <ClInclude Include="3rd\lua\llex.h" />
-    <ClInclude Include="3rd\lua\llimits.h" />
-    <ClInclude Include="3rd\lua\lmem.h" />
-    <ClInclude Include="3rd\lua\lobject.h" />
-    <ClInclude Include="3rd\lua\lopcodes.h" />
-    <ClInclude Include="3rd\lua\lparser.h" />
-    <ClInclude Include="3rd\lua\lprefix.h" />
-    <ClInclude Include="3rd\lua\lstate.h" />
-    <ClInclude Include="3rd\lua\lstring.h" />
-    <ClInclude Include="3rd\lua\ltable.h" />
-    <ClInclude Include="3rd\lua\ltm.h" />
-    <ClInclude Include="3rd\lua\lua.h" />
-    <ClInclude Include="3rd\lua\lua.hpp" />
-    <ClInclude Include="3rd\lua\luaconf.h" />
-    <ClInclude Include="3rd\lua\lualib.h" />
-    <ClInclude Include="3rd\lua\lundump.h" />
-    <ClInclude Include="3rd\lua\lvm.h" />
-    <ClInclude Include="3rd\lua\lzio.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="lualib-src\lua-seri.h" />
     <ClInclude Include="lualib-src\sproto\msvcint.h" />
@@ -240,47 +210,6 @@
     <ClInclude Include="wepoll\wepoll.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="3rd\lpeg\lpcap.c" />
-    <ClCompile Include="3rd\lpeg\lpcode.c" />
-    <ClCompile Include="3rd\lpeg\lpprint.c" />
-    <ClCompile Include="3rd\lpeg\lptree.c" />
-    <ClCompile Include="3rd\lpeg\lpvm.c" />
-    <ClCompile Include="3rd\lua-md5\compat-5.2.c" />
-    <ClCompile Include="3rd\lua-md5\md5.c" />
-    <ClCompile Include="3rd\lua-md5\md5lib.c" />
-    <ClCompile Include="3rd\lua\lapi.c" />
-    <ClCompile Include="3rd\lua\lauxlib.c" />
-    <ClCompile Include="3rd\lua\lbaselib.c" />
-    <ClCompile Include="3rd\lua\lbitlib.c" />
-    <ClCompile Include="3rd\lua\lcode.c" />
-    <ClCompile Include="3rd\lua\lcorolib.c" />
-    <ClCompile Include="3rd\lua\lctype.c" />
-    <ClCompile Include="3rd\lua\ldblib.c" />
-    <ClCompile Include="3rd\lua\ldebug.c" />
-    <ClCompile Include="3rd\lua\ldo.c" />
-    <ClCompile Include="3rd\lua\ldump.c" />
-    <ClCompile Include="3rd\lua\lfunc.c" />
-    <ClCompile Include="3rd\lua\lgc.c" />
-    <ClCompile Include="3rd\lua\linit.c" />
-    <ClCompile Include="3rd\lua\liolib.c" />
-    <ClCompile Include="3rd\lua\llex.c" />
-    <ClCompile Include="3rd\lua\lmathlib.c" />
-    <ClCompile Include="3rd\lua\lmem.c" />
-    <ClCompile Include="3rd\lua\loadlib.c" />
-    <ClCompile Include="3rd\lua\lobject.c" />
-    <ClCompile Include="3rd\lua\lopcodes.c" />
-    <ClCompile Include="3rd\lua\loslib.c" />
-    <ClCompile Include="3rd\lua\lparser.c" />
-    <ClCompile Include="3rd\lua\lstate.c" />
-    <ClCompile Include="3rd\lua\lstring.c" />
-    <ClCompile Include="3rd\lua\lstrlib.c" />
-    <ClCompile Include="3rd\lua\ltable.c" />
-    <ClCompile Include="3rd\lua\ltablib.c" />
-    <ClCompile Include="3rd\lua\ltm.c" />
-    <ClCompile Include="3rd\lua\lundump.c" />
-    <ClCompile Include="3rd\lua\lutf8lib.c" />
-    <ClCompile Include="3rd\lua\lvm.c" />
-    <ClCompile Include="3rd\lua\lzio.c" />
     <ClCompile Include="lualib-src\lsha1.c" />
     <ClCompile Include="lualib-src\ltls.c" />
     <ClCompile Include="lualib-src\lua-bson.c" />
@@ -309,7 +238,6 @@
     <ClCompile Include="skynet-src\skynet_handle.c" />
     <ClCompile Include="skynet-src\skynet_harbor.c" />
     <ClCompile Include="skynet-src\skynet_log.c" />
-    <ClCompile Include="skynet-src\skynet_main.c" />
     <ClCompile Include="skynet-src\skynet_module.c" />
     <ClCompile Include="skynet-src\skynet_monitor.c" />
     <ClCompile Include="skynet-src\skynet_mq.c" />
@@ -491,13 +419,21 @@
     <None Include="wepoll\LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea6}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
+      <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
     </ProjectReference>
     <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="lpeg.vcxproj">
+      <Project>{de88097a-3bfc-4820-9d6d-c1907b4ef505}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lua.vcxproj">
+      <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lua_md5.vcxproj">
+      <Project>{4d9ee6af-741c-4d88-825a-22491e262c9f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

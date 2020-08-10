@@ -19,84 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="3rd\lua\lapi.c" />
-    <ClCompile Include="3rd\lua\lauxlib.c" />
-    <ClCompile Include="3rd\lua\lbaselib.c" />
-    <ClCompile Include="3rd\lua\lbitlib.c" />
-    <ClCompile Include="3rd\lua\lcode.c" />
-    <ClCompile Include="3rd\lua\lcorolib.c" />
-    <ClCompile Include="3rd\lua\lctype.c" />
-    <ClCompile Include="3rd\lua\ldblib.c" />
-    <ClCompile Include="3rd\lua\ldebug.c" />
-    <ClCompile Include="3rd\lua\ldo.c" />
-    <ClCompile Include="3rd\lua\ldump.c" />
-    <ClCompile Include="3rd\lua\lfunc.c" />
-    <ClCompile Include="3rd\lua\lgc.c" />
-    <ClCompile Include="3rd\lua\linit.c" />
-    <ClCompile Include="3rd\lua\liolib.c" />
-    <ClCompile Include="3rd\lua\llex.c" />
-    <ClCompile Include="3rd\lua\lmathlib.c" />
-    <ClCompile Include="3rd\lua\lmem.c" />
-    <ClCompile Include="3rd\lua\loadlib.c" />
-    <ClCompile Include="3rd\lua\lobject.c" />
-    <ClCompile Include="3rd\lua\lopcodes.c" />
-    <ClCompile Include="3rd\lua\loslib.c" />
-    <ClCompile Include="3rd\lua\lparser.c" />
-    <ClCompile Include="3rd\lua\lstate.c" />
-    <ClCompile Include="3rd\lua\lstring.c" />
-    <ClCompile Include="3rd\lua\lstrlib.c" />
-    <ClCompile Include="3rd\lua\ltable.c" />
-    <ClCompile Include="3rd\lua\ltablib.c" />
-    <ClCompile Include="3rd\lua\ltm.c" />
-    <ClCompile Include="3rd\lua\lundump.c" />
-    <ClCompile Include="3rd\lua\lutf8lib.c" />
-    <ClCompile Include="3rd\lua\lvm.c" />
-    <ClCompile Include="3rd\lua\lzio.c" />
     <ClCompile Include="service-src\service_snlua.c" />
-    <ClCompile Include="service-src\skynet_functions_win32.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="3rd\lua\lapi.h" />
-    <ClInclude Include="3rd\lua\lauxlib.h" />
-    <ClInclude Include="3rd\lua\lcode.h" />
-    <ClInclude Include="3rd\lua\lctype.h" />
-    <ClInclude Include="3rd\lua\ldebug.h" />
-    <ClInclude Include="3rd\lua\ldo.h" />
-    <ClInclude Include="3rd\lua\lfunc.h" />
-    <ClInclude Include="3rd\lua\lgc.h" />
-    <ClInclude Include="3rd\lua\llex.h" />
-    <ClInclude Include="3rd\lua\llimits.h" />
-    <ClInclude Include="3rd\lua\lmem.h" />
-    <ClInclude Include="3rd\lua\lobject.h" />
-    <ClInclude Include="3rd\lua\lopcodes.h" />
-    <ClInclude Include="3rd\lua\lparser.h" />
-    <ClInclude Include="3rd\lua\lprefix.h" />
-    <ClInclude Include="3rd\lua\lstate.h" />
-    <ClInclude Include="3rd\lua\lstring.h" />
-    <ClInclude Include="3rd\lua\ltable.h" />
-    <ClInclude Include="3rd\lua\ltm.h" />
-    <ClInclude Include="3rd\lua\lua.h" />
-    <ClInclude Include="3rd\lua\lua.hpp" />
-    <ClInclude Include="3rd\lua\luaconf.h" />
-    <ClInclude Include="3rd\lua\lualib.h" />
-    <ClInclude Include="3rd\lua\lundump.h" />
-    <ClInclude Include="3rd\lua\lvm.h" />
-    <ClInclude Include="3rd\lua\lzio.h" />
     <ClInclude Include="service-src\databuffer.h" />
     <ClInclude Include="service-src\hashid.h" />
-    <ClInclude Include="service-src\skynet_functions_win32.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="service-src\snlua.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea6}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
+      <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
     </ProjectReference>
-    <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
-      <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    <ProjectReference Include="lua.vcxproj">
+      <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="WinSkynet.vcxproj">
+      <Project>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -180,7 +120,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -196,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -212,7 +152,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -228,7 +168,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;LUA_BUILD_AS_DLL;LUA_LIB;LUA53_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>

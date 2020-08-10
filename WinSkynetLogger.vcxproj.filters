@@ -9,16 +9,8 @@
     <ClCompile Include="service-src\service_logger.c">
       <Filter>service-src</Filter>
     </ClCompile>
-    <ClCompile Include="service-src\skynet_functions_win32.c">
-      <Filter>service-src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="service-src\logger.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="service-src\skynet_functions_win32.h">
-      <Filter>service-src</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -198,3 +198,7 @@ int luaopen_md5_core (lua_State *L) {
   set_info (L);
   return 1;
 }
+
+#ifdef _WIN32
+#include <mimalloc-override.h>
+#endif
