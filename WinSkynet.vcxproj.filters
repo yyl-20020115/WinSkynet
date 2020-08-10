@@ -85,9 +85,6 @@
     <ClInclude Include="skynet-src\atomic.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
-    <ClInclude Include="skynet-src\malloc_hook.h">
-      <Filter>skynet-src</Filter>
-    </ClInclude>
     <ClInclude Include="skynet-src\rwlock.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
@@ -275,6 +272,9 @@
       <Filter>skynet-src</Filter>
     </ClInclude>
     <ClInclude Include="skynet-src\socket_kqueue.h">
+      <Filter>skynet-src</Filter>
+    </ClInclude>
+    <ClInclude Include="skynet-src\malloc_hook.h">
       <Filter>skynet-src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,15 @@
 #ifndef SKYNET_MALLOC_HOOK_H
 #define SKYNET_MALLOC_HOOK_H
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
+#ifdef _WIN64
+typedef long long ssize_t;
+#else
+typedef long ssize_t;
+#endif
+#endif
 
 #include <stdlib.h>
 #include <stdbool.h>

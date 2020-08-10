@@ -23,8 +23,8 @@ typedef HANDLE pipe_fd;
 #include <assert.h>
 #include <string.h>
 
-#include "internal/jemalloc_internal_decls.h"
 #ifdef _WIN32
+#include "malloc_hook.h"
 #include "socket_poll_win32.h"
 int pipe(SOCKET fd[2]);
 #endif
@@ -242,9 +242,13 @@ struct send_object {
 	size_t sz;
 	void (*free_func)(void *);
 };
-
+#ifdef _WIN32
+#define MALLOC malloc
+#define FREE free
+#else
 #define MALLOC skynet_malloc
 #define FREE skynet_free
+#endif
 
 struct socket_lock {
 	struct spinlock *lock;

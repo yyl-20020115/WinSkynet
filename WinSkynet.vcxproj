@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc-w32\include\jemalloc;$(SolutionDir)3rd\jemalloc-w32\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc-w32\include\jemalloc;$(SolutionDir)3rd\jemalloc-w32\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc-w32\include\jemalloc;$(SolutionDir)3rd\jemalloc-w32\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\jemalloc-w32\include\jemalloc;$(SolutionDir)3rd\jemalloc-w32\include\msvc_compat;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -488,10 +488,6 @@
     <None Include="wepoll\LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\jemalloc-w32\msvc\projects\vc2017\jemalloc\jemalloc.vcxproj">
-      <Project>{8d6bb292-9e1c-413d-9f98-4864bdc1514a}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
     <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
