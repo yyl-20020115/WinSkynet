@@ -5,7 +5,11 @@
 #include "msvcint.h"
 
 #include "sproto.h"
+#ifdef _WIN32
 #include <skynet.h>
+#else
+#include "../../skynet-src/skynet.h"
+#endif
 
 #define SPROTO_TARRAY 0x80
 #define CHUNK_SIZE 1000

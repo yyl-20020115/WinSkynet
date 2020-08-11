@@ -10,8 +10,10 @@
 #include "sproto.h"
 #ifdef _WIN32
 #include <intrin.h>
-#endif
 #include <skynet.h>
+#else
+#include "../../skynet-src/skynet.h"
+#endif
 
 #define MAX_GLOBALSPROTO 16
 #define ENCODE_BUFFERSIZE 2050
