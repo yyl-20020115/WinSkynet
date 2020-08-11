@@ -196,6 +196,7 @@
     <Text Include="config.lua">
       <FileType>CppCode</FileType>
     </Text>
+    <ClCompile Include="skynet-src\skynet_main.c" />
     <ClCompile Include="skynet-src\socket_epoll_win32.c">
       <FileType>CppHeader</FileType>
     </ClCompile>
@@ -419,9 +420,6 @@
     <None Include="wepoll\LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
-    </ProjectReference>
     <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>

@@ -51,7 +51,7 @@ _try_open(struct modules *m, const char * name) {
 			strncpy(tmp+i+name_size,path+i+1,len - i - 1);
 		} else {
 			fprintf(stderr,"Invalid C service path\n");
-			free(tmp);
+			skynet_free(tmp);
 			exit(1);
 		}
 		dl = dlopen(tmp, RTLD_NOW | RTLD_GLOBAL);

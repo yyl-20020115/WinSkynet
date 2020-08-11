@@ -1,6 +1,8 @@
 LIBRARY "WinSkynet"
 
 EXPORTS
+	
+	skynet_main
 	strsep
 	malloc_used_memory
 	malloc_memory_block
@@ -144,5 +146,9 @@ EXPORTS
 	skynet_isremote
 	skynet_callback
 	skynet_current_handle
+	skynet_malloc
+	skynet_free
+	skynet_realloc
+
 
 	

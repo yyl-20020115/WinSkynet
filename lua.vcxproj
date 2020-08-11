@@ -81,11 +81,6 @@
     <ClInclude Include="3rd\lua\lvm.h" />
     <ClInclude Include="3rd\lua\lzio.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -79,7 +79,7 @@ logger_init(struct logger * inst, struct skynet_context *ctx, const char * parm)
 
 
 #ifdef _WIN32
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif
 
 

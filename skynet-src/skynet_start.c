@@ -184,7 +184,7 @@ thread_worker(void *p) {
 
 static void
 start(int thread) {
-	pthread_t* pid = (pthread_t*)malloc((thread+3)*sizeof(pthread_t*));
+	pthread_t* pid = (pthread_t*)skynet_malloc((thread+3)*sizeof(pthread_t*));
 
 	struct monitor *m = skynet_malloc(sizeof(*m));
 	memset(m, 0, sizeof(*m));
@@ -198,12 +198,12 @@ start(int thread) {
 	}
 	if (pthread_mutex_init(&m->mutex, NULL)) {
 		fprintf(stderr, "Init mutex error");
-		free(pid);
+		skynet_free(pid);
 		exit(1);
 	}
 	if (pthread_cond_init(&m->cond, NULL)) {
 		fprintf(stderr, "Init cond error");
-		free(pid);
+		skynet_free(pid);
 		exit(1);
 	}
 
@@ -216,7 +216,7 @@ start(int thread) {
 		1, 1, 1, 1, 1, 1, 1, 1, 
 		2, 2, 2, 2, 2, 2, 2, 2, 
 		3, 3, 3, 3, 3, 3, 3, 3, };
-	struct worker_parm* wp = (struct worker_parm*)malloc(thread * sizeof(struct worker_param*));
+	struct worker_parm* wp = (struct worker_parm*)skynet_malloc(thread * sizeof(struct worker_param*));
 	for (i=0;i<thread;i++) {
 		wp[i].m = m;
 		wp[i].id = i;
@@ -231,8 +231,8 @@ start(int thread) {
 	for (i=0;i<thread+3;i++) {
 		pthread_join(pid[i], NULL); 
 	}
-	free(wp);
-	free(pid);
+	skynet_free(wp);
+	skynet_free(pid);
 
 	free_monitor(m);
 }
@@ -240,12 +240,12 @@ start(int thread) {
 static void
 bootstrap(struct skynet_context * logger, const char * cmdline) {
 	int sz = (int)strlen(cmdline);
-	char *name =(char*)malloc(sz+1);
-	char *args = (char*)malloc(sz+1);
+	char *name =(char*)skynet_malloc(sz+1);
+	char *args = (char*)skynet_malloc(sz+1);
 	sscanf(cmdline, "%s %s", name, args);
 	struct skynet_context *ctx = skynet_context_new(name, args);
-	free(name);
-	free(args);
+	skynet_free(name);
+	skynet_free(args);
 	if (ctx == NULL) {
 		skynet_error(NULL, "Bootstrap error : %s\n", cmdline);
 		skynet_context_dispatchall(logger);

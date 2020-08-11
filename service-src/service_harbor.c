@@ -334,7 +334,7 @@ send_remote(struct skynet_context * ctx, int fd, const char * buffer, size_t sz,
 		skynet_error(ctx, "remote message from :%08x to :%08x is too large.", cookie->source, cookie->destination);
 		return;
 	}
-	uint8_t* sendbuf = (uint8_t*) malloc(sz_header+4);
+	uint8_t* sendbuf = (uint8_t*)skynet_malloc(sz_header+4);
 	to_bigendian(sendbuf, (uint32_t)sz_header);
 	memcpy(sendbuf+4, buffer, sz);
 	header_to_message(cookie, sendbuf+4+sz);
@@ -347,7 +347,7 @@ send_remote(struct skynet_context * ctx, int fd, const char * buffer, size_t sz,
 
 	// ignore send error, because if the connection is broken, the mainloop will recv a message.
 	skynet_socket_sendbuffer(ctx, &tmp);
-	free(sendbuf);
+	skynet_free(sendbuf);
 }
 
 static void
@@ -619,20 +619,20 @@ harbor_command(struct harbor * h, const char * msg, size_t sz, int session, uint
 	}
 	case 'S' :
 	case 'A' : {
-		char* buffer=(char*) malloc(s+1);
+		char* buffer=(char*)skynet_malloc(s+1);
 		memcpy(buffer, name, s+1);
 		//buffer[s] = 0;
 		int fd=0, id=0;
 		sscanf(buffer, "%d %d",&fd,&id);
 		if (fd == 0 || id <= 0 || id>=REMOTE_MAX) {
 			skynet_error(h->ctx, "Invalid command %c %s", msg[0], buffer);
-			free(buffer);
+			skynet_free(buffer);
 			return;
 		}
 		struct slave * slave = &h->s[id];
 		if (slave->fd != 0) {
 			skynet_error(h->ctx, "Harbor %d alreay exist", id);
-			free(buffer);
+			skynet_free(buffer);
 			return;
 		}
 		slave->fd = fd;
@@ -646,7 +646,7 @@ harbor_command(struct harbor * h, const char * msg, size_t sz, int session, uint
 			dispatch_queue(h,id);
 		}
 
-		free(buffer);
+		skynet_free(buffer);
 		break;
 	}
 	default:
@@ -754,5 +754,5 @@ void harbor_signal(void* inst, int signal)
 }
 
 #ifdef _WIN32
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif

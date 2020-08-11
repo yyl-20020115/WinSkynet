@@ -247,13 +247,8 @@ struct send_object {
 	size_t sz;
 	void (*free_func)(void *);
 };
-#ifdef _WIN32
-#define MALLOC malloc
-#define FREE free
-#else
-#define MALLOC skynet_malloc
-#define FREE skynet_free
-#endif
+//#define MALLOC skynet_malloc
+//#define FREE skynet_free
 
 struct socket_lock {
 	struct spinlock *lock;
@@ -298,12 +293,12 @@ send_object_init(struct socket_server *ss, struct send_object *so, const void *o
 	if (sz == USEROBJECT) {
 		so->buffer = ss->soi.buffer(object);
 		so->sz = ss->soi.size(object);
-		so->free_func = ss->soi.free;
+		so->free_func = ss->soi.do_free;
 		return true;
 	} else {
 		so->buffer = object;
 		so->sz = sz;
-		so->free_func = FREE;
+		so->free_func = skynet_free;
 		return false;
 	}
 }
@@ -339,11 +334,11 @@ send_object_init_from_sendbuffer(struct socket_server *ss, struct send_object *s
 static inline void
 write_buffer_free(struct socket_server *ss, struct write_buffer *wb) {
 	if (wb->userobject) {
-		ss->soi.free((void *)wb->buffer);
+		ss->soi.do_free((void *)wb->buffer);
 	} else {
-		FREE((void *)wb->buffer);
+		skynet_free((void *)wb->buffer);
 	}
-	FREE(wb);
+	skynet_free(wb);
 }
 
 static void
@@ -420,7 +415,7 @@ socket_server_create(uint64_t time) {
 	}
 #endif
 
-	struct socket_server *ss = MALLOC(sizeof(*ss));
+	struct socket_server *ss = skynet_malloc(sizeof(*ss));
 	ss->time = time;
 	ss->event_fd = efd;
 	ss->recvctrl_fd = fd[0];
@@ -467,10 +462,10 @@ free_buffer(struct socket_server *ss, struct socket_sendbuffer *buf) {
 	void *buffer = (void *)buf->buffer;
 	switch (buf->type) {
 	case SOCKET_BUFFER_MEMORY:
-		FREE((void *)buffer);
+		skynet_free((void *)buffer);
 		break;
 	case SOCKET_BUFFER_OBJECT:
-		ss->soi.free(buffer);
+		ss->soi.do_free(buffer);
 		break;
 	case SOCKET_BUFFER_RAWPOINTER:
 		break;
@@ -489,7 +484,7 @@ clone_buffer(struct socket_sendbuffer *buf, size_t *sz) {
 	case SOCKET_BUFFER_RAWPOINTER:
 		// It's a raw pointer, we need make a copy
 		*sz = buf->sz;
-		void * tmp = MALLOC(*sz);
+		void * tmp = skynet_malloc(*sz);
 		memcpy(tmp, buf->buffer, *sz);
 		return tmp;
 	}
@@ -555,7 +550,7 @@ socket_server_release(struct socket_server *ss) {
 	ss->sendctrl_fd = 0;
 	ss->recvctrl_fd = 0;
 	sp_release(ss->event_fd);
-	FREE(ss);
+	skynet_free(ss);
 }
 
 static inline void
@@ -874,7 +869,7 @@ send_buffer(struct socket_server *ss, struct socket *s, struct socket_lock *l, s
 		return -1;	// blocked by direct write, send later.
 	if (s->dw_buffer) {
 		// add direct write buffer before high.head
-		struct write_buffer * buf = MALLOC(SIZEOF_TCPBUFFER);
+		struct write_buffer * buf = skynet_malloc(SIZEOF_TCPBUFFER);
 		struct send_object so;
 		buf->userobject = send_object_init(ss, &so, (void *)s->dw_buffer, s->dw_size);
 		buf->ptr = (char*)so.buffer+s->dw_offset;
@@ -898,7 +893,7 @@ send_buffer(struct socket_server *ss, struct socket *s, struct socket_lock *l, s
 
 static struct write_buffer *
 append_sendbuffer_(struct socket_server *ss, struct wb_list *s, struct request_send * request, int size) {
-	struct write_buffer * buf = MALLOC(size);
+	struct write_buffer * buf = skynet_malloc(size);
 	struct send_object so;
 	buf->userobject = send_object_init(ss, &so, request->buffer, request->sz);
 	buf->ptr = (char*)so.buffer;
@@ -1317,10 +1312,10 @@ static int ctrl_cmd(struct socket_server *ss, struct socket_message *result)
 static int
 forward_message_tcp(struct socket_server *ss, struct socket *s, struct socket_lock *l, struct socket_message * result) {
 	int sz = s->p.size;
-	char * buffer = MALLOC(sz);
+	char * buffer = skynet_malloc(sz);
 	int n = (int)read(s->fd, buffer, sz);
 	if (n<0) {
-		FREE(buffer);
+		skynet_free(buffer);
 		switch(errno) {
 		case EINTR:
 			break;
@@ -1336,14 +1331,14 @@ forward_message_tcp(struct socket_server *ss, struct socket *s, struct socket_lo
 		return -1;
 	}
 	if (n==0) {
-		FREE(buffer);
+		skynet_free(buffer);
 		force_close(ss, s, l, result);
 		return SOCKET_CLOSE;
 	}
 
 	if (s->type == SOCKET_TYPE_HALFCLOSE) {
 		// discard recv data
-		FREE(buffer);
+		skynet_free(buffer);
 		return -1;
 	}
 
@@ -1404,12 +1399,12 @@ forward_message_udp(struct socket_server *ss, struct socket *s, struct socket_lo
 	if (slen == sizeof(sa.v4)) {
 		if (s->protocol != PROTOCOL_UDP)
 			return -1;
-		data = MALLOC(n + 1 + 2 + 4);
+		data = skynet_malloc(n + 1 + 2 + 4);
 		gen_udp_address(PROTOCOL_UDP, &sa, data + n);
 	} else {
 		if (s->protocol != PROTOCOL_UDPv6)
 			return -1;
-		data = MALLOC(n + 1 + 2 + 16);
+		data = skynet_malloc(n + 1 + 2 + 16);
 		gen_udp_address(PROTOCOL_UDPv6, &sa, data + n);
 	}
 	memcpy(data, ss->udpbuffer, n);

@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <lua.h>
 #include <stdio.h>
+//#ifdef _WIN32
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+//#endif
 
 #include "malloc_hook.h"
 #include "skynet.h"
@@ -240,8 +245,8 @@ skynet_posix_memalign(void **memptr, size_t alignment, size_t size) {
 #else
 
 // for skynet_lalloc use
-#define raw_realloc realloc
-#define raw_free free
+//#define raw_realloc realloc
+//#define raw_free free
 
 void
 memory_info_dump(const char* opts) {
@@ -306,14 +311,44 @@ skynet_strdup(const char *str) {
 	memcpy(ret, str, sz+1);
 	return ret;
 }
+#ifdef _WIN32
+void* skynet_malloc(size_t sz)
+{
+	return malloc(sz);
+}
+void* skynet_calloc(size_t nmemb, size_t size)
+{
+	return calloc(nmemb, size);
+}
+void* skynet_realloc(void* ptr, size_t size)
+{
+	return realloc(ptr, size);
+}
+void skynet_free(void* ptr)
+{
+	free(ptr);
+}
+//void* skynet_memalign(size_t alignment, size_t size)
+//{
+//	return memalign(alignment, size);
+//}
+//void* skynet_aligned_alloc(size_t alignment, size_t size)
+//{
+//	return aligned_alloc(alignment, size);
+//}
+//int skynet_posix_memalign(void** memptr, size_t alignment, size_t size)
+//{
+//	return posix_memalign(memptr, alignment, size);
+//}
 
+#endif
 void *
 skynet_lalloc(void *ptr, size_t osize, size_t nsize) {
 	if (nsize == 0) {
-		raw_free(ptr);
+		skynet_free(ptr);
 		return NULL;
 	} else {
-		return raw_realloc(ptr, nsize);
+		return skynet_realloc(ptr, nsize);
 	}
 }
 
@@ -354,5 +389,5 @@ skynet_debug_memory(const char *info) {
 
 
 #ifdef _WIN32
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif

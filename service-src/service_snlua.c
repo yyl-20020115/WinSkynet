@@ -209,5 +209,5 @@ snlua_signal(struct snlua *l, int signal) {
 
 
 #ifdef _WIN32
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif

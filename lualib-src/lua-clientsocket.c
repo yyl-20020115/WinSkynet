@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #else
+#include <skynet.h>
 #include <WinSock2.h>
 #include "../3rd/pthreads-w32/pthread.h"
 int usleep(unsigned int __useconds);
@@ -181,7 +182,7 @@ readline_stdin(void * arg) {
 		}
 		int n = (int)strlen(tmp) -1;
 
-		char * str = malloc(n+1);
+		char * str = skynet_malloc(n+1);
 		memcpy(str, tmp, n);
 		str[n] = 0;
 
@@ -214,7 +215,7 @@ lreadstdin(lua_State *L) {
 	}
 	pthread_mutex_unlock(&q->lock);
 	lua_pushstring(L, str);
-	free(str);
+	skynet_free(str);
 	return 1;
 }
 

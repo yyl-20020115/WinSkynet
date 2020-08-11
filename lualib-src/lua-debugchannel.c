@@ -6,7 +6,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
-int usleep(unsigned int __useconds);
+#include <skynet.h>
 #endif
 #include <stdlib.h>
 #include <string.h>
@@ -28,7 +28,7 @@ struct channel {
 
 static struct channel *
 channel_new() {
-	struct channel * c = malloc(sizeof(*c));
+	struct channel * c = skynet_malloc(sizeof(*c));
 	memset(c, 0 , sizeof(*c));
 	c->ref = 1;
 	SPIN_INIT(c)
@@ -62,12 +62,12 @@ channel_release(struct channel *c) {
 	c->tail = NULL;
 	while(p) {
 		struct command *next = p->next;
-		free(p);
+		skynet_free(p);
 		p = next;
 	}
 	SPIN_UNLOCK(c)
 	SPIN_DESTROY(c)
-	free(c);
+		skynet_free(c);
 	return NULL;
 }
 
@@ -94,7 +94,7 @@ channel_read(struct channel *c, double timeout) {
 
 static void
 channel_write(struct channel *c, const char * s, size_t sz) {
-	struct command * cmd = malloc(sizeof(*cmd)+ sz);
+	struct command * cmd = skynet_malloc(sizeof(*cmd)+ sz);
 	cmd->sz = sz;
 	cmd->next = NULL;
 	memcpy(cmd+1, s, sz);
@@ -120,7 +120,7 @@ lread(lua_State *L) {
 	if (c == NULL)
 		return 0;
 	lua_pushlstring(L, (const char *)(c+1), c->sz);
-	free(c);
+	skynet_free(c);
 	return 1;
 }
 

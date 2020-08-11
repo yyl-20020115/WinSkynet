@@ -520,7 +520,7 @@ cmd_getenv(struct skynet_context * context, const char * param) {
 static const char *
 cmd_setenv(struct skynet_context * context, const char * param) {
 	size_t sz = strlen(param);
-	char* key = (char*)malloc(sz + 1);
+	char* key = (char*)skynet_malloc(sz + 1);
 	int i;
 	for (i=0;param[i] != ' ' && param[i];i++) {
 		key[i] = param[i];
@@ -534,7 +534,7 @@ cmd_setenv(struct skynet_context * context, const char * param) {
 	skynet_setenv(key,param);
 
 my_exit:
-	free(key);
+	skynet_free(key);
 	return NULL;
 }
 

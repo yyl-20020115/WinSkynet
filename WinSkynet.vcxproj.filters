@@ -273,6 +273,9 @@
     <ClCompile Include="skynet-src\win_impl.c">
       <Filter>skynet-src</Filter>
     </ClCompile>
+    <ClCompile Include="skynet-src\skynet_main.c">
+      <Filter>skynet-src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="test\pingserver.lua">

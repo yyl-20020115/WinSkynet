@@ -7,6 +7,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
+#include <skynet.h>
 #include <Winsock2.h>
 int getpid();
 #endif
@@ -70,7 +71,7 @@ get_length(const uint8_t * data) {
 static inline void
 bson_destroy(struct bson *b) {
 	if (b->ptr != b->buffer) {
-		free(b->ptr);
+		skynet_free(b->ptr);
 	}
 }
 
@@ -90,10 +91,10 @@ bson_reserve(struct bson *b, int sz) {
 	} while (b->cap <= b->size + sz);
 
 	if (b->ptr == b->buffer) {
-		b->ptr = malloc(b->cap);
+		b->ptr = skynet_malloc(b->cap);
 		memcpy(b->ptr, b->buffer, b->size);
 	} else {
-		b->ptr = realloc(b->ptr, b->cap);
+		b->ptr = skynet_realloc(b->ptr, b->cap);
 	}
 }
 

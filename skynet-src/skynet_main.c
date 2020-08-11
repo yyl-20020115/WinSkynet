@@ -116,7 +116,15 @@ static const char * load_config = "\
 ";
 
 int
-main(int argc, char *argv[]) {
+#ifdef _WIN32
+skynet_main
+#else
+main
+#endif
+(int argc, char *argv[]) {
+//#ifdef _WIN32
+//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+//#endif
 	const char * config_file = NULL ;
 	if (argc > 1) {
 		config_file = argv[1];
@@ -169,3 +177,7 @@ main(int argc, char *argv[]) {
 
 	return 0;
 }
+
+#ifdef _WIN32
+//#include <mimalloc-override.h>
+#endif

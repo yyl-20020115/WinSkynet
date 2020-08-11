@@ -33,7 +33,7 @@
 
 
 #ifdef _WIN32
-#include <mimalloc-override.h>
+//#include <mimalloc-override.h>
 #endif
 
 const char lua_ident[] =

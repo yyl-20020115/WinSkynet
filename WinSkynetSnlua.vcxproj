@@ -29,9 +29,6 @@
     <None Include="service-src\snlua.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc-override.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea7}</Project>
-    </ProjectReference>
     <ProjectReference Include="lua.vcxproj">
       <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
     </ProjectReference>

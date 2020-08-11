@@ -5,6 +5,9 @@
 #include "msvcint.h"
 
 #include "sproto.h"
+#ifdef _WIN32
+#include <skynet.h>
+#endif
 
 #define SPROTO_TARRAY 0x80
 #define CHUNK_SIZE 1000
@@ -68,14 +71,14 @@ pool_release(struct pool *p) {
 	struct chunk * tmp = p->header;
 	while (tmp) {
 		struct chunk * n = tmp->next;
-		free(tmp);
+		skynet_free(tmp);
 		tmp = n;
 	}
 }
 
 static void *
 pool_newchunk(struct pool *p, size_t sz) {
-	struct chunk * t = malloc(sz + sizeof(struct chunk));
+	struct chunk * t = skynet_malloc(sz + sizeof(struct chunk));
 	if (t == NULL)
 		return NULL;
 	t->next = p->header;

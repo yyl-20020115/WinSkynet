@@ -1,3 +1,4 @@
+#include <skynet.h>
 #include "socket_poll_win32.h"
 #include "wepoll.h"
 #include <Windows.h>
@@ -34,7 +35,7 @@ void sp_write(poll_fd efd, SOCKET sock, void *ud, bool enable) {
 	epoll_ctl(efd, EPOLL_CTL_MOD, sock, &ev);
 }
 int sp_wait(poll_fd efd, struct event *e, int max) {
-	struct epoll_event* ev = (struct epoll_event*)malloc(sizeof(struct epoll_event*)*max);
+	struct epoll_event* ev = (struct epoll_event*)skynet_malloc(sizeof(struct epoll_event*)*max);
 	int n = epoll_wait(efd , ev, max, -1);
 	int i;
 	for (i=0;i<n;i++) {
@@ -45,7 +46,7 @@ int sp_wait(poll_fd efd, struct event *e, int max) {
 		e[i].error = (flag & EPOLLERR) != 0;
 		e[i].eof = false;
 	}
-	free(ev);
+	skynet_free(ev);
 	return n;
 }
 int set_blocking_mode_epoll(const SOCKET socket, int is_blocking)

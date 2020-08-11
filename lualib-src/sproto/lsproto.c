@@ -9,7 +9,8 @@
 #include "lauxlib.h"
 #include "sproto.h"
 #ifdef _WIN32
-#include<intrin.h>
+#include <intrin.h>
+#include <skynet.h>
 #endif
 
 #define MAX_GLOBALSPROTO 16
@@ -673,7 +674,7 @@ lsaveproto(lua_State *L) {
 #endif
 #endif
 	if (rp) {
-		free(rp);
+		skynet_free(rp);
 	}	
 	return 0;
 }

@@ -6,7 +6,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="skynet-src\skynet_main.c">
+    <ClCompile Include="skynet-src\entry.c">
       <Filter>skynet-src</Filter>
     </ClCompile>
   </ItemGroup>

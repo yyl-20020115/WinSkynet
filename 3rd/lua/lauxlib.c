@@ -1002,19 +1002,49 @@ LUALIB_API const char *luaL_gsub (lua_State *L, const char *s, const char *p,
   luaL_pushresult(&b);
   return lua_tostring(L, -1);
 }
+#ifdef _WIN32
+#include <Windows.h>
+static int loaded = 0;
 
-
-static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
-  (void)ud; (void)osize;  /* not used */
-  if (nsize == 0) {
-    free(ptr);
-    return NULL;
-  }
-  else
-    return realloc(ptr, nsize);
+static void* get_function(const char* libname,const char* name) {
+    HMODULE h = LoadLibraryA(libname);
+    if (h != INVALID_HANDLE_VALUE)
+    {
+        return GetProcAddress(h, name);
+    }
+    return 0;
 }
+typedef void* (*skynet_realloc_ptr)(void* ptr, size_t size);
+typedef void* (*skynet_malloc_ptr)(size_t size);
+typedef void (*skynet_free_ptr)(void* ptr);
+skynet_malloc_ptr skynet_malloc = 0;
+skynet_free_ptr skynet_free = 0;
+skynet_realloc_ptr skynet_realloc = 0;
 
-
+#endif
+static void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
+    (void)ud; (void)osize;  /* not used */
+#ifdef _WIN32
+    if (!loaded) {
+        skynet_malloc = (skynet_malloc_ptr)get_function("WinSkynet", "skynet_malloc");
+        skynet_free = (skynet_free_ptr)get_function("WinSkynet", "skynet_free");
+        skynet_realloc = (skynet_realloc_ptr)get_function("WinSkynet", "skynet_realloc");
+        loaded
+            = (skynet_malloc != 0)
+            && (skynet_free != 0)
+            && (skynet_realloc != 0)
+            ;
+    }
+#endif
+    if (nsize == 0) {
+        skynet_free(ptr);
+        return NULL;
+    }
+    else
+    {
+        return skynet_realloc(ptr, nsize);
+    }
+}
 static int panic (lua_State *L) {
   lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
                         lua_tostring(L, -1));
