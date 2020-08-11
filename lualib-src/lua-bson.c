@@ -90,7 +90,7 @@ bson_destroy(struct bson *b) {
 	if (b->ptr != b->buffer) {
 #ifdef _WIN32
 		if (skynet_free == 0) {
-			skynet_free = (skynet_free_ptr)get_function("WinSkynet.dll", "skynet_free");
+			skynet_free = (skynet_free_ptr)get_function("Skynetlib", "skynet_free");
 		}
 #endif
 		skynet_free(b->ptr);
@@ -115,7 +115,7 @@ bson_reserve(struct bson *b, int sz) {
 	if (b->ptr == b->buffer) {
 #ifdef _WIN32
 		if (skynet_malloc == 0) {
-			skynet_malloc = (skynet_malloc_ptr)get_function("WinSkynet.dll", "skynet_malloc");
+			skynet_malloc = (skynet_malloc_ptr)get_function("Skynetlib", "skynet_malloc");
 		}
 #endif
 		b->ptr = skynet_malloc(b->cap);
@@ -123,7 +123,7 @@ bson_reserve(struct bson *b, int sz) {
 	} else {
 #ifdef _WIN32
 		if (skynet_realloc == 0) {
-			skynet_realloc = (skynet_realloc_ptr)get_function("WinSkynet.dll", "skynet_realloc");
+			skynet_realloc = (skynet_realloc_ptr)get_function("Skynetlib", "skynet_realloc");
 		}
 #endif
 

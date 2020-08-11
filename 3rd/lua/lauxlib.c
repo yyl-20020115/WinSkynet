@@ -1027,9 +1027,9 @@ static void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
     (void)ud; (void)osize;  /* not used */
 #ifdef _WIN32
     if (!loaded) {
-        skynet_malloc = (skynet_malloc_ptr)get_function("WinSkynet", "skynet_malloc");
-        skynet_free = (skynet_free_ptr)get_function("WinSkynet", "skynet_free");
-        skynet_realloc = (skynet_realloc_ptr)get_function("WinSkynet", "skynet_realloc");
+        skynet_malloc = (skynet_malloc_ptr)get_function("Skynetlib", "skynet_malloc");
+        skynet_free = (skynet_free_ptr)get_function("Skynetlib", "skynet_free");
+        skynet_realloc = (skynet_realloc_ptr)get_function("Skynetlib", "skynet_realloc");
         loaded
             = (skynet_malloc != 0)
             && (skynet_free != 0)
