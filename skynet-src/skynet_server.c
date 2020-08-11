@@ -272,11 +272,6 @@ dispatch_message(struct skynet_context *ctx, struct skynet_message *msg) {
 	int reserve_msg = 0;
 	if (ctx->profile) {
 		ctx->cpu_start = skynet_thread_time();
-		if (ctx->cb == 0) {
-#ifdef _WIN32
-			DebugBreak();
-#endif
-		}
 		reserve_msg = ctx->cb(ctx, ctx->cb_ud, type, msg->session, msg->source, msg->data, sz);
 		uint64_t cost_time = skynet_thread_time() - ctx->cpu_start;
 		ctx->cpu_cost += cost_time;

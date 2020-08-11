@@ -18,7 +18,9 @@ int dlclose(void* handle);
 void* dlopen(const char* filename, int flags);
 void srandom(unsigned int seed);
 long int random(void);
-
+#ifndef SIGHUP
+#define SIGHUP 1
+#endif
 #define CLOCK_MONOTONIC 1
 #define CLOCK_REALTIME  0
 #define CLOCK_THREAD_CPUTIME_ID 3

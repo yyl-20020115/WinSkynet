@@ -23,7 +23,6 @@
 #include <skynet.h>
 #include <WinSock2.h>
 #include "../3rd/pthreads-w32/pthread.h"
-int usleep(unsigned int __useconds);
 #endif
 
 #define CACHE_SIZE 0x1000	
@@ -143,7 +142,7 @@ static int
 lrecv(lua_State *L) {
 	int fd = (int)luaL_checkinteger(L,1);
 
-	char buffer[CACHE_SIZE];
+	char buffer[CACHE_SIZE] = { 0 };
 	int r = recv(fd, buffer, CACHE_SIZE, 0);
 	if (r == 0) {
 		lua_pushliteral(L, "");
@@ -187,15 +186,16 @@ struct queue {
 static void *
 readline_stdin(void * arg) {
 	struct queue * q = arg;
-	char tmp[1024];
+	char tmp[1024] = { 0 };
 	while (!feof(stdin)) {
 		if (fgets(tmp,sizeof(tmp),stdin) == NULL) {
 			// read stdin failed
 			exit(1);
 		}
-		int n = (int)strlen(tmp) -1;
+		size_t n = strlen(tmp);// -1;
 
 		char * str = skynet_malloc(n+1);
+		memset(str, 0, n + 1);
 		memcpy(str, tmp, n);
 		str[n] = 0;
 

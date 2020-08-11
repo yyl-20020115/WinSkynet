@@ -125,6 +125,7 @@ struct socket_server {
 	int recvctrl_fd;
 	int sendctrl_fd;
 #else
+	USHORT udp_port;
 	SOCKET recvctrl_fd;
 	SOCKET sendctrl_fd;
 #endif
@@ -397,12 +398,26 @@ socket_server_create(uint64_t time) {
 	}
 
 #ifdef _WIN32
+	//each server has a port from 32000
+	int dp = -1;
 	fd[0] = socket(AF_INET, SOCK_DGRAM, 0);
 	struct sockaddr_in addr = { 0 };
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY); /* N.B.: differs from sender */
-	addr.sin_port = htons(32000);
-	bind(fd[0], (const struct sockaddr*)&addr, sizeof(addr));
+	addr.sin_port = dp;
+
+	for (int p = MAX_SOCKET-1; p >= 0; --p) {
+		addr.sin_port = htons((USHORT)p);
+		if (0 == bind(fd[0], (const struct sockaddr*)&addr, sizeof(addr))) {
+			dp = p;
+			break;
+		}
+	}
+	if (dp < 0) {
+		return NULL;
+	}
+	//dp >= 0;
+
 	sp_nonblocking(fd[0]);
 	fd[1] = socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -435,6 +450,7 @@ socket_server_create(uint64_t time) {
 	struct socket_server *ss = skynet_malloc(sizeof(*ss));
 	ss->time = time;
 	ss->event_fd = efd;
+	ss->udp_port = dp;
 	ss->recvctrl_fd = fd[0];
 	ss->sendctrl_fd = fd[1];
 	ss->checkctrl = 1;
@@ -589,6 +605,12 @@ new_fd(struct socket_server *ss, int id, int fd, int protocol, uintptr_t opaque,
 	assert(s->type == SOCKET_TYPE_RESERVE);
 
 	if (add) {
+#ifdef _WIN32
+		//stdin, stdout, stderr
+		if (fd >= 0 && fd <= 2) {
+
+		} else
+#endif
 		if (sp_add(ss->event_fd, fd, s)) {
 			s->type = SOCKET_TYPE_INVALID;
 			return NULL;
@@ -1187,34 +1209,22 @@ setopt_socket(struct socket_server *ss, struct request_setopt *request) {
 	int v = request->value;
 	setsockopt(s->fd, IPPROTO_TCP, request->what,(const char*) &v, sizeof(v));
 }
-
+#ifndef _WIN32
 static int block_readpipe(SOCKET pipefd, void *buffer, int sz) {
 	for (;;) {
-#ifdef _WIN32
-		int n = 0;
-		if (!ReadFile((HANDLE)pipefd, buffer, sz, (LPDWORD)&n, NULL)) {
-			n = -1;
-		}
-#else
 		int n = read(pipefd, buffer, sz);
-#endif
 		if (n<0) {
-#ifdef _WIN32
-			if (WSAGetLastError() == WSAEINTR)
-				continue;
-#else
 			if (errno == EINTR)
 				continue;
-#endif
 			fprintf(stderr, "socket-server : read pipe error %s.\n",strerror(errno));
 			return n;
 		}
 		// must atomic read from a pipe
-		//assert(n == sz);
+		assert(n == sz);
 		return n;
 	}
 }
-
+#endif
 static int has_cmd(struct socket_server *ss, char buffer[512]) {
 	struct timeval tv = {0,0};
 	int retval = 0;
@@ -1770,11 +1780,9 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 #ifdef _WIN32
 		struct sockaddr_in addr = { 0 };
 		addr.sin_family = AF_INET;
-		addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); /* N.B.: differs from sender */
-		addr.sin_port = htons(32000);
-
+		addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //to self
+		addr.sin_port = ss->udp_port;
 		n = sendto(ss->sendctrl_fd, &request->header[6], (len + 2), 0, (const struct sockaddr*)&addr, sizeof(addr));
-		// write(ss->sendctrl_fd, &request->header[6], len + 2);
 #else
 		n = write(ss->sendctrl_fd, &request->header[6], len + 2);
 #endif
@@ -2042,6 +2050,7 @@ socket_server_listen(struct socket_server *ss, uintptr_t opaque, const char * ad
 int
 socket_server_bind(struct socket_server *ss, uintptr_t opaque, int fd) {
 	struct request_package request;
+
 	int id = reserve_id(ss);
 	if (id < 0)
 		return -1;

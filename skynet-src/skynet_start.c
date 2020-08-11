@@ -37,12 +37,10 @@ struct worker_parm {
 
 static volatile int SIG = 0;
 
-static void handle_hup(int signal) {
-#ifndef _WIN32
+void handle_hup(int signal) {
 	if (signal == SIGHUP) {
 		SIG = 1;
 	}
-#endif
 }
 
 #define CHECK_ABORT if (skynet_context_total()==0) break;

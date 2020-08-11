@@ -160,5 +160,5 @@ EXPORTS
 	usleep
 	mallctl_bool
 	mallctl_cmd
-
+	handle_hup
 	

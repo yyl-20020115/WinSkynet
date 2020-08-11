@@ -312,8 +312,9 @@ end
 function socket.readline(id, sep)
 	sep = sep or "\n"
 	local s = socket_pool[id]
-	assert(s)
+	assert(s)	
 	local ret = driver.readline(s.buffer, buffer_pool, sep)
+	print(ret)
 	if ret then
 		return ret
 	end

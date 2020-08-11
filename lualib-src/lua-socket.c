@@ -336,6 +336,9 @@ lreadline(lua_State *L) {
 	bool check = !lua_istable(L, 2);
 	size_t seplen = 0;
 	const char *sep = luaL_checklstring(L,3,&seplen);
+#ifdef _WIN32
+	//TODO:
+#endif
 	int i;
 	struct buffer_node *current = sb->head;
 	if (current == NULL)

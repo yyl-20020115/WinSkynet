@@ -2,10 +2,13 @@
 
 #include "skynet.h"
 #include "lua-seri.h"
-
+#ifdef _WIN32
+#define KNRM  ""
+#define KRED  ""
+#else
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
-
+#endif
 #include <lua.h>
 #include <lauxlib.h>
 #include <stdlib.h>
@@ -19,7 +22,6 @@
 #include <sys/time.h>
 #endif
 
-#include "skynet.h"
 // return nsec
 static int64_t
 get_time() {
