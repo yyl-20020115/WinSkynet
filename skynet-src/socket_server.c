@@ -386,9 +386,9 @@ clear_wb_list(struct wb_list *list) {
 struct socket_server * 
 socket_server_create(uint64_t time) {
 	int i;
-	int dp = -1;
 #ifdef _WIN32
 	SOCKET fd[2] = { 0 };
+	int dp = -1;
 #else
 	int fd[2] = { 0 };
 #endif
