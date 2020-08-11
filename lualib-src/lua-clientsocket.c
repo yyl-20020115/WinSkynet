@@ -13,13 +13,14 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
-#include <skynet.h>
 #ifndef _WIN32
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include "../skynet-src/skynet.h"
 #else
+#include <skynet.h>
 #include <WinSock2.h>
 #include "../3rd/pthreads-w32/pthread.h"
 int usleep(unsigned int __useconds);
