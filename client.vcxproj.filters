@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="client">
+      <UniqueIdentifier>{983f0684-1fe1-47b8-9d82-88fce3fa5a00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lualib-src\lsha1.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-clientsocket.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-crypt.c">
+      <Filter>client</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\client.def" />
+  </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-LIBRARY "harbor"
+LIBRARY harbor
 
 EXPORTS
     harbor_create

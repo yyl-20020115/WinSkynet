@@ -1,0 +1,3 @@
+LIBRARY sproto
+EXPORTS
+	luaopen_sproto_core

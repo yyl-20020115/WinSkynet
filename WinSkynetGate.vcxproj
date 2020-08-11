@@ -29,12 +29,8 @@
     <None Include="service-src\gate.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="lua.vcxproj">
-      <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
-    </ProjectReference>
     <ProjectReference Include="WinSkynet.vcxproj">
       <Project>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</Project>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -94,25 +90,29 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

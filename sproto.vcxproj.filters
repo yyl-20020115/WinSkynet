@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="sproto">
+      <UniqueIdentifier>{b40c3ec3-3da6-453f-a192-699135eabc19}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lualib-src\sproto\lsproto.c">
+      <Filter>sproto</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\sproto\sproto.c">
+      <Filter>sproto</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lualib-src\sproto\msvcint.h">
+      <Filter>sproto</Filter>
+    </ClInclude>
+    <ClInclude Include="lualib-src\sproto\sproto.h">
+      <Filter>sproto</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\sproto.def" />
+  </ItemGroup>
+</Project>

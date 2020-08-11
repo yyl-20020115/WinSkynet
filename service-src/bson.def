@@ -1,0 +1,3 @@
+LIBRARY bson
+EXPORTS
+	luaopen_bson

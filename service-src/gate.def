@@ -1,4 +1,4 @@
-LIBRARY "gate"
+LIBRARY gate
 
 EXPORTS
     gate_create

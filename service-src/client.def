@@ -1,0 +1,5 @@
+LIBRARY client
+EXPORTS
+	luaopen_client_socket
+	luaopen_skynet_crypt
+	luaopen_client_crypt

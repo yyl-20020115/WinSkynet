@@ -1,4 +1,4 @@
-LIBRARY "WinSkynet"
+LIBRARY skynetlib
 
 EXPORTS
 	
@@ -36,7 +36,8 @@ EXPORTS
 	skynet_updatetime
 	skynet_timer_init
 	skynet_now
-
+	skynet_socket_info
+	socket_info_release
 	skynet_socket_init
 	skynet_socket_exit
 	skynet_socket_free
@@ -44,6 +45,7 @@ EXPORTS
 	skynet_socket_sendbuffer
 	skynet_socket_send
 	skynet_socket_send_lowpriority
+	skynet_socket_sendbuffer_lowpriority
 	skynet_socket_listen
 	skynet_socket_connect
 	skynet_socket_bind
@@ -53,6 +55,7 @@ EXPORTS
 	skynet_socket_udp
 	skynet_socket_udp_connect
 	skynet_socket_udp_send
+	skynet_socket_udp_sendbuffer
 	skynet_socket_udp_address
 	skynet_socket_shutdown
 
@@ -150,5 +153,12 @@ EXPORTS
 	skynet_free
 	skynet_realloc
 
+
+	srandom
+	random
+	clock_gettime
+	usleep
+	mallctl_bool
+	mallctl_cmd
 
 	

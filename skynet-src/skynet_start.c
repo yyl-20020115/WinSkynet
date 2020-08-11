@@ -184,8 +184,8 @@ thread_worker(void *p) {
 
 static void
 start(int thread) {
-	pthread_t* pid = (pthread_t*)skynet_malloc((thread+3)*sizeof(*pid));
-	memset(pid, 0, (thread + 3) * sizeof(*pid));
+	pthread_t* pid = (pthread_t*)skynet_malloc(((size_t)thread+3)*sizeof(*pid));
+	memset(pid, 0, ((size_t)thread + 3) * sizeof(*pid));
 	struct monitor *m = skynet_malloc(sizeof(*m));
 	memset(m, 0, sizeof(*m));
 	m->count = thread;
@@ -212,10 +212,15 @@ start(int thread) {
 	create_thread(&pid[2], thread_socket, m);
 
 	static int weight[] = { 
-		-1, -1, -1, -1, 0, 0, 0, 0,
-		1, 1, 1, 1, 1, 1, 1, 1, 
-		2, 2, 2, 2, 2, 2, 2, 2, 
-		3, 3, 3, 3, 3, 3, 3, 3, };
+		-1, -1, -1, -1, 
+		0, 0, 0, 0,
+		1, 1, 1, 1, 
+		1, 1, 1, 1, 
+		2, 2, 2, 2, 
+		2, 2, 2, 2, 
+		3, 3, 3, 3, 
+		3, 3, 3, 3, 
+	};
 	struct worker_parm* wp = (struct worker_parm*)skynet_malloc(
 		thread * sizeof(*wp));
 	memset(wp, 0, thread * sizeof(*wp));
@@ -241,7 +246,8 @@ start(int thread) {
 
 static void
 bootstrap(struct skynet_context * logger, const char * cmdline) {
-	int sz = (int)strlen(cmdline);
+	size_t sz = strlen(cmdline);
+	if (sz == 0) return;
 	char *name =(char*)skynet_malloc(sz+1);
 	char *args = (char*)skynet_malloc(sz+1);
 	memset(name, 0, sz + 1);

@@ -1021,6 +1021,7 @@ skynet_malloc_ptr skynet_malloc = 0;
 skynet_free_ptr skynet_free = 0;
 skynet_realloc_ptr skynet_realloc = 0;
 
+
 #endif
 static void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
     (void)ud; (void)osize;  /* not used */

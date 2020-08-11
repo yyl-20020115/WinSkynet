@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ltls">
+      <UniqueIdentifier>{09519591-b3c1-437c-87e0-e4d629b2ef57}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lualib-src\ltls.c">
+      <Filter>ltls</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\ltls.def" />
+  </ItemGroup>
+</Project>

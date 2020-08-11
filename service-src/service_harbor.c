@@ -752,7 +752,3 @@ void harbor_signal(void* inst, int signal)
 {
 	//NOTHING TO DO WITH HARBOR IN SIGNAL
 }
-
-#ifdef _WIN32
-//#include <mimalloc-override.h>
-#endif

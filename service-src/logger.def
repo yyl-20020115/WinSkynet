@@ -1,4 +1,4 @@
-LIBRARY "logger"
+LIBRARY logger
 
 EXPORTS
     logger_create

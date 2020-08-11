@@ -2,14 +2,31 @@
 
 #include <lua.h>
 #include <lauxlib.h>
-
 #include <time.h>
-#include <skynet.h>
-#ifndef _WIN32
-#include <unistd.h>
-#else
+
+#ifdef _WIN32
 #include <Winsock2.h>
+#include <Windows.h>
 int getpid();
+static int loaded = 0;
+
+static void* get_function(const char* libname, const char* name) {
+	HMODULE h = LoadLibraryA(libname);
+	if (h != INVALID_HANDLE_VALUE)
+	{
+		return GetProcAddress(h, name);
+	}
+	return 0;
+}
+typedef void* (*skynet_realloc_ptr)(void* ptr, size_t size);
+typedef void* (*skynet_malloc_ptr)(size_t size);
+typedef void (*skynet_free_ptr)(void* ptr);
+static skynet_malloc_ptr skynet_malloc = 0;
+static skynet_free_ptr skynet_free = 0;
+static skynet_realloc_ptr skynet_realloc = 0;
+#else
+#include <unistd.h>
+#include "../../skynet-src/skynet.h"
 #endif
 
 #include <stdint.h>
@@ -71,6 +88,11 @@ get_length(const uint8_t * data) {
 static inline void
 bson_destroy(struct bson *b) {
 	if (b->ptr != b->buffer) {
+#ifdef _WIN32
+		if (skynet_free == 0) {
+			skynet_free = (skynet_free_ptr)get_function("WinSkynet.dll", "skynet_free");
+		}
+#endif
 		skynet_free(b->ptr);
 	}
 }
@@ -91,9 +113,20 @@ bson_reserve(struct bson *b, int sz) {
 	} while (b->cap <= b->size + sz);
 
 	if (b->ptr == b->buffer) {
+#ifdef _WIN32
+		if (skynet_malloc == 0) {
+			skynet_malloc = (skynet_malloc_ptr)get_function("WinSkynet.dll", "skynet_malloc");
+		}
+#endif
 		b->ptr = skynet_malloc(b->cap);
 		memcpy(b->ptr, b->buffer, b->size);
 	} else {
+#ifdef _WIN32
+		if (skynet_realloc == 0) {
+			skynet_realloc = (skynet_realloc_ptr)get_function("WinSkynet.dll", "skynet_realloc");
+		}
+#endif
+
 		b->ptr = skynet_realloc(b->ptr, b->cap);
 	}
 }

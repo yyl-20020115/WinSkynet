@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lualib-src">
+      <UniqueIdentifier>{ac3eb18f-acf0-42f8-836f-222a31828556}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lualib-src\lua-cluster.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-datasheet.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-debugchannel.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-memory.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-mongo.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-multicast.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-netpack.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-profile.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-seri.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-sharedata.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-sharetable.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-skynet.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-socket.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+    <ClCompile Include="lualib-src\lua-stm.c">
+      <Filter>lualib-src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lualib-src\lua-seri.h">
+      <Filter>lualib-src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service-src\skynet_lualib.def" />
+  </ItemGroup>
+</Project>

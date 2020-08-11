@@ -24,6 +24,7 @@
     <ProjectGuid>{6da29bd3-9027-4a06-adf8-d7fbe80ff2b1}</ProjectGuid>
     <RootNamespace>WinSkynet</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>SkynetLib</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -74,25 +75,29 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files (x86)\OpenSSL-Win32\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files (x86)\OpenSSL-Win32\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -176,9 +181,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="lualib-src\lua-seri.h" />
-    <ClInclude Include="lualib-src\sproto\msvcint.h" />
-    <ClInclude Include="lualib-src\sproto\sproto.h" />
     <ClInclude Include="skynet-src\atomic.h" />
     <ClInclude Include="skynet-src\malloc_hook.h" />
     <ClInclude Include="skynet-src\rwlock.h" />
@@ -215,27 +217,6 @@
     <ClInclude Include="wepoll\wepoll.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lualib-src\lsha1.c" />
-    <ClCompile Include="lualib-src\ltls.c" />
-    <ClCompile Include="lualib-src\lua-bson.c" />
-    <ClCompile Include="lualib-src\lua-clientsocket.c" />
-    <ClCompile Include="lualib-src\lua-cluster.c" />
-    <ClCompile Include="lualib-src\lua-crypt.c" />
-    <ClCompile Include="lualib-src\lua-datasheet.c" />
-    <ClCompile Include="lualib-src\lua-debugchannel.c" />
-    <ClCompile Include="lualib-src\lua-memory.c" />
-    <ClCompile Include="lualib-src\lua-mongo.c" />
-    <ClCompile Include="lualib-src\lua-multicast.c" />
-    <ClCompile Include="lualib-src\lua-netpack.c" />
-    <ClCompile Include="lualib-src\lua-profile.c" />
-    <ClCompile Include="lualib-src\lua-seri.c" />
-    <ClCompile Include="lualib-src\lua-sharedata.c" />
-    <ClCompile Include="lualib-src\lua-sharetable.c" />
-    <ClCompile Include="lualib-src\lua-skynet.c" />
-    <ClCompile Include="lualib-src\lua-socket.c" />
-    <ClCompile Include="lualib-src\lua-stm.c" />
-    <ClCompile Include="lualib-src\sproto\lsproto.c" />
-    <ClCompile Include="lualib-src\sproto\sproto.c" />
     <ClCompile Include="skynet-src\malloc_hook.c" />
     <ClCompile Include="skynet-src\skynet_daemon.c" />
     <ClCompile Include="skynet-src\skynet_env.c" />
@@ -431,14 +412,8 @@
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
-    <ProjectReference Include="lpeg.vcxproj">
-      <Project>{de88097a-3bfc-4820-9d6d-c1907b4ef505}</Project>
-    </ProjectReference>
     <ProjectReference Include="lua.vcxproj">
       <Project>{4a68bff3-ebc9-4417-be90-b4ca6cfcc401}</Project>
-    </ProjectReference>
-    <ProjectReference Include="lua_md5.vcxproj">
-      <Project>{4d9ee6af-741c-4d88-825a-22491e262c9f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

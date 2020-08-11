@@ -1,0 +1,3 @@
+LIBRARY ltls
+EXPORTS
+	luaopen_ltls_c

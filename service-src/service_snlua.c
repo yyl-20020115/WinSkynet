@@ -206,8 +206,3 @@ snlua_signal(struct snlua *l, int signal) {
 		skynet_error(l->ctx, "Current Memory %.3fK", (float)l->mem / 1024);
 	}
 }
-
-
-#ifdef _WIN32
-//#include <mimalloc-override.h>
-#endif
