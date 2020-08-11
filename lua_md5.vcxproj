@@ -124,6 +124,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetPath) $(SolutionDir)luaclib\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,6 +144,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetPath) $(SolutionDir)luaclib\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -154,6 +160,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetPath) $(SolutionDir)luaclib\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -171,6 +180,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>service-src\lua_md5.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y $(TargetPath) $(SolutionDir)luaclib\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
