@@ -21,12 +21,12 @@
 #define ATOM_AND(ptr,n) __sync_and_and_fetch(ptr, n)
 #else
 #include <intrin.h>
-#define ATOM_CAS(ptr, oval, nval) _InterlockedCompareExchange(ptr, oval, nval)
-#define ATOM_CAS8(ptr, oval, nval) _InterlockedCompareExchange8(ptr, oval, nval)
-#define ATOM_CAS16(ptr, oval, nval) _InterlockedCompareExchange16(ptr, oval, nval)
-#define ATOM_CAS32(ptr, oval, nval) _InterlockedCompareExchange(ptr, oval, nval)
-#define ATOM_CAS64(ptr, oval, nval) _InterlockedCompareExchange64(ptr, oval, nval)
-#define ATOM_CAS_POINTER(ptr, oval, nval) _InterlockedCompareExchangePointer((void* volatile *)ptr, oval, nval)
+#define ATOM_CAS(ptr, oval, nval) (_InterlockedCompareExchange(ptr, nval, oval) == oval)
+#define ATOM_CAS8(ptr, oval, nval) (_InterlockedCompareExchange8(ptr, nval, oval) == oval)
+#define ATOM_CAS16(ptr, oval, nval) (_InterlockedCompareExchange16(ptr, nval, oval) == oval)
+#define ATOM_CAS32(ptr, oval, nval) (_InterlockedCompareExchange(ptr, nval, oval) == oval)
+#define ATOM_CAS64(ptr, oval, nval) (_InterlockedCompareExchange64(ptr, nval, oval) == oval)
+#define ATOM_CAS_POINTER(ptr, oval, nval) (_InterlockedCompareExchangePointer((void* volatile *)ptr, oval, nval) == oval)
 #define ATOM_INC(ptr) _InterlockedIncrement(ptr)
 #define ATOM_INC16(ptr) _InterlockedIncrement16(ptr)
 #define ATOM_INC64(ptr) _InterlockedIncrement64(ptr)

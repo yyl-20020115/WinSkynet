@@ -396,14 +396,31 @@ socket_server_create(uint64_t time) {
 		return NULL;
 	}
 
+#ifdef _WIN32
+	fd[0] = socket(AF_INET, SOCK_DGRAM, 0);
+	struct sockaddr_in addr = { 0 };
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = htonl(INADDR_ANY); /* N.B.: differs from sender */
+	addr.sin_port = htons(32000);
+	bind(fd[0], (const struct sockaddr*)&addr, sizeof(addr));
+	
+	fd[1] = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if (sp_add(efd, fd[0], NULL)) {
+		// add recvctrl_fd to event poll
+		fprintf(stderr, "socket-server: can't add server fd to event pool.\n");
+		closesocket(fd[0]);
+		closesocket(fd[1]);
+		sp_release(efd);
+		return NULL;
+	}
+
+#else
 	if (pipe(fd)) {
 		sp_release(efd);
 		fprintf(stderr, "socket-server: create socket pair failed.\n");
 		return NULL;
 	}
-#ifdef _WIN32
-
-#else
 	if (sp_add(efd, fd[0], NULL)) {
 		// add recvctrl_fd to event poll
 		fprintf(stderr, "socket-server: can't add server fd to event pool.\n");
@@ -548,8 +565,8 @@ socket_server_release(struct socket_server *ss) {
 		spinlock_destroy(&s->dw_lock);
 	}
 #ifdef _WIN32
-	CloseHandle((HANDLE)ss->sendctrl_fd);
-	CloseHandle((HANDLE)ss->recvctrl_fd);
+	closesocket(ss->sendctrl_fd);
+	closesocket(ss->recvctrl_fd);
 #else
 	close(ss->sendctrl_fd);
 	close(ss->recvctrl_fd);
@@ -695,7 +712,11 @@ send_list_tcp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 	while (list->head) {
 		struct write_buffer * tmp = list->head;
 		for (;;) {
+#ifdef _WIN32
+			ssize_t sz = send(s->fd, tmp->ptr, (int)tmp->sz,0);
+#else
 			ssize_t sz = write(s->fd, tmp->ptr, (int)tmp->sz);
+#endif
 			if (sz < 0) {
 				switch(errno) {
 				case EINTR:
@@ -1111,6 +1132,11 @@ start_socket(struct socket_server *ss, struct request_start *request, struct soc
 		result->data = "invalid socket";
 		return SOCKET_ERR;
 	}
+#ifdef _WIN32
+	if (s->fd == 0) {
+		s->fd = socket(AF_INET, SOCK_STREAM, 0);;
+	}
+#endif
 	struct socket_lock l;
 	socket_lock_init(s, &l);
 	if (s->type == SOCKET_TYPE_PACCEPT || s->type == SOCKET_TYPE_PLISTEN) {
@@ -1166,26 +1192,20 @@ static int block_readpipe(SOCKET pipefd, void *buffer, int sz) {
 	}
 }
 
-static int has_cmd(struct socket_server *ss) {
+static int has_cmd(struct socket_server *ss, char buffer[512]) {
 	struct timeval tv = {0,0};
 	int retval = 0;
 #ifdef _WIN32
-	DWORD count = 0;
-	DWORD total = 0;
-	DWORD left = 0;
-	char buffer[8] = { 0 };
-	//Use PeekNamedPipe to check if there is anything inside of the pipe
-	if (PeekNamedPipe((HANDLE)ss->recvctrl_fd, buffer, sizeof(buffer), &count, &total,&left))
-	{
-		if(count>0) return 1;
+	int n = recvfrom(ss->recvctrl_fd, buffer,512 , 0, 0, 0);
+	if (n > 0) {
+		return 1;
 	}
 #else
 	FD_SET(ss->recvctrl_fd, &ss->rfds);
-	retval = select(ss->recvctrl_fd+1, &ss->rfds, NULL, NULL, &tv);
-#endif
-	if (retval == 1) {
+	if ((retval = select(ss->recvctrl_fd + 1, &ss->rfds, NULL, NULL, &tv)) == 1) {
 		return 1;
 	}
+#endif
 	return 0;
 }
 
@@ -1273,17 +1293,26 @@ dec_sending_ref(struct socket_server *ss, int id) {
 		ATOM_DEC(&s->sending);
 	}
 }
-static int ctrl_cmd(struct socket_server *ss, struct socket_message *result) 
+static int ctrl_cmd(struct socket_server *ss, struct socket_message *result, char inbuffer[512]) 
 {
-	SOCKET fd = ss->recvctrl_fd;
 	// the length of message is one byte, so 256+8 buffer size is enough.
-	uint8_t buffer[256];
-	uint8_t header[2];
-
+	uint8_t buffer[256] = { 0 };
+	uint8_t header[2] = { 0 };
+#ifdef _WIN32
+	header[0] = inbuffer[0];
+	header[1] = inbuffer[1];
+	strncpy(buffer, inbuffer + 2, sizeof(buffer));
+#else
+	SOCKET fd = ss->recvctrl_fd;
+#endif
+#ifndef _WIN32
 	block_readpipe(fd, header, sizeof(header));
+#endif
 	int type = header[0];
 	int len = header[1];
+#ifndef _WIN32
 	block_readpipe(fd, buffer, len);
+#endif
 	// ctrl command only exist in local fd, so don't worry about endian.
 	switch (type) {
 	case 'S':
@@ -1336,7 +1365,11 @@ static int
 forward_message_tcp(struct socket_server *ss, struct socket *s, struct socket_lock *l, struct socket_message * result) {
 	int sz = s->p.size;
 	char * buffer = skynet_malloc(sz);
+#ifdef _WIN32
+	int n = (int)recv(s->fd, buffer, sz,0);
+#else
 	int n = (int)read(s->fd, buffer, sz);
+#endif
 	if (n<0) {
 		skynet_free(buffer);
 		switch(errno) {
@@ -1563,9 +1596,9 @@ int
 socket_server_poll(struct socket_server *ss, struct socket_message * result, int * more) {
 	for (;;) {
 		if (ss->checkctrl) {
-
-			if (has_cmd(ss)) {
-				int type = ctrl_cmd(ss, result);
+			char buffer[512] = { 0 };
+			if (has_cmd(ss,buffer)) {
+				int type = ctrl_cmd(ss, result,buffer);
 				if (type != -1) {
 					clear_closed_event(ss, result, type);
 					return type;
@@ -1679,9 +1712,12 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 	for (;;) {
 		int n = 0;
 #ifdef _WIN32
-		if (!WriteFile((HANDLE)ss->sendctrl_fd, &request->header[6], (len + 2), &n, NULL)) {
-			n = -1;
-		}
+		struct sockaddr_in addr = { 0 };
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); /* N.B.: differs from sender */
+		addr.sin_port = htons(32000);
+
+		n = sendto(ss->sendctrl_fd, &request->header[6], (len + 2), 0, (const struct sockaddr*)&addr, sizeof(addr));
 		// write(ss->sendctrl_fd, &request->header[6], len + 2);
 #else
 		n = write(ss->sendctrl_fd, &request->header[6], len + 2);
@@ -1752,7 +1788,11 @@ socket_server_send(struct socket_server *ss, struct socket_sendbuffer *buf) {
 			send_object_init_from_sendbuffer(ss, &so, buf);
 			ssize_t n;
 			if (s->protocol == PROTOCOL_TCP) {
+#ifdef _WIN32
+				n = send(s->fd, so.buffer, (unsigned int)so.sz,0);
+#else
 				n = write(s->fd, so.buffer, (unsigned int)so.sz);
+#endif
 			} else {
 				union sockaddr_all sa;
 				socklen_t sasz = udp_socket_address(s, s->p.udp_address, &sa);
