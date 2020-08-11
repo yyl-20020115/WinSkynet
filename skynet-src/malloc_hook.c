@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <lua.h>
 #include <stdio.h>
-//#ifdef _WIN32
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
-//#endif
+#ifdef _WIN32
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 #include "malloc_hook.h"
 #include "skynet.h"

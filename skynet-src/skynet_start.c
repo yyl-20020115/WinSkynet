@@ -184,8 +184,8 @@ thread_worker(void *p) {
 
 static void
 start(int thread) {
-	pthread_t* pid = (pthread_t*)skynet_malloc((thread+3)*sizeof(pthread_t*));
-
+	pthread_t* pid = (pthread_t*)skynet_malloc((thread+3)*sizeof(*pid));
+	memset(pid, 0, (thread + 3) * sizeof(*pid));
 	struct monitor *m = skynet_malloc(sizeof(*m));
 	memset(m, 0, sizeof(*m));
 	m->count = thread;
@@ -216,7 +216,9 @@ start(int thread) {
 		1, 1, 1, 1, 1, 1, 1, 1, 
 		2, 2, 2, 2, 2, 2, 2, 2, 
 		3, 3, 3, 3, 3, 3, 3, 3, };
-	struct worker_parm* wp = (struct worker_parm*)skynet_malloc(thread * sizeof(struct worker_param*));
+	struct worker_parm* wp = (struct worker_parm*)skynet_malloc(
+		thread * sizeof(*wp));
+	memset(wp, 0, thread * sizeof(*wp));
 	for (i=0;i<thread;i++) {
 		wp[i].m = m;
 		wp[i].id = i;
@@ -242,6 +244,8 @@ bootstrap(struct skynet_context * logger, const char * cmdline) {
 	int sz = (int)strlen(cmdline);
 	char *name =(char*)skynet_malloc(sz+1);
 	char *args = (char*)skynet_malloc(sz+1);
+	memset(name, 0, sz + 1);
+	memset(args, 0, sz + 1);
 	sscanf(cmdline, "%s %s", name, args);
 	struct skynet_context *ctx = skynet_context_new(name, args);
 	skynet_free(name);
