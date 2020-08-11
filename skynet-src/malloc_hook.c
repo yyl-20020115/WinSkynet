@@ -5,9 +5,10 @@
 #include <lua.h>
 #include <stdio.h>
 #ifdef _WIN32
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+#include <mimalloc.h>
 #endif
 
 #include "malloc_hook.h"
@@ -264,9 +265,10 @@ mallctl_opt(const char* name, int* newval) {
 	skynet_error(NULL, "No jemalloc : mallctl_opt %s.", name);
 	return 0;
 }
-
-bool
-mallctl_bool(const char* name, bool* newval) {
+#ifndef bool
+#define bool char
+#endif
+bool mallctl_bool(const char* name, bool* newval) {
 	skynet_error(NULL, "No jemalloc : mallctl_bool %s.", name);
 	return 0;
 }
@@ -314,19 +316,19 @@ skynet_strdup(const char *str) {
 #ifdef _WIN32
 void* skynet_malloc(size_t sz)
 {
-	return malloc(sz);
+	return mi_malloc(sz);
 }
 void* skynet_calloc(size_t nmemb, size_t size)
 {
-	return calloc(nmemb, size);
+	return mi_calloc(nmemb, size);
 }
 void* skynet_realloc(void* ptr, size_t size)
 {
-	return realloc(ptr, size);
+	return mi_realloc(ptr, size);
 }
 void skynet_free(void* ptr)
 {
-	free(ptr);
+	mi_free(ptr);
 }
 //void* skynet_memalign(size_t alignment, size_t size)
 //{
