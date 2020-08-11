@@ -386,6 +386,7 @@ clear_wb_list(struct wb_list *list) {
 struct socket_server * 
 socket_server_create(uint64_t time) {
 	int i;
+	int dp = -1;
 #ifdef _WIN32
 	SOCKET fd[2] = { 0 };
 #else
@@ -399,7 +400,6 @@ socket_server_create(uint64_t time) {
 
 #ifdef _WIN32
 	//each server has a port from 32000
-	int dp = -1;
 	fd[0] = socket(AF_INET, SOCK_DGRAM, 0);
 	struct sockaddr_in addr = { 0 };
 	addr.sin_family = AF_INET;
