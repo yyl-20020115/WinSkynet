@@ -450,11 +450,12 @@ socket_server_create(uint64_t time) {
 	struct socket_server *ss = skynet_malloc(sizeof(*ss));
 	ss->time = time;
 	ss->event_fd = efd;
-	ss->udp_port = dp;
 	ss->recvctrl_fd = fd[0];
 	ss->sendctrl_fd = fd[1];
 	ss->checkctrl = 1;
-
+#ifdef _WIN32
+	ss->udp_port = dp;
+#endif
 	for (i=0;i<MAX_SOCKET;i++) {
 		struct socket *s = &ss->slot[i];
 		s->type = SOCKET_TYPE_INVALID;
