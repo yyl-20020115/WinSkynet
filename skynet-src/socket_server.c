@@ -657,7 +657,13 @@ open_socket(struct socket_server *ss, struct request_open * request, struct sock
 		socket_keepalive(sock);
 		sp_nonblocking(sock);
 		status = connect( sock, ai_ptr->ai_addr, (int)ai_ptr->ai_addrlen);
-		if ( status != 0 && errno != EINPROGRESS) {
+		if ( status != 0 && 
+#ifdef _WIN32
+			(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+			(errno != EINPROGRESS)
+#endif
+			) {
 #ifdef _WIN32
 			closesocket(sock);
 #else
@@ -718,12 +724,21 @@ send_list_tcp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 			ssize_t sz = write(s->fd, tmp->ptr, (int)tmp->sz);
 #endif
 			if (sz < 0) {
+#ifdef _WIN32
+				switch (WSAGetLastError()) {
+				case WSAEINTR:
+					continue;
+				case WSAEWOULDBLOCK:
+					return -1;
+				}
+#else
 				switch(errno) {
 				case EINTR:
 					continue;
 				case AGAIN_WOULDBLOCK:
 					return -1;
 				}
+#endif
 				force_close(ss,s,l,result);
 				return SOCKET_CLOSE;
 			}
@@ -790,11 +805,19 @@ send_list_udp(struct socket_server *ss, struct socket *s, struct wb_list *list, 
 		}
 		int err = sendto(s->fd, tmp->ptr, (int)tmp->sz, 0, &sa.s, sasz);
 		if (err < 0) {
+#ifdef _WIN32
+			switch (WSAGetLastError()) {
+			case WSAEINTR:
+			case WSAEWOULDBLOCK:
+				return -1;
+			}
+#else
 			switch(errno) {
 			case EINTR:
 			case AGAIN_WOULDBLOCK:
 				return -1;
 			}
+#endif
 			fprintf(stderr, "socket-server : udp (%d) sendto error %s.\n",s->id, strerror(errno));
 			drop_udp(ss, s, list, tmp);
 			return -1;
@@ -1132,11 +1155,6 @@ start_socket(struct socket_server *ss, struct request_start *request, struct soc
 		result->data = "invalid socket";
 		return SOCKET_ERR;
 	}
-#ifdef _WIN32
-	if (s->fd == 0) {
-		s->fd = socket(AF_INET, SOCK_STREAM, 0);;
-	}
-#endif
 	struct socket_lock l;
 	socket_lock_init(s, &l);
 	if (s->type == SOCKET_TYPE_PACCEPT || s->type == SOCKET_TYPE_PLISTEN) {
@@ -1181,8 +1199,13 @@ static int block_readpipe(SOCKET pipefd, void *buffer, int sz) {
 		int n = read(pipefd, buffer, sz);
 #endif
 		if (n<0) {
+#ifdef _WIN32
+			if (WSAGetLastError() == WSAEINTR)
+				continue;
+#else
 			if (errno == EINTR)
 				continue;
+#endif
 			fprintf(stderr, "socket-server : read pipe error %s.\n",strerror(errno));
 			return n;
 		}
@@ -1301,7 +1324,9 @@ static int ctrl_cmd(struct socket_server *ss, struct socket_message *result, cha
 #ifdef _WIN32
 	header[0] = inbuffer[0];
 	header[1] = inbuffer[1];
-	strncpy(buffer, inbuffer + 2, sizeof(buffer));
+	for (unsigned char i = 0; i < header[2]; i++) {
+		buffer[i] = inbuffer[i + 2];
+	}
 #else
 	SOCKET fd = ss->recvctrl_fd;
 #endif
@@ -1372,6 +1397,20 @@ forward_message_tcp(struct socket_server *ss, struct socket *s, struct socket_lo
 #endif
 	if (n<0) {
 		skynet_free(buffer);
+#ifdef _WIN32
+		switch (WSAGetLastError()) {
+		case WSAEINTR:
+			break;
+		case WSAEWOULDBLOCK:
+			fprintf(stderr, "socket-server: EAGAIN capture.\n");
+			break;
+		default:
+			// close when error
+			force_close(ss, s, l, result);
+			result->data = strerror(errno);
+			return SOCKET_ERR;
+		}
+#else
 		switch(errno) {
 		case EINTR:
 			break;
@@ -1384,6 +1423,7 @@ forward_message_tcp(struct socket_server *ss, struct socket *s, struct socket_lo
 			result->data = strerror(errno);
 			return SOCKET_ERR;
 		}
+#endif
 		return -1;
 	}
 	if (n==0) {
@@ -1437,6 +1477,19 @@ forward_message_udp(struct socket_server *ss, struct socket *s, struct socket_lo
 	socklen_t slen = sizeof(sa);
 	int n = recvfrom(s->fd, ss->udpbuffer,MAX_UDP_PACKAGE,0,&sa.s,&slen);
 	if (n<0) {
+#ifdef _WIN32
+		switch (WSAGetLastError()) {
+		case WSAEINTR:
+		case WSAEWOULDBLOCK:
+			break;
+		default:
+			// close when error
+			force_close(ss, s, l, result);
+			result->data = strerror(errno);
+			return SOCKET_ERR;
+
+		}
+#else
 		switch(errno) {
 		case EINTR:
 		case AGAIN_WOULDBLOCK:
@@ -1447,6 +1500,7 @@ forward_message_udp(struct socket_server *ss, struct socket *s, struct socket_lo
 			result->data = strerror(errno);
 			return SOCKET_ERR;
 		}
+#endif
 		return -1;
 	}
 	stat_read(ss,s,n);
@@ -1621,9 +1675,11 @@ socket_server_poll(struct socket_server *ss, struct socket_message * result, int
 			ss->event_index = 0;
 			if (ss->event_n <= 0) {
 				ss->event_n = 0;
-				if (errno == EINTR) {
-					continue;
-				}
+#ifdef _WIN32
+				if (WSAGetLastError() == WSAEINTR) continue;
+#else
+				if (errno == EINTR) continue;
+#endif			
 				return -1;
 			}
 		}
@@ -1723,7 +1779,12 @@ send_request(struct socket_server *ss, struct request_package *request, char typ
 		n = write(ss->sendctrl_fd, &request->header[6], len + 2);
 #endif
 		if (n<0) {
-			if (errno != EINTR) {
+#ifdef _WIN32
+			if (WSAGetLastError() != WSAEINTR)
+#else
+			if (errno != EINTR) 
+#endif		
+			{
 				fprintf(stderr, "socket-server : send ctrl command error %s.\n", strerror(errno));
 			}
 			continue;

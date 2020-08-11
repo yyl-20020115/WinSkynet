@@ -94,7 +94,13 @@ block_send(lua_State *L, int fd, const char * buffer, int sz) {
 	while(sz > 0) {
 		int r = send(fd, buffer, sz, 0);
 		if (r < 0) {
-			if (errno == EAGAIN || errno == EINTR)
+			if (
+#ifndef _WIN32
+			(errno == EAGAIN || errno == EINTR)
+#else
+			(WSAGetLastError() == WSAEWOULDBLOCK || WSAGetLastError() == WSAEINTR)
+#endif
+				)
 				continue;
 			luaL_error(L, "socket error: %s", strerror(errno));
 		}
@@ -145,7 +151,13 @@ lrecv(lua_State *L) {
 		return 1;
 	}
 	if (r < 0) {
-		if (errno == EAGAIN || errno == EINTR) {
+		if (
+#ifndef _WIN32
+			(errno == EAGAIN || errno == EINTR)
+#else
+			(WSAGetLastError() == WSAEWOULDBLOCK || WSAGetLastError() == WSAEINTR)
+#endif
+			){
 			return 0;
 		}
 		luaL_error(L, "socket error: %s", strerror(errno));

@@ -23,10 +23,8 @@ skynet.start(function()
 		if standalone then
 			print("calling cmaster")
 			if not pcall(skynet.newservice,"cmaster") then
-				print("master failed")
 				skynet.abort()
 			end
-			print("cmaster ok")
 		end
 
 		local ok, slave = pcall(skynet.newservice, "cslave")

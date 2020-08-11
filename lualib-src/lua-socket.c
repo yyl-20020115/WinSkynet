@@ -448,6 +448,7 @@ address_port(lua_State *L, char *tmp, const char * addr, int port_index, int *po
 
 static int
 lconnect(lua_State *L) {
+	int ret = 0;
 	size_t sz = 0;
 	const char * addr = luaL_checklstring(L,1,&sz);
 	char* tmp = (char*)skynet_malloc(sz+1);
@@ -455,15 +456,18 @@ lconnect(lua_State *L) {
 
 	int port = 0;
 	const char * host = address_port(L, tmp, addr, 2, &port);
-	skynet_free(tmp);
 	if (port == 0) {
-		return luaL_error(L, "Invalid port");
+		ret = luaL_error(L, "Invalid port");
+		goto exit_me;
 	}
 	struct skynet_context * ctx = lua_touserdata(L, lua_upvalueindex(1));
 	int id = skynet_socket_connect(ctx, host, port);
 	lua_pushinteger(L, id);
+	ret = 1;
+exit_me:
+	skynet_free(tmp);
 
-	return 1;
+	return ret;
 }
 
 static int
