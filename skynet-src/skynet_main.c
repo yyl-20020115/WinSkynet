@@ -12,7 +12,9 @@
 #include <lauxlib.h>
 #include <signal.h>
 #include <assert.h>
-
+#ifdef _WIN32
+int WSACleanup(void); 
+#endif
 static int
 optint(const char *key, int opt) {
 	const char * str = skynet_getenv(key);
@@ -180,10 +182,8 @@ main
 
 	skynet_start(&config);
 	skynet_globalexit();
-
+#ifdef _WIN32
+	WSACleanup();
+#endif
 	return 0;
 }
-
-#ifdef _WIN32
-//#include <mimalloc-override.h>
-#endif

@@ -403,7 +403,7 @@ socket_server_create(uint64_t time) {
 	addr.sin_addr.s_addr = htonl(INADDR_ANY); /* N.B.: differs from sender */
 	addr.sin_port = htons(32000);
 	bind(fd[0], (const struct sockaddr*)&addr, sizeof(addr));
-	
+	sp_nonblocking(fd[0]);
 	fd[1] = socket(AF_INET, SOCK_DGRAM, 0);
 
 	if (sp_add(efd, fd[0], NULL)) {
@@ -2022,7 +2022,7 @@ socket_server_listen(struct socket_server *ss, uintptr_t opaque, const char * ad
 	if (fd < 0) {
 		return -1;
 	}
-	struct request_package request;
+	struct request_package request = { 0 };
 	int id = reserve_id(ss);
 	if (id < 0) {
 #ifdef _WIN32

@@ -21,7 +21,6 @@ skynet.start(function()
 
 	else
 		if standalone then
-			print("calling cmaster")
 			if not pcall(skynet.newservice,"cmaster") then
 				skynet.abort()
 			end
