@@ -7,9 +7,7 @@
 #include <string.h>
 #include <assert.h>
 #include "atomic.h"
-#ifdef _WIN32
 #include <skynet.h>
-#endif
 #define KEYTYPE_INTEGER 0
 #define KEYTYPE_STRING 1
 

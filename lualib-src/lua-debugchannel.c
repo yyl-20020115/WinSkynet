@@ -3,10 +3,9 @@
 // only for debug use
 #include <lua.h>
 #include <lauxlib.h>
+#include <skynet.h>
 #ifndef _WIN32
 #include <unistd.h>
-#else
-#include <skynet.h>
 #endif
 #include <stdlib.h>
 #include <string.h>

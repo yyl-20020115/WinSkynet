@@ -4,10 +4,10 @@
 #include <lauxlib.h>
 
 #include <time.h>
+#include <skynet.h>
 #ifndef _WIN32
 #include <unistd.h>
 #else
-#include <skynet.h>
 #include <Winsock2.h>
 int getpid();
 #endif
