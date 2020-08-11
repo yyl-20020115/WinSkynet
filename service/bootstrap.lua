@@ -4,7 +4,6 @@ require "skynet.manager"	-- import skynet.launch, ...
 
 skynet.start(function()
 	local standalone = skynet.getenv "standalone"
-
 	local launcher = assert(skynet.launch("snlua","launcher"))
 	skynet.name(".launcher", launcher)
 
@@ -22,9 +21,12 @@ skynet.start(function()
 
 	else
 		if standalone then
+			print("calling cmaster")
 			if not pcall(skynet.newservice,"cmaster") then
+				print("master failed")
 				skynet.abort()
 			end
+			print("cmaster ok")
 		end
 
 		local ok, slave = pcall(skynet.newservice, "cslave")

@@ -498,6 +498,7 @@ static const char *
 cmd_launch(struct skynet_context * context, const char * param) {
 	size_t sz = strlen(param);
 	char* tmp = (char*) skynet_malloc(sz+1);
+	memset(tmp, 0, sz + 1);
 	strcpy(tmp,param);
 	char * args = tmp;
 	char * mod = strsep(&args, " \t\r\n");

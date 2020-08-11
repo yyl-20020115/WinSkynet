@@ -89,7 +89,13 @@ init_cb(struct snlua *l, struct skynet_context *ctx, const char * args, size_t s
 	const char *path = optstring(ctx, "lua_path","./lualib/?.lua;./lualib/?/init.lua");
 	lua_pushstring(L, path);
 	lua_setglobal(L, "LUA_PATH");
-	const char *cpath = optstring(ctx, "lua_cpath","./luaclib/?.so");
+	const char *cpath = optstring(ctx, "lua_cpath",
+#ifdef _WIN32
+		"./luaclib/?.dll"
+#else
+		"./luaclib/?.so"
+#endif
+	);
 	lua_pushstring(L, cpath);
 	lua_setglobal(L, "LUA_CPATH");
 	const char *service = optstring(ctx, "luaservice", "./service/?.lua");

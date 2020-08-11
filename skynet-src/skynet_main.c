@@ -162,7 +162,13 @@ main
 	_init_env(L);
 
 	config.thread =  optint("thread",8);
-	config.module_path = optstring("cpath","./cservice/?.so");
+	config.module_path = optstring("cpath",
+#ifdef _WIN32
+		"./cservice/?.dll"
+#else
+		"./cservice/?.so"
+#endif
+	);
 	config.harbor = optint("harbor", 1);
 	config.bootstrap = optstring("bootstrap","snlua bootstrap");
 	config.daemon = optstring("daemon", NULL);

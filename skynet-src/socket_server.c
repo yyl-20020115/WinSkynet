@@ -510,7 +510,14 @@ force_close(struct socket_server *ss, struct socket *s, struct socket_lock *l, s
 	}
 	socket_lock(l);
 	if (s->type != SOCKET_TYPE_BIND) {
-		if (close(s->fd) < 0) {
+		if (
+#ifdef _WIN32
+			closesocket(s->fd)
+#else
+			close(s->fd) < 0
+#endif
+			)
+		{
 			perror("close socket:");
 		}
 	}
@@ -634,7 +641,11 @@ open_socket(struct socket_server *ss, struct request_open * request, struct sock
 		sp_nonblocking(sock);
 		status = connect( sock, ai_ptr->ai_addr, (int)ai_ptr->ai_addrlen);
 		if ( status != 0 && errno != EINPROGRESS) {
+#ifdef _WIN32
+			closesocket(sock);
+#else
 			close(sock);
+#endif
 			sock = -1;
 			continue;
 		}
@@ -648,7 +659,11 @@ open_socket(struct socket_server *ss, struct request_open * request, struct sock
 
 	ns = new_fd(ss, id, sock, PROTOCOL_TCP, request->opaque, true);
 	if (ns == NULL) {
+#ifdef _WIN32
+		closesocket(sock);
+#else
 		close(sock);
+#endif
 		result->data = "reach skynet socket number limit";
 		goto _failed;
 	}
@@ -1018,7 +1033,11 @@ listen_socket(struct socket_server *ss, struct request_listen * request, struct 
 	s->type = SOCKET_TYPE_PLISTEN;
 	return -1;
 _failed:
+#ifdef _WIN32
+	closesocket(listen_fd);
+#else
 	close(listen_fd);
+#endif
 	result->opaque = request->opaque;
 	result->id = id;
 	result->ud = 0;
@@ -1181,7 +1200,11 @@ add_udp_socket(struct socket_server *ss, struct request_udp *udp) {
 	}
 	struct socket *ns = new_fd(ss, id, udp->fd, protocol, udp->opaque, true);
 	if (ns == NULL) {
+#ifdef _WIN32
+		closesocket(udp->fd);
+#else
 		close(udp->fd);
+#endif
 		ss->slot[HASH_ID(id)].type = SOCKET_TYPE_INVALID;
 		return;
 	}
@@ -1483,14 +1506,22 @@ report_accept(struct socket_server *ss, struct socket *s, struct socket_message 
 	}
 	int id = reserve_id(ss);
 	if (id < 0) {
+#ifdef _WIN32
+		closesocket(client_fd);
+#else
 		close(client_fd);
+#endif
 		return 0;
 	}
 	socket_keepalive(client_fd);
 	sp_nonblocking(client_fd);
 	struct socket *ns = new_fd(ss, id, client_fd, PROTOCOL_TCP, s->opaque, false);
 	if (ns == NULL) {
+#ifdef _WIN32
+		closesocket(client_fd);
+#else
 		close(client_fd);
+#endif
 		return 0;
 	}
 	// accept new one connection
@@ -1855,7 +1886,12 @@ do_bind(const char *host, int port, int protocol, int *family) {
 	freeaddrinfo( ai_list );
 	return fd;
 _failed:
+#ifdef _WIN32
+	closesocket(fd);
+#else
 	close(fd);
+#endif
+
 _failed_fd:
 	freeaddrinfo( ai_list );
 	return -1;
@@ -1869,7 +1905,11 @@ do_listen(const char * host, int port, int backlog) {
 		return -1;
 	}
 	if (listen(listen_fd, backlog) == -1) {
+#ifdef _WIN32
+		closesocket(listen_fd);
+#else
 		close(listen_fd);
+#endif
 		return -1;
 	}
 	return listen_fd;
@@ -1884,7 +1924,11 @@ socket_server_listen(struct socket_server *ss, uintptr_t opaque, const char * ad
 	struct request_package request;
 	int id = reserve_id(ss);
 	if (id < 0) {
+#ifdef _WIN32
+		closesocket(fd);
+#else
 		close(fd);
+#endif
 		return id;
 	}
 	request.u.listen.opaque = opaque;
@@ -1952,7 +1996,11 @@ socket_server_udp(struct socket_server *ss, uintptr_t opaque, const char * addr,
 
 	int id = reserve_id(ss);
 	if (id < 0) {
+#ifdef _WIN32
+		closesocket(fd);
+#else
 		close(fd);
+#endif
 		return -1;
 	}
 	struct request_package request;
