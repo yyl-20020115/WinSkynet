@@ -19,6 +19,8 @@
 #include <pthread.h>
 #ifndef _WIN32
 #include <unistd.h>
+#else
+#include <Windows.h>
 #endif
 struct monitor {
 	int count;
@@ -35,16 +37,23 @@ struct worker_parm {
 	int weight;
 };
 
-static volatile int SIG = 0;
+static volatile int SIG_HUP = 0;
+static volatile int SIG_INT = 0;
 
 void handle_hup(int signal) {
 	if (signal == SIGHUP) {
-		SIG = 1;
+		SIG_HUP = 1;
+	}
+}
+void handle_int(int signal) {
+	if (signal == SIGINT) {
+		SIG_INT = 1;
 	}
 }
 
-#define CHECK_ABORT if (skynet_context_total()==0) break;
-
+int CHECK_ABORT(struct monitor* m) {
+	return (skynet_context_total() == 0 || m->quit) ? 1 : 0;
+}
 static void
 create_thread(pthread_t *thread, void *(*start_routine) (void *), void *arg) {
 	if (pthread_create(thread,NULL, start_routine, arg)) {
@@ -70,8 +79,10 @@ thread_socket(void *p) {
 		if (r==0)
 			break;
 		if (r<0) {
-			CHECK_ABORT
-			continue;
+			if (CHECK_ABORT(m))
+				break;
+			else 
+				continue;
 		}
 		wakeup(m,0);
 	}
@@ -98,16 +109,17 @@ thread_monitor(void *p) {
 	int n = m->count;
 	skynet_initthread(THREAD_MONITOR);
 	for (;;) {
-		CHECK_ABORT
+		if (CHECK_ABORT(m))break;
+
 		for (i=0;i<n;i++) {
 			skynet_monitor_check(m->m[i]);
 		}
 		for (i=0;i<5;i++) {
-			CHECK_ABORT
+			if (CHECK_ABORT(m))break;
 			sleep(1);
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -133,12 +145,17 @@ thread_timer(void *p) {
 	for (;;) {
 		skynet_updatetime();
 		skynet_socket_updatetime();
-		CHECK_ABORT
+		if(CHECK_ABORT(m)) break;
 		wakeup(m,m->count-1);
 		usleep(2500);
-		if (SIG) {
+		if (SIG_HUP) {
 			signal_hup();
-			SIG = 0;
+			printf("CTRL+C\n");
+			SIG_HUP = 0;
+		}
+		if (SIG_INT) {
+			SIG_INT = 0;
+			break;
 		}
 	}
 	// wakeup socket thread
@@ -148,6 +165,7 @@ thread_timer(void *p) {
 	m->quit = 1;
 	pthread_cond_broadcast(&m->cond);
 	pthread_mutex_unlock(&m->mutex);
+	
 	return NULL;
 }
 
@@ -167,8 +185,9 @@ thread_worker(void *p) {
 				++ m->sleep;
 				// "spurious wakeup" is harmless,
 				// because skynet_context_message_dispatch() can be call at any time.
-				if (!m->quit)
+				if (!m->quit) {
 					pthread_cond_wait(&m->cond, &m->mutex);
+				}
 				-- m->sleep;
 				if (pthread_mutex_unlock(&m->mutex)) {
 					fprintf(stderr, "unlock mutex error");
@@ -232,10 +251,10 @@ start(int thread) {
 		}
 		create_thread(&pid[i+3], thread_worker, &wp[i]);
 	}
-
 	for (i=0;i<thread+3;i++) {
 		pthread_join(pid[i], NULL); 
 	}
+
 	skynet_free(wp);
 	skynet_free(pid);
 

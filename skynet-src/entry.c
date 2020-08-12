@@ -4,8 +4,11 @@
 #ifndef SIGHUP
 #define SIGHUP 1
 #endif
+#ifndef SIGINT
+#define SIGINT 2
+#endif
 extern int skynet_main(int argc, char* argv[]);
-extern void handle_hup(int signal);
+extern void handle_int(int signal);
 
 BOOL ctrlhandler(DWORD fdwctrltype)
 {
@@ -14,7 +17,7 @@ BOOL ctrlhandler(DWORD fdwctrltype)
 		// handle the ctrl-c signal.
 	case CTRL_C_EVENT:
 		printf("Terminating...\n\n");
-		handle_hup(SIGHUP);
+		handle_int(SIGINT);
 		return(TRUE);
 		// ctrl-close: confirm that the user wants to exit.
 		//case CTRL_CLOSE_EVENT:

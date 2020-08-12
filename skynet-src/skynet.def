@@ -161,4 +161,5 @@ EXPORTS
 	mallctl_bool
 	mallctl_cmd
 	handle_hup
+	handle_int
 	
