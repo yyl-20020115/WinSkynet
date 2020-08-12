@@ -751,7 +751,7 @@ skynet_send(struct skynet_context * context, uint32_t source, uint32_t destinati
 		struct skynet_message smsg;
 		smsg.source = source;
 		smsg.session = session;
-		smsg.msg = data;
+		smsg.data = data;
 		smsg.sz = sz;
 
 		if (skynet_context_push(destination, &smsg)) {

@@ -58,7 +58,7 @@ skynet_error(struct skynet_context * context, const char *msg, ...) {
 		smsg.source = skynet_context_handle(context);
 	}
 	smsg.session = 0;
-	smsg.msg = data;
+	smsg.data = data;
 	smsg.sz = len | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
 	skynet_context_push(logger, &smsg);
 }
