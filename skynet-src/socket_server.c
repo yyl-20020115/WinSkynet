@@ -387,8 +387,8 @@ struct socket_server *
 socket_server_create(uint64_t time) {
 	int i;
 #ifdef _WIN32
-	SOCKET fd[2] = { 0 };
 	int dp = -1;
+	SOCKET fd[2] = { 0 };
 #else
 	int fd[2] = { 0 };
 #endif
@@ -399,8 +399,8 @@ socket_server_create(uint64_t time) {
 	}
 
 #ifdef _WIN32
-	//each server has a port from 32000
-	fd[0] = socket(AF_INET, SOCK_DGRAM, 0);
+	if ((fd[0] = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) return NULL;
+	if ((fd[1] = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) return NULL;
 	struct sockaddr_in addr = { 0 };
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY); /* N.B.: differs from sender */
@@ -413,14 +413,10 @@ socket_server_create(uint64_t time) {
 			break;
 		}
 	}
-	if (dp < 0) {
-		return NULL;
-	}
-	//dp >= 0;
-
+	if (dp < 0) return NULL;
+	
 	sp_nonblocking(fd[0]);
-	fd[1] = socket(AF_INET, SOCK_DGRAM, 0);
-
+	//but fd[1] is blocking
 	if (sp_add(efd, fd[0], NULL)) {
 		// add recvctrl_fd to event poll
 		fprintf(stderr, "socket-server: can't add server fd to event pool.\n");
@@ -609,6 +605,7 @@ new_fd(struct socket_server *ss, int id, int fd, int protocol, uintptr_t opaque,
 #ifdef _WIN32
 		//stdin, stdout, stderr
 		if (fd >= 0 && fd <= 2) {
+			//TODO:
 
 		} else
 #endif
@@ -1163,6 +1160,9 @@ bind_socket(struct socket_server *ss, struct request_bind *request, struct socke
 	sp_nonblocking(request->fd);
 	s->type = SOCKET_TYPE_BIND;
 	result->data = "binding";
+	//NOTICE: we need the fd to pass back
+	result->ud = request->fd;
+
 	return SOCKET_OPEN;
 }
 

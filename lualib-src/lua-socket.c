@@ -14,10 +14,10 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #else
+#include <io.h>
+#include <stdlib.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
-//const char* inet_ntop(int af, const void* src,
-//	char* dst, int size);
 #endif
 #include "skynet_socket.h"
 
@@ -25,6 +25,9 @@
 // 2 ** 12 == 4096
 #define LARGE_PAGE_NODE 12
 #define BUFFER_LIMIT (256 * 1024)
+
+//fd:index -> id
+int fids[3] = { 0 };
 
 struct buffer_node {
 	char * msg;
@@ -276,25 +279,6 @@ lclearbuffer(lua_State *L) {
 }
 
 static int
-lreadall(lua_State *L) {
-	struct socket_buffer * sb = lua_touserdata(L, 1);
-	if (sb == NULL) {
-		return luaL_error(L, "Need buffer object at param 1");
-	}
-	luaL_checktype(L,2,LUA_TTABLE);
-	luaL_Buffer b;
-	luaL_buffinit(L, &b);
-	while(sb->head) {
-		struct buffer_node *current = sb->head;
-		luaL_addlstring(&b, current->msg + sb->offset, current->sz - sb->offset);
-		return_free_node(L,2,sb);
-	}
-	luaL_pushresult(&b);
-	sb->size = 0;
-	return 1;
-}
-
-static int
 ldrop(lua_State *L) {
 	void * msg = lua_touserdata(L,1);
 	luaL_checkinteger(L,2);
@@ -321,6 +305,45 @@ check_sep(struct buffer_node * node, int from, const char *sep, int seplen) {
 	}
 }
 
+static int id_to_fd(int id) {
+	int fd = -1;
+	for (int i = 0; i < sizeof(fids) / sizeof(int); i++) {
+		if (id == fids[i]) {
+			fd = i;
+			break;
+		}
+	}
+	return fd;
+}
+
+char* readinput(int fd) {
+	char* ret = 0;
+	char buffer[4096] = { 0 };
+	int l = 0;
+	int r = 0;
+	if((r = _read(fd, buffer, sizeof(buffer))) > 0) {
+		l += r;
+		ret = skynet_realloc(ret, l+1);
+		for (int i = l - r, c = 0; i < l; i++) {
+			ret[i] = buffer[c++];
+		}
+		ret[l] = '\0';
+	}
+	if (ret == 0) {
+		ret = skynet_malloc(1);
+		ret[0] = '\0';
+	}
+	return ret;
+}
+struct buffer_node* readinput_node(lua_State* L, int fd) {
+	char* s = readinput(fd);
+
+	struct buffer_node* nsb = lua_newuserdata(L, sizeof(*nsb));
+	nsb->msg = s;
+	nsb->sz = strlen(s);
+	nsb->next = NULL;
+	return nsb;
+}
 /*
 	userdata send_buffer
 	table pool , nil for check
@@ -334,10 +357,18 @@ lreadline(lua_State *L) {
 	}
 	// only check
 	bool check = !lua_istable(L, 2);
+	
 	size_t seplen = 0;
 	const char *sep = luaL_checklstring(L,3,&seplen);
 #ifdef _WIN32
-	//TODO:
+	int id = (int)luaL_checkinteger(L, 4);
+	int fd = id_to_fd(id);
+	//only support for stdin
+	if (fd == 0) {
+		sb->head = readinput_node(L, fd);
+		sb->offset = 0;
+		sb->size = sb->head->sz;
+	}
 #endif
 	int i;
 	struct buffer_node *current = sb->head;
@@ -367,6 +398,34 @@ lreadline(lua_State *L) {
 	}
 	return 0;
 }
+static int
+lreadall(lua_State* L) {
+	struct socket_buffer* sb = lua_touserdata(L, 1);
+	if (sb == NULL) {
+		return luaL_error(L, "Need buffer object at param 1");
+	}
+	luaL_checktype(L, 2, LUA_TTABLE);
+	luaL_Buffer b;
+	luaL_buffinit(L, &b);
+#ifdef _WIN32
+	int id = (int)luaL_checkinteger(L, 3);
+	int fd = id_to_fd(id);
+	if (fd == 0) {
+		sb->head = readinput_node(L, fd);
+		sb->offset = 0;
+		sb->size = sb->head->sz;
+	}
+#endif
+	while (sb->head) {
+		struct buffer_node* current = sb->head;
+		luaL_addlstring(&b, current->msg + sb->offset, current->sz - sb->offset);
+		return_free_node(L, 2, sb);
+	}
+	luaL_pushresult(&b);
+	sb->size = 0;
+	return 1;
+}
+
 
 static int
 lstr2p(lua_State *L) {
@@ -615,6 +674,9 @@ lbind(lua_State *L) {
 	int fd = (int)luaL_checkinteger(L, 1);
 	int id = skynet_socket_bind(ctx,fd);
 	lua_pushinteger(L,id);
+	if (fd >= 0 && fd <= 2) {
+		fids[fd] = id;
+	}
 	return 1;
 }
 
@@ -646,8 +708,8 @@ ludp(lua_State *L) {
 	if (addr) {
 		host = address_port(L, tmp, addr, 2, &port);
 	}
-	skynet_free(tmp);
 	int id = skynet_socket_udp(ctx, host, port);
+	skynet_free(tmp);
 	if (id < 0) {
 		return luaL_error(L, "udp init failed");
 	}
@@ -668,8 +730,10 @@ ludp_connect(lua_State *L) {
 	if (addr) {
 		host = address_port(L, tmp, addr, 3, &port);
 	}
+	int r = skynet_socket_udp_connect(ctx, id, host, port);
 	skynet_free(tmp);
-	if (skynet_socket_udp_connect(ctx, id, host, port)) {
+	if (r) 
+	{
 		return luaL_error(L, "udp connect failed");
 	}
 

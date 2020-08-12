@@ -7,7 +7,7 @@
 struct skynet_message {
 	uint32_t source;
 	int session;
-	void * data;
+	struct skynet_socket_message* msg;
 	size_t sz;
 };
 

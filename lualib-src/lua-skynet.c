@@ -182,7 +182,7 @@ lintcommand(lua_State *L) {
 	const char * cmd = luaL_checkstring(L,1);
 	const char * result;
 	const char * parm = NULL;
-	char tmp[64];	// for integer parm
+	char tmp[64] = { 0 };	// for integer parm
 	if (lua_gettop(L) == 2) {
 		if (lua_isnumber(L, 2)) {
 			int32_t n = (int32_t)luaL_checkinteger(L,2);

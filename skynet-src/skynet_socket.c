@@ -42,15 +42,18 @@ forward_message(int type, bool padding, struct socket_message * result) {
 	if (padding) {
 		if (result->data) {
 			size_t msg_sz = strlen(result->data);
-			if (msg_sz > 128) {
-				msg_sz = 128;
+			//NOTICE: fixed 128->127 (with '\0')
+			if (msg_sz > 127) {
+				msg_sz = 127;
 			}
-			sz += msg_sz;
+			
+			sz += msg_sz+1;
 		} else {
 			result->data = "";
 		}
 	}
 	sm = (struct skynet_socket_message *)skynet_malloc(sz);
+	memset(sm, 0, sz);
 	sm->type = type;
 	sm->id = result->id;
 	sm->ud = result->ud;
@@ -64,7 +67,7 @@ forward_message(int type, bool padding, struct socket_message * result) {
 	struct skynet_message message;
 	message.source = 0;
 	message.session = 0;
-	message.data = sm;
+	message.msg = sm;
 	message.sz = sz | ((size_t)PTYPE_SOCKET << MESSAGE_TYPE_SHIFT);
 	
 	if (skynet_context_push((uint32_t)result->opaque, &message)) {

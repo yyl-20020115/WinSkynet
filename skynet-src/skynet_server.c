@@ -116,7 +116,7 @@ struct drop_t {
 static void
 drop_message(struct skynet_message *msg, void *ud) {
 	struct drop_t *d = ud;
-	skynet_free(msg->data);
+	skynet_free(msg->msg);
 	uint32_t source = d->handle;
 	assert(source);
 	// report error to the message source
@@ -266,20 +266,20 @@ dispatch_message(struct skynet_context *ctx, struct skynet_message *msg) {
 	int type = msg->sz >> MESSAGE_TYPE_SHIFT;
 	size_t sz = msg->sz & MESSAGE_TYPE_MASK;
 	if (ctx->logfile) {
-		skynet_log_output(ctx->logfile, msg->source, type, msg->session, msg->data, sz);
+		skynet_log_output(ctx->logfile, msg->source, type, msg->session, msg->msg, sz);
 	}
 	++ctx->message_count;
 	int reserve_msg = 0;
 	if (ctx->profile) {
 		ctx->cpu_start = skynet_thread_time();
-		reserve_msg = ctx->cb(ctx, ctx->cb_ud, type, msg->session, msg->source, msg->data, sz);
+		reserve_msg = ctx->cb(ctx, ctx->cb_ud, type, msg->session, msg->source, msg->msg, sz);
 		uint64_t cost_time = skynet_thread_time() - ctx->cpu_start;
 		ctx->cpu_cost += cost_time;
 	} else {
-		reserve_msg = ctx->cb(ctx, ctx->cb_ud, type, msg->session, msg->source, msg->data, sz);
+		reserve_msg = ctx->cb(ctx, ctx->cb_ud, type, msg->session, msg->source, msg->msg, sz);
 	}
 	if (!reserve_msg) {
-		skynet_free(msg->data);
+		skynet_free(msg->msg);
 	}
 	CHECKCALLING_END(ctx)
 }
@@ -330,7 +330,7 @@ skynet_context_message_dispatch(struct skynet_monitor *sm, struct message_queue 
 		skynet_monitor_trigger(sm, msg.source , handle);
 
 		if (ctx->cb == NULL) {
-			skynet_free(msg.data);
+			skynet_free(msg.msg);
 		} else {
 			dispatch_message(ctx, &msg);
 		}
@@ -751,7 +751,7 @@ skynet_send(struct skynet_context * context, uint32_t source, uint32_t destinati
 		struct skynet_message smsg;
 		smsg.source = source;
 		smsg.session = session;
-		smsg.data = data;
+		smsg.msg = data;
 		smsg.sz = sz;
 
 		if (skynet_context_push(destination, &smsg)) {
@@ -818,7 +818,7 @@ skynet_context_send(struct skynet_context * ctx, void * msg, size_t sz, uint32_t
 	struct skynet_message smsg;
 	smsg.source = source;
 	smsg.session = session;
-	smsg.data = msg;
+	smsg.msg = msg;
 	smsg.sz = sz | (size_t)type << MESSAGE_TYPE_SHIFT;
 
 	skynet_mq_push(ctx->queue, &smsg);

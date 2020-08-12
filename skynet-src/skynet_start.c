@@ -118,7 +118,7 @@ signal_hup() {
 	struct skynet_message smsg;
 	smsg.source = 0;
 	smsg.session = 0;
-	smsg.data = NULL;
+	smsg.msg = NULL;
 	smsg.sz = (size_t)PTYPE_SYSTEM << MESSAGE_TYPE_SHIFT;
 	uint32_t logger = skynet_handle_findname("logger");
 	if (logger) {

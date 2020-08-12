@@ -1336,7 +1336,7 @@ luaopen_bson(lua_State *L) {
 	luaL_checkversion(L);
 	int i;
 	for (i=0;i<MAX_NUMBER;i++) {
-		char tmp[8];
+		char tmp[8] = { 0 };
 		bson_numstr_len[i] = sprintf(tmp,"%d",i);
 		memcpy(bson_numstrs[i], tmp, bson_numstr_len[i]);
 	}
