@@ -16,7 +16,7 @@ BOOL ctrlhandler(DWORD fdwctrltype)
 	{
 		// handle the ctrl-c signal.
 	case CTRL_C_EVENT:
-		printf("Terminating...\n\n");
+		printf("Quting skynet...\n\n");
 		handle_int(SIGINT);
 		return(TRUE);
 		// ctrl-close: confirm that the user wants to exit.

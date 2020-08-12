@@ -180,6 +180,7 @@ main
 
 	skynet_start(&config);
 	skynet_globalexit();
+	printf("skynet quit!\n");
 
 	return 0;
 }

@@ -150,7 +150,6 @@ thread_timer(void *p) {
 		usleep(2500);
 		if (SIG_HUP) {
 			signal_hup();
-			printf("CTRL+C\n");
 			SIG_HUP = 0;
 		}
 		if (SIG_INT) {
@@ -289,6 +288,9 @@ skynet_start(struct skynet_config * config) {
 	sa.sa_flags = SA_RESTART;
 	sigfillset(&sa.sa_mask);
 	sigaction(SIGHUP, &sa, NULL);
+
+	signal(SIGINT, &handle_int);
+
 #endif
 #ifdef _WIN32
 	if (config->daemon) {
