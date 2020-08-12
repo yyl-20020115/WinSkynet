@@ -305,21 +305,11 @@ check_sep(struct buffer_node * node, int from, const char *sep, int seplen) {
 	}
 }
 #ifdef _WIN32
-static int id_to_fd(int id) {
-	int fd = -1;
-	for (int i = 0; i < sizeof(fids) / sizeof(int); i++) {
-		if (id == fids[i]) {
-			fd = i;
-			break;
-		}
-	}
-	return fd;
-}
 
 static char* readinput(int fd) {
 	char* ret = 0;
 	char buffer[4096] = { 0 };
-	int l = 0;
+	size_t l = 0;
 	int r = 0;
 	if((r = _read(fd, buffer, sizeof(buffer))) > 0) {
 		l += r;
@@ -363,14 +353,9 @@ lreadline(lua_State *L) {
 	size_t seplen = 0;
 	const char *sep = luaL_checklstring(L,3,&seplen);
 #ifdef _WIN32
-	int id = (int)luaL_checkinteger(L, 4);
-	int fd = id_to_fd(id);
-	//only support for stdin
-	if (fd == 0) {
-		sb->head = readinput_node(L, fd);
-		sb->offset = 0;
-		sb->size = sb->head->sz;
-	}
+	sb->head = readinput_node(L, 0);
+	sb->offset = 0;
+	sb->size = sb->head->sz;
 #endif
 	int i;
 	struct buffer_node *current = sb->head;
@@ -410,13 +395,9 @@ lreadall(lua_State* L) {
 	luaL_Buffer b;
 	luaL_buffinit(L, &b);
 #ifdef _WIN32
-	int id = (int)luaL_checkinteger(L, 3);
-	int fd = id_to_fd(id);
-	if (fd == 0) {
-		sb->head = readinput_node(L, fd);
-		sb->offset = 0;
-		sb->size = sb->head->sz;
-	}
+	sb->head = readinput_node(L, 0);
+	sb->offset = 0;
+	sb->size = sb->head->sz;
 #endif
 	while (sb->head) {
 		struct buffer_node* current = sb->head;

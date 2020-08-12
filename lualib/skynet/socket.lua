@@ -299,7 +299,7 @@ function socket.readall(id)
 	local s = socket_pool[id]
 	assert(s)
 	if not s.connected then
-		local r = driver.readall(s.buffer, buffer_pool,id)
+		local r = driver.readall(s.buffer, buffer_pool)
 		return r ~= "" and r
 	end
 	assert(not s.read_required)
@@ -313,7 +313,7 @@ function socket.readline(id, sep)
 	sep = sep or "\n"
 	local s = socket_pool[id]
 	assert(s)	
-	local ret = driver.readline(s.buffer, buffer_pool, sep, id)
+	local ret = driver.readline(s.buffer, buffer_pool, sep)
 	if ret then
 		return ret
 	end
