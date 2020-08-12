@@ -304,7 +304,7 @@ check_sep(struct buffer_node * node, int from, const char *sep, int seplen) {
 		from = 0;
 	}
 }
-
+#ifdef _WIN32
 static int id_to_fd(int id) {
 	int fd = -1;
 	for (int i = 0; i < sizeof(fids) / sizeof(int); i++) {
@@ -316,7 +316,7 @@ static int id_to_fd(int id) {
 	return fd;
 }
 
-char* readinput(int fd) {
+static char* readinput(int fd) {
 	char* ret = 0;
 	char buffer[4096] = { 0 };
 	int l = 0;
@@ -335,7 +335,7 @@ char* readinput(int fd) {
 	}
 	return ret;
 }
-struct buffer_node* readinput_node(lua_State* L, int fd) {
+static struct buffer_node* readinput_node(lua_State* L, int fd) {
 	char* s = readinput(fd);
 
 	struct buffer_node* nsb = lua_newuserdata(L, sizeof(*nsb));
@@ -344,6 +344,8 @@ struct buffer_node* readinput_node(lua_State* L, int fd) {
 	nsb->next = NULL;
 	return nsb;
 }
+#endif
+
 /*
 	userdata send_buffer
 	table pool , nil for check
