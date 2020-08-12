@@ -26,9 +26,6 @@
 #define LARGE_PAGE_NODE 12
 #define BUFFER_LIMIT (256 * 1024)
 
-//fd:index -> id
-int fids[3] = { 0 };
-
 struct buffer_node {
 	char * msg;
 	int sz;
@@ -314,7 +311,7 @@ static char* readinput(int fd) {
 	if((r = _read(fd, buffer, sizeof(buffer))) > 0) {
 		l += r;
 		ret = skynet_realloc(ret, l+1);
-		for (int i = l - r, c = 0; i < l; i++) {
+		for (size_t i = l - r, c = 0; i < l; i++) {
 			ret[i] = buffer[c++];
 		}
 		ret[l] = '\0';
@@ -657,9 +654,6 @@ lbind(lua_State *L) {
 	int fd = (int)luaL_checkinteger(L, 1);
 	int id = skynet_socket_bind(ctx,fd);
 	lua_pushinteger(L,id);
-	if (fd >= 0 && fd <= 2) {
-		fids[fd] = id;
-	}
 	return 1;
 }
 
