@@ -127,5 +127,9 @@ ifneq (,$(wildcard 3rd/jemalloc/Makefile))
 	cd 3rd/jemalloc && $(MAKE) clean && rm Makefile
 endif
 	cd 3rd/lua && $(MAKE) clean
+	cd 3rd/lpeg && rm -f *.o
+	cd 3rd/lua-md5 && rm -f *.o
+	cd lualib && rm -f *.o
+	cd skynet-src && rm -f *.o
 	rm -f $(LUA_STATICLIB)
 
