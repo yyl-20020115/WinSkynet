@@ -25,7 +25,27 @@
 #include "lua.h"
 
 #include "lauxlib.h"
+#ifdef _WIN32
+#include <Windows.h>
+static int loaded = 0;
 
+static void* get_function(const char* libname, const char* name) {
+    HMODULE h = LoadLibraryA(libname);
+    if (h != INVALID_HANDLE_VALUE)
+    {
+        return GetProcAddress(h, name);
+    }
+    return 0;
+}
+typedef void* (*skynet_realloc_ptr)(void* ptr, size_t size);
+typedef void* (*skynet_malloc_ptr)(size_t size);
+typedef void (*skynet_free_ptr)(void* ptr);
+skynet_malloc_ptr skynet_malloc = 0;
+skynet_free_ptr skynet_free = 0;
+skynet_realloc_ptr skynet_realloc = 0;
+#else
+#include <../skynet-src/skynet.h>
+#endif
 
 /*
 ** {======================================================
@@ -1002,27 +1022,6 @@ LUALIB_API const char *luaL_gsub (lua_State *L, const char *s, const char *p,
   luaL_pushresult(&b);
   return lua_tostring(L, -1);
 }
-#ifdef _WIN32
-#include <Windows.h>
-static int loaded = 0;
-
-static void* get_function(const char* libname,const char* name) {
-    HMODULE h = LoadLibraryA(libname);
-    if (h != INVALID_HANDLE_VALUE)
-    {
-        return GetProcAddress(h, name);
-    }
-    return 0;
-}
-typedef void* (*skynet_realloc_ptr)(void* ptr, size_t size);
-typedef void* (*skynet_malloc_ptr)(size_t size);
-typedef void (*skynet_free_ptr)(void* ptr);
-skynet_malloc_ptr skynet_malloc = 0;
-skynet_free_ptr skynet_free = 0;
-skynet_realloc_ptr skynet_realloc = 0;
-
-
-#endif
 static void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
     (void)ud; (void)osize;  /* not used */
 #ifdef _WIN32
