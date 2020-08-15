@@ -327,7 +327,7 @@ static struct buffer_node* readinput_node(lua_State* L, int fd) {
 
 	struct buffer_node* nsb = lua_newuserdata(L, sizeof(*nsb));
 	nsb->msg = s;
-	nsb->sz = strlen(s);
+	nsb->sz = (int)strlen(s);
 	nsb->next = NULL;
 	return nsb;
 }
