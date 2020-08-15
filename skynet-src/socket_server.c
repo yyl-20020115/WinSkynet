@@ -289,6 +289,10 @@ socket_unlock(struct socket_lock *sl) {
 	}
 }
 
+static void skynet_free_func(void* ptr)
+{
+  skynet_free(ptr);
+}
 static inline bool
 send_object_init(struct socket_server *ss, struct send_object *so, const void *object, size_t sz) {
 	if (sz == USEROBJECT) {
@@ -299,7 +303,7 @@ send_object_init(struct socket_server *ss, struct send_object *so, const void *o
 	} else {
 		so->buffer = object;
 		so->sz = sz;
-		so->free_func = skynet_free;
+		so->free_func = skynet_free_func;
 		return false;
 	}
 }

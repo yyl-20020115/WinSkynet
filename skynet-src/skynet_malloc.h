@@ -4,25 +4,6 @@
 
 #ifdef _WIN32
 
-//#include<mimalloc.h>
-//#define skynet_malloc(sz) malloc(sz)
-//#define skynet_calloc(sz,ss) calloc(sz,ss)
-//#define skynet_realloc(ptr,sz) realloc(ptr,sz)
-//#define skynet_free(ptr) free(ptr) 
-//#define skynet_memalign(sz,ss) memalign(sz,ss)
-//#define skynet_aligned_alloc(sz,ss) aligned_alloc(sz,ss)
-//#define skynet_posix_memalign(ptr,sz,ss) posix_memalign(ptr,sz,ss)
-#else
-
-#define skynet_malloc malloc
-#define skynet_calloc calloc
-#define skynet_realloc realloc
-#define skynet_free free
-#define skynet_memalign memalign
-#define skynet_aligned_alloc aligned_alloc
-#define skynet_posix_memalign posix_memalign
-
-#endif
 void* skynet_malloc(size_t sz);
 void* skynet_calloc(size_t nmemb, size_t size);
 void* skynet_realloc(void* ptr, size_t size);
@@ -33,4 +14,18 @@ void skynet_free(void* ptr);
 void* skynet_lalloc(void* ptr, size_t osize, size_t nsize);	// use for lua
 char* skynet_strdup(const char* str);
 
+#else
+#include <stdlib.h>
+#define skynet_malloc(sz) malloc(sz)
+#define skynet_calloc(nmemb,size) calloc(nmemb,size)
+#define skynet_realloc(ptr,size) realloc(ptr,size)
+#define skynet_free(ptr) free(ptr)
+#define skynet_memalign memalign
+#define skynet_aligned_alloc aligned_alloc
+#define skynet_posix_memalign posix_memalign
+void* skynet_lalloc(void* ptr, size_t osize, size_t nsize);	// use for lua
+char* skynet_strdup(const char* str);
+
+
+#endif
 #endif

@@ -44,7 +44,9 @@ skynet_malloc_ptr skynet_malloc = 0;
 skynet_free_ptr skynet_free = 0;
 skynet_realloc_ptr skynet_realloc = 0;
 #else
-#include <../skynet-src/skynet.h>
+#define skynet_malloc(s) malloc(s)
+#define skynet_realloc(p,s) realloc(p,s)
+#define skynet_free(p) free(p)
 #endif
 
 /*
