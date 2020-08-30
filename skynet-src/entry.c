@@ -15,6 +15,9 @@ BOOL WINAPI ctrlhandler(DWORD fdwctrltype)
 	switch (fdwctrltype)
 	{
 	case CTRL_C_EVENT:
+	case CTRL_CLOSE_EVENT:
+	case CTRL_LOGOFF_EVENT:
+	case CTRL_SHUTDOWN_EVENT:
 		printf("Quting skynet...\n\n");
 		handle_int(SIGINT);
 		return TRUE;
