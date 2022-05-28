@@ -11,10 +11,10 @@
 //NOTICE: to work with mimalloc,
 //try
 //git submodule update --init
-//#include <mimalloc.h>
+#include <mimalloc.h>
 #endif
 
-//#include "malloc_hook.h"
+#include "malloc_hook.h"
 #include "skynet.h"
 #include "atomic.h"
 //#ifdef _WIN32
