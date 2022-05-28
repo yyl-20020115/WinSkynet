@@ -30,26 +30,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -88,14 +88,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
-    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)wepoll;C:\Program Files\OpenSSL-Win64\include;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(SolutionDir)3rd\pthreads-w32;$(IncludePath);$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src</IncludePath>
-    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL-Win64\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)3rd\pthreads-w32;C:\Program Files\OpenSSL\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -157,7 +157,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -182,7 +182,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcrypto_static.lib;libssl_static.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>skynet-src\skynet.def</ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -417,9 +417,6 @@
     <None Include="wepoll\LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="3rd\mimalloc\ide\vs2019\mimalloc.vcxproj">
-      <Project>{abb5eae7-b3e6-432e-b636-333449892ea6}</Project>
-    </ProjectReference>
     <ProjectReference Include="3rd\pthreads-w32\pthread.vcxproj">
       <Project>{17a895da-7ca1-4259-aeaf-603802a36515}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>

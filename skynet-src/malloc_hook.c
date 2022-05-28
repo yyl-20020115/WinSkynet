@@ -8,10 +8,13 @@
 //#define _CRTDBG_MAP_ALLOC
 //#include <stdlib.h>
 //#include <crtdbg.h>
-#include <mimalloc.h>
+//NOTICE: to work with mimalloc,
+//try
+//git submodule update --init
+//#include <mimalloc.h>
 #endif
 
-#include "malloc_hook.h"
+//#include "malloc_hook.h"
 #include "skynet.h"
 #include "atomic.h"
 //#ifdef _WIN32
@@ -19,6 +22,18 @@
 //#endif
 // turn on MEMORY_CHECK can do more memory check, such as double free
 // #define MEMORY_CHECK
+#ifdef _WIN32
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
+#ifdef _WIN64
+typedef long long ssize_t;
+#else
+typedef long ssize_t;
+#endif
+#endif
+#endif
 
 #define MEMORY_ALLOCTAG 0x20140605
 #define MEMORY_FREETAG 0x0badf00d
@@ -315,19 +330,19 @@ skynet_strdup(const char *str) {
 #ifdef _WIN32
 void* skynet_malloc(size_t sz)
 {
-	return mi_malloc(sz);
+	return malloc(sz);
 }
 void* skynet_calloc(size_t nmemb, size_t size)
 {
-	return mi_calloc(nmemb, size);
+	return calloc(nmemb, size);
 }
 void* skynet_realloc(void* ptr, size_t size)
 {
-	return mi_realloc(ptr, size);
+	return realloc(ptr, size);
 }
 void skynet_free(void* ptr)
 {
-	mi_free(ptr);
+	free(ptr);
 }
 //void* skynet_memalign(size_t alignment, size_t size)
 //{

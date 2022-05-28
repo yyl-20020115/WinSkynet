@@ -400,7 +400,7 @@ ltls_init(void) {
 #ifndef OPENSSL_EXTERNAL_INITIALIZATION
     SSL_library_init();
     SSL_load_error_strings();
-    ERR_load_BIO_strings();
+    //ERR_load_BIO_strings();
     OpenSSL_add_all_algorithms();
     TLS_IS_INIT = true;
 #endif
