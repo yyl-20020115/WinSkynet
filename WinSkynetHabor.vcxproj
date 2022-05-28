@@ -87,28 +87,28 @@
     <TargetName>$(ProjectName)</TargetName>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)lualib\</OutDir>
+    <OutDir>$(SolutionDir)cservice\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)lualib\</OutDir>
+    <OutDir>$(SolutionDir)cservice\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)lualib\</OutDir>
+    <OutDir>$(SolutionDir)cservice\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
     <IncludePath>$(SolutionDir)3rd\lua;$(SolutionDir)3rd\mimalloc\include;$(SolutionDir)skynet-src;$(SolutionDir)wepoll;$(SolutionDir)3rd\pthreads-w32;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)lualib\</OutDir>
+    <OutDir>$(SolutionDir)cservice\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

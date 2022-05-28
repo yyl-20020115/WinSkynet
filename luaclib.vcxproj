@@ -105,14 +105,14 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\pthreads-w32;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\OpenSSL-Win32\include</IncludePath>
     <LibraryPath>C:\Program Files (x86)\OpenSSL\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)luaclib</OutDir>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\pthreads-w32;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\OpenSSL-Win32\include</IncludePath>
     <LibraryPath>C:\Program Files (x86)\OpenSSL\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)luaclib</OutDir>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,12 +120,14 @@
     <IncludePath>$(SolutionDir)3rd\pthreads-w32;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\OpenSSL-Win64\include</IncludePath>
     <LibraryPath>C:\Program Files\OpenSSL\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)luaclib</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)3rd\pthreads-w32;$(SolutionDir)3rd\lua;$(SolutionDir)skynet-src;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\OpenSSL-Win64\include</IncludePath>
     <LibraryPath>C:\Program Files\OpenSSL\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)luaclib</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
