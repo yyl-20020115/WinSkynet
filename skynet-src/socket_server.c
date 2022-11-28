@@ -1339,7 +1339,8 @@ static int ctrl_cmd(struct socket_server *ss, struct socket_message *result, cha
 #ifdef _WIN32
 	header[0] = inbuffer[0];
 	header[1] = inbuffer[1];
-	for (unsigned char i = 0; i < header[2]; i++) {
+	//fixed: header[2]->header[1]
+	for (unsigned char i = 0; i < header[1]; i++) {
 		buffer[i] = inbuffer[i + 2];
 	}
 #else
